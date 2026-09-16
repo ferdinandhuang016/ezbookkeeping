@@ -1377,6 +1377,7 @@ Future<DateTime?> pickDate(
   String title,
   DateTime initial, {
   bool time = true,
+  bool withSeconds = true,
 }) async {
   DateTime chosen = initial;
   var mode = time ? 1 : 0;
@@ -1385,7 +1386,7 @@ Future<DateTime?> pickDate(
     listen: false,
   ).read(appControllerProvider).formatter;
   final tokens = RegExp(r'HH|hh|mm|ss|H|h|m|s|A')
-      .allMatches(formatter.timePattern(withSeconds: true))
+      .allMatches(formatter.timePattern(withSeconds: withSeconds))
       .map((match) => match[0]!)
       .toList();
   int initialIndex(String token) => switch (token[0]) {
@@ -1724,6 +1725,7 @@ class _AmountPadState extends State<_AmountPad> {
                     for (final key in row)
                       Expanded(
                         child: CupertinoButton(
+                          color: key == 'Done' ? brand : null,
                           padding: EdgeInsets.zero,
                           minimumSize: const Size(48, 48),
                           onPressed: () => press(key),
@@ -1731,6 +1733,7 @@ class _AmountPadState extends State<_AmountPad> {
                               ? Icon(
                                   CupertinoIcons.check_mark,
                                   semanticLabel: app.t('Done'),
+                                  color: CupertinoColors.white,
                                 )
                               : Text(
                                   key == '.'

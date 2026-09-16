@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/app_controller.dart';
 import '../core/money.dart';
+import 'common.dart' show brand;
 
 class QuickAddStartupPage extends ConsumerStatefulWidget {
   const QuickAddStartupPage({
@@ -179,6 +180,7 @@ class _QuickAddStartupPageState extends ConsumerState<QuickAddStartupPage> {
                     for (final key in row)
                       Expanded(
                         child: CupertinoButton(
+                          color: key == 'Done' ? brand : null,
                           padding: EdgeInsets.zero,
                           minimumSize: const Size(48, 48),
                           onPressed: () => press(key),
@@ -186,6 +188,7 @@ class _QuickAddStartupPageState extends ConsumerState<QuickAddStartupPage> {
                               ? Icon(
                                   CupertinoIcons.check_mark,
                                   semanticLabel: chinese ? '完成' : 'Done',
+                                  color: CupertinoColors.white,
                                 )
                               : Text(
                                   key == '.'

@@ -1376,7 +1376,7 @@ class _TransactionListState extends NativeState<TransactionListPage> {
                                 '${recordName(flatten(app.categories, 'subCategories'), item['categoryId'])} · '
                                 '${dateText(transactionDate(item), time: true)}',
                             onTap: () => context.push(
-                              '/transaction/detail?id=${item['id']}',
+                              '/transaction/edit?id=${item['id']}',
                             ),
                           ),
                     ],
@@ -1659,7 +1659,7 @@ class TransactionRow extends StatelessWidget {
       return CupertinoButton(
         padding: const EdgeInsets.fromLTRB(12, 14, 16, 14),
         onPressed: () => context.push(
-          '/transaction/detail?id=${Uri.encodeQueryComponent(string(item['id']))}',
+          '/transaction/edit?id=${Uri.encodeQueryComponent(string(item['id']))}',
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -1792,7 +1792,7 @@ class TransactionRow extends StatelessWidget {
         style: TextStyle(color: amountColor(app, type, context), fontSize: 16),
       ),
       onTap: () => context.push(
-        '/transaction/detail?id=${Uri.encodeQueryComponent(string(item['id']))}',
+        '/transaction/edit?id=${Uri.encodeQueryComponent(string(item['id']))}',
       ),
     );
   }
@@ -2944,7 +2944,7 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
       if (!readOnly) 'pasteSource': t('Paste Amount'),
       if (!readOnly && type == 4)
         'pasteDestination': t('Paste Destination Amount'),
-      if (!readOnly)
+      if (!readOnly && data['id'] != null)
         'hideAmount': t(
           data['hideAmount'] == true ? 'Show Amount' : 'Hide Amount',
         ),
@@ -3375,7 +3375,6 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
                       ),
                       long: true,
                       withTime: true,
-                      withSeconds: true,
                     ),
                     onTap: readOnly
                         ? null
@@ -3386,6 +3385,7 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
                               context,
                               t('Transaction Time'),
                               transactionDate(data),
+                              withSeconds: false,
                             );
                             if (value != null && mounted) {
                               setWallTime(value);
@@ -3437,7 +3437,7 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
                   readOnly: readOnly,
                   onChanged: (value) => change('comment', value),
                 ),
-                if (!readOnly)
+                if (!readOnly && data['id'] != null)
                   toggleRow(
                     t('Hide Amount'),
                     data['hideAmount'] == true,

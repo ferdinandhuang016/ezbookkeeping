@@ -1414,7 +1414,7 @@ class _ReconciliationState extends NativeState<ReconciliationPage> {
           onTap: number(item['type']) == 1
               ? null
               : () => navigate(
-                  '/transaction/detail?id=${Uri.encodeQueryComponent(string(item['id']))}',
+                  '/transaction/edit?id=${Uri.encodeQueryComponent(string(item['id']))}',
                 ),
           child: AbsorbPointer(
             child: TransactionRow(
