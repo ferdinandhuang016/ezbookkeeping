@@ -2737,20 +2737,18 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
       string(lookup(flatten(app.accounts, 'subAccounts'), id)['currency']);
 
   Future<void> selectSourceCurrency() async {
-    final currencies = leafAccounts(app)
-        .map((item) => string(item['currency']))
-        .where((currency) => currency.isNotEmpty && currency != '---')
-        .toSet()
-        .toList()
-      ..sort();
+    final currencies =
+        leafAccounts(app)
+            .map((item) => string(item['currency']))
+            .where((currency) => currency.isNotEmpty && currency != '---')
+            .toSet()
+            .toList()
+          ..sort();
     if (currencies.isEmpty) return;
     final current = accountCurrency(string(data['sourceAccountId']));
-    final selected = await choose<String>(
-      context,
-      t('Currency'),
-      {for (final currency in currencies) currency: currency},
-      selected: current,
-    );
+    final selected = await choose<String>(context, t('Currency'), {
+      for (final currency in currencies) currency: currency,
+    }, selected: current);
     if (!mounted || selected == null || selected == current) return;
     final compatible = leafAccounts(app)
         .where((item) => string(item['currency']) == selected)

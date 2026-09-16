@@ -513,9 +513,9 @@ class _AccountListState extends NativeState<AccountListPage> {
                         .where((e) => number(e['category']) == category)
                         .toList(),
                   ),
-                  for (final sub in records(item['subAccounts']).where(
-                    (sub) => showHidden || sub['hidden'] != true,
-                  ))
+                  for (final sub in records(
+                    item['subAccounts'],
+                  ).where((sub) => showHidden || sub['hidden'] != true))
                     accountRow(
                       sub,
                       child: true,

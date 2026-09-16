@@ -430,7 +430,9 @@ class ItemRow extends StatelessWidget {
       final valueWidget = stacked || value == null || value!.isEmpty
           ? null
           : ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: constraints.maxWidth * 0.42),
+              constraints: BoxConstraints(
+                maxWidth: constraints.maxWidth * 0.42,
+              ),
               child: Text(
                 value!,
                 maxLines: 2,
@@ -439,8 +441,7 @@ class ItemRow extends StatelessWidget {
               ),
             );
       final actionWidget =
-          trailing ??
-          (onTap == null ? null : const CupertinoListTileChevron());
+          trailing ?? (onTap == null ? null : const CupertinoListTileChevron());
       final trailingWidget = valueWidget == null && actionWidget == null
           ? null
           : ConstrainedBox(
@@ -448,10 +449,10 @@ class ItemRow extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (valueWidget != null) valueWidget,
+                  ?valueWidget,
                   if (valueWidget != null && actionWidget != null)
                     const SizedBox(width: 8),
-                  if (actionWidget != null) actionWidget,
+                  ?actionWidget,
                 ],
               ),
             );

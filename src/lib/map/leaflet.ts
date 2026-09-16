@@ -80,6 +80,7 @@ export class LeafletMapInstance implements MapInstance {
     private leafletZoomControl: unknown | null;
     private leafletAttribution: unknown | null;
     private leafletCenterMarker: unknown | null;
+    private mapInitOptions: MapInstanceInitOptions | null = null;
 
     public constructor(mapProvider: string, mapTileSource: LeafletTileSource, options: MapCreateOptions) {
         this.dependencyLoaded = !!LeafletMapProvider.Leaflet;
@@ -97,6 +98,8 @@ export class LeafletMapInstance implements MapInstance {
         if (!LeafletMapProvider.Leaflet) {
             return;
         }
+
+        this.mapInitOptions = options;
 
         const leaflet = LeafletMapProvider.Leaflet;
         const leafletInstance = leaflet.map(mapContainer, {
@@ -237,11 +240,34 @@ export class LeafletMapInstance implements MapInstance {
                 shadowSize: [41, 32]
             });
             this.leafletCenterMarker = leaflet.marker([ position.latitude, position.longitude ], {
-                icon: markerIcon
+                icon: markerIcon,
+                draggable: this.mapInitOptions?.markerDraggable === true
+            });
+            this.leafletCenterMarker.on('dragend', event => {
+                const coordinate = event?.target?.getLatLng?.();
+
+                if (isNumber(coordinate?.lat) && isNumber(coordinate?.lng)) {
+                    this.mapInitOptions?.onMarkerMove?.({
+                        latitude: coordinate.lat,
+                        longitude: coordinate.lng
+                    });
+                }
             });
             this.leafletCenterMarker.addTo(this.leafletInstance);
         } else {
             this.leafletCenterMarker.setLatLng([ position.latitude, position.longitude ]);
+        }
+    }
+
+    public setMapCenterMarkerDraggable(draggable: boolean): void {
+        if (!this.leafletCenterMarker) {
+            return;
+        }
+
+        if (draggable) {
+            this.leafletCenterMarker.dragging?.enable?.();
+        } else {
+            this.leafletCenterMarker.dragging?.disable?.();
         }
     }
 
