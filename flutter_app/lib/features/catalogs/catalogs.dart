@@ -322,6 +322,7 @@ class _AccountListState extends NativeState<AccountListPage> {
     final action = await choose(context, t('More'), {
       'hidden': t(showHidden ? 'Hide Hidden Accounts' : 'Show Hidden Accounts'),
       'sort': t('Sort'),
+      'categories': t('Account Category Order'),
       'balances': t(showBalances ? 'Hide Amount' : 'Show Amount'),
       'included': t('Set Accounts Included in Total'),
     });
@@ -332,6 +333,9 @@ class _AccountListState extends NativeState<AccountListPage> {
     }
     if (action == 'included' && mounted) {
       context.push('/settings/filter/account?type=accountListTotalAmount');
+    }
+    if (action == 'categories' && mounted) {
+      context.push('/settings/account_category_display_order');
     }
     if (action == 'sort') await sortAccounts();
   }
@@ -384,6 +388,9 @@ class _AccountListState extends NativeState<AccountListPage> {
         string(item['comment']),
       ].where((e) => e.isNotEmpty).join(' · '),
       value: accountAmount(item, child: child),
+      padding: child
+          ? const EdgeInsetsDirectional.fromSTEB(34, 6, 12, 6)
+          : const EdgeInsetsDirectional.fromSTEB(14, 6, 12, 6),
       onTap: () => context.push('/transaction/list?accountId=${item['id']}'),
     ),
   );
@@ -501,16 +508,13 @@ class _AccountListState extends NativeState<AccountListPage> {
                         .where((e) => number(e['category']) == category)
                         .toList(),
                   ),
-                  for (final sub in records(
-                    item['subAccounts'],
-                  ).where((sub) => showHidden || sub['hidden'] != true))
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: accountRow(
-                        sub,
-                        child: true,
-                        siblings: records(item['subAccounts']),
-                      ),
+                  for (final sub in records(item['subAccounts']).where(
+                    (sub) => showHidden || sub['hidden'] != true,
+                  ))
+                    accountRow(
+                      sub,
+                      child: true,
+                      siblings: records(item['subAccounts']),
                     ),
                 ],
                 if (!items.any((item) => number(item['category']) == category))

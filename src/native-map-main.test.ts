@@ -27,6 +27,7 @@ describe('native coordinate bridge ordering', () => {
         vi.useFakeTimers();
         fixtures.map.dependencyLoaded = false;
         fixtures.map.inited = false;
+        fixtures.postMessage.mockClear();
         fixtures.map.initMapInstance.mockImplementation(() => { fixtures.map.inited = true; });
         vi.stubGlobal('window', { EbkMap: { postMessage: fixtures.postMessage }, setInterval, clearInterval });
         vi.stubGlobal('document', { getElementById: () => ({}) });
@@ -64,6 +65,7 @@ describe('native coordinate bridge ordering', () => {
         fixtures.map.dependencyLoaded = true;
         vi.advanceTimersByTime(100);
         window.setNativeClickEnabled?.(true);
+        fixtures.postMessage.mockClear();
         fixtures.map.initMapInstance.mock.calls[0]?.[1].onClick?.({ latitude: 5, longitude: 6 });
         expect(fixtures.postMessage).not.toHaveBeenCalled();
     });

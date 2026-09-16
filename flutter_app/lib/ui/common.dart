@@ -370,7 +370,7 @@ class Section extends StatelessWidget {
     this.title,
     required this.children,
     this.footer,
-    this.margin = const EdgeInsets.fromLTRB(16, 8, 16, 16),
+    this.margin = const EdgeInsets.fromLTRB(12, 4, 12, 8),
   });
   final String? title;
   final String? footer;
@@ -385,7 +385,7 @@ class Section extends StatelessWidget {
             color: CupertinoColors.secondarySystemGroupedBackground.resolveFrom(
               context,
             ),
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(18),
           ),
           header: title == null ? null : Text(title!),
           footer: footer == null ? null : Text(footer!),
@@ -405,7 +405,7 @@ class ItemRow extends StatelessWidget {
     this.onTap,
     this.destructive = false,
     this.color,
-    this.padding,
+    this.padding = const EdgeInsetsDirectional.fromSTEB(14, 6, 12, 6),
     this.titleWeight,
   });
   final String title;
@@ -425,7 +425,7 @@ class ItemRow extends StatelessWidget {
       final stacked =
           value != null &&
           value!.isNotEmpty &&
-          (constraints.maxWidth < 350 ||
+          (constraints.maxWidth < 280 ||
               MediaQuery.textScalerOf(context).scale(17) > 21);
       return CupertinoListTile.notched(
         padding: padding,
@@ -814,16 +814,27 @@ Future<T?> choose<T>(
               CupertinoActionSheetAction(
                 isDefaultAction: entry.key == selected,
                 onPressed: () => Navigator.pop(sheetContext, entry.key),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (entry.key == selected)
-                      const Padding(
-                        padding: EdgeInsets.only(right: 8),
-                        child: Icon(CupertinoIcons.check_mark, size: 18),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      if (entry.key == selected)
+                        const PositionedDirectional(
+                          start: 0,
+                          child: Icon(CupertinoIcons.check_mark, size: 18),
+                        ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 28),
+                        child: Text(
+                          entry.value,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                    Flexible(child: Text(entry.value)),
-                  ],
+                    ],
+                  ),
                 ),
               ),
           ],
@@ -1032,8 +1043,8 @@ class _GroupedRecordSelectionPageState
       onPressed: onPressed,
       child: Container(
         width: double.infinity,
-        constraints: const BoxConstraints(minHeight: 52),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        constraints: const BoxConstraints(minHeight: 48),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         color: selected ? brand.withValues(alpha: .1) : const Color(0x00000000),
         child: Row(
           children: [

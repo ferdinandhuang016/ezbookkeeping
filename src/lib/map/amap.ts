@@ -371,8 +371,10 @@ export class AmapMapInstance implements MapInstance {
         const sequence = ++this.markerMoveSequence;
         const coordinate = convertGCJ02ToWGS84({ latitude, longitude });
 
+        this.mapInitOptions.onMarkerMove({ ...coordinate });
+
         getAmapLocationNameByPosition(point).then(name => {
-            if (sequence !== this.markerMoveSequence) {
+            if (sequence !== this.markerMoveSequence || !name) {
                 return;
             }
 

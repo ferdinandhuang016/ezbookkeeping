@@ -78,6 +78,7 @@ window.configureNativeMap = options => {
                 }
             });
             if (latestCoordinate) window.setNativeCoordinate?.(latestCoordinate);
+            send({ type: 'ready' });
         } catch (error) {
             window.clearInterval(timer);
             send({ type: 'error', message: error instanceof Error ? error.message : 'Map could not be loaded' });

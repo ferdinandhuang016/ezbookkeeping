@@ -3,13 +3,15 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart' show compute;
+import 'package:flutter/foundation.dart' show Factory, compute;
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../../core/cache_policy.dart';
 import '../../ui/common.dart';
 import 'amap_location.dart';
 import 'map_contract.dart';
@@ -375,6 +377,7 @@ class _LocationState extends NativeState<_LocationPage> {
   late RecordData coordinates = {...?widget.initial};
   String? mapError;
   bool injected = false;
+  bool mapReady = false;
   bool clickEnabled = false;
   late final Uri mapUri = Uri.parse('${app.serverUrl}native-map');
   String latitude = '', longitude = '';
@@ -397,6 +400,7 @@ class _LocationState extends NativeState<_LocationPage> {
     final controller = WebViewController();
     web = controller;
     injected = false;
+    mapReady = false;
     clickEnabled = false;
     mapError = null;
     await controller.setJavaScriptMode(JavaScriptMode.unrestricted);
@@ -411,6 +415,10 @@ class _LocationState extends NativeState<_LocationPage> {
         try {
           final body = jsonDecode(message.message);
           if (body is! Map) return;
+          if (body['type'] == 'ready') {
+            if (mounted) setState(() => mapReady = true);
+            return;
+          }
           if (body['type'] == 'error') {
             if (mounted) setState(() => mapError = string(body['message']));
             return;
@@ -464,21 +472,13 @@ class _LocationState extends NativeState<_LocationPage> {
     );
     final expiration = number(app.settings['mapCacheExpiration'] ?? -1);
     final stamp = number(app.settings['nativeMapCacheUpdated']);
-    if (expiration < 0 ||
-        (expiration > 0 &&
-            DateTime.now().millisecondsSinceEpoch ~/ 1000 - stamp >=
-                expiration)) {
+    final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    final expired =
+        canSetMapCacheExpiration(app.config) &&
+        cacheExpired(expiration, stamp, now);
+    if (expired) {
       await controller.clearCache();
-    }
-    if (stamp == 0 ||
-        expiration < 0 ||
-        (expiration > 0 &&
-            DateTime.now().millisecondsSinceEpoch ~/ 1000 - stamp >=
-                expiration)) {
-      await app.setPreference(
-        'nativeMapCacheUpdated',
-        DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      );
+      await app.setPreference('nativeMapCacheUpdated', now);
     }
     await controller.loadRequest(mapUri);
     if (mounted) setState(() {});
@@ -572,7 +572,30 @@ class _LocationState extends NativeState<_LocationPage> {
           ],
         ),
       if (web != null)
-        SizedBox(height: 400, child: WebViewWidget(controller: web!)),
+        SizedBox(
+          height: 400,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: WebViewWidget(
+                  controller: web!,
+                  gestureRecognizers: {
+                    Factory<OneSequenceGestureRecognizer>(
+                      EagerGestureRecognizer.new,
+                    ),
+                  },
+                ),
+              ),
+              if (!mapReady && mapError == null)
+                const Positioned.fill(
+                  child: ColoredBox(
+                    color: CupertinoColors.systemGroupedBackground,
+                    child: Center(child: CupertinoActivityIndicator()),
+                  ),
+                ),
+            ],
+          ),
+        ),
       if (mapError != null) ...[
         emptyState(t(mapError!)),
         actionButton(t('Retry'), () => run(initializeMap)),

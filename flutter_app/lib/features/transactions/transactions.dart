@@ -2484,24 +2484,29 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
     } else {
       await run(loadData);
     }
-    if (mounted &&
+    final shouldEditAmount =
+        mounted &&
         !template &&
         widget.route.endsWith('/add') &&
         widget.query['quickAmount'] != 'true' &&
-        !launcherAmountEntered) {
-      WidgetsBinding.instance.addPostFrameCallback(
-        (_) => editSourceAmount(instant: widget.query['launcher'] == 'true'),
-      );
-    }
-    if (mounted) consumeShares();
-    if (mounted &&
+        !launcherAmountEntered;
+    final shouldAutoLocate =
+        mounted &&
         !template &&
         data['id'] == null &&
         data['geoLocation'] == null &&
         app.settings['autoGetCurrentGeoLocation'] == true &&
-        !gpsAttempted) {
-      autoLocate();
+        !gpsAttempted;
+    if (shouldEditAmount || shouldAutoLocate) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (!mounted) return;
+        if (shouldEditAmount) {
+          await editSourceAmount(instant: widget.query['launcher'] == 'true');
+        }
+        if (mounted && shouldAutoLocate && !gpsAttempted) await autoLocate();
+      });
     }
+    if (mounted) consumeShares();
   }
 
   Future<void> consumeShares() async {
@@ -2705,6 +2710,35 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
     return category == null
         ? string(item['name'])
         : '${t(category)} › ${item['name']}';
+  }
+
+  String accountCurrency(String id) =>
+      string(lookup(accounts, id)['currency']);
+
+  Future<void> selectSourceCurrency() async {
+    final currencies = leafAccounts(app)
+        .map((item) => string(item['currency']))
+        .where((currency) => currency.isNotEmpty && currency != '---')
+        .toSet()
+        .toList()
+      ..sort();
+    if (currencies.isEmpty) return;
+    final current = accountCurrency(string(data['sourceAccountId']));
+    final selected = await choose<String>(
+      context,
+      t('Currency'),
+      {for (final currency in currencies) currency: currency},
+      selected: current,
+    );
+    if (!mounted || selected == null || selected == current) return;
+    final compatible = leafAccounts(app)
+        .where((item) => string(item['currency']) == selected)
+        .toList();
+    if (compatible.length == 1) {
+      change('sourceAccountId', compatible.single['id']);
+    } else {
+      await selectAccount('sourceAccountId', 'Account', compatible);
+    }
   }
 
   Future<void> selectCategory() async {
@@ -3301,6 +3335,13 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
                           'Account',
                           leafAccounts(app),
                         ),
+                ),
+                ItemRow(
+                  t('Currency'),
+                  value: accountCurrency(string(data['sourceAccountId'])),
+                  onTap: readOnly || type == 1 && data['id'] != null
+                      ? null
+                      : selectSourceCurrency,
                 ),
                 if (type == 4)
                   ItemRow(
