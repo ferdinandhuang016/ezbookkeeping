@@ -2354,12 +2354,16 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
   bool dirty = false;
   bool picturesExpanded = false;
   bool amountPadOpen = false;
+  bool autoLocateAfterAmount = false;
+  bool autoLocateWaitScheduled = false;
   bool launcherAmountEntered = false;
   bool gpsAttempted = false;
   String gpsStatus = '';
   bool consumingShares = false;
   bool shareReadFailed = false;
   bool get template => widget.route.startsWith('/template');
+  bool get embeddedAmountPadEnabled =>
+      !template && data['id'] == null && widget.route.endsWith('/add');
   bool get readOnly =>
       widget.route.endsWith('/detail') ||
       !template &&
@@ -2499,9 +2503,19 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         if (!mounted) return;
         if (shouldEditAmount) {
-          await editSourceAmount(instant: widget.query['launcher'] == 'true');
+          if (embeddedAmountPadEnabled) {
+            autoLocateAfterAmount = shouldAutoLocate;
+            await editSourceAmount();
+          } else {
+            await editSourceAmount(instant: widget.query['launcher'] == 'true');
+          }
         }
-        if (mounted && shouldAutoLocate && !gpsAttempted) await autoLocate();
+        if (mounted &&
+            shouldAutoLocate &&
+            !autoLocateAfterAmount &&
+            !gpsAttempted) {
+          await autoLocate();
+        }
       });
     }
     if (mounted) consumeShares();
@@ -2640,6 +2654,10 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
 
   Future<void> editSourceAmount({bool instant = false}) async {
     if (!mounted || !ready || readOnly || amountPadOpen) return;
+    if (embeddedAmountPadEnabled) {
+      setState(() => amountPadOpen = true);
+      return;
+    }
     amountPadOpen = true;
     try {
       final value = await amountPad(
@@ -2651,6 +2669,50 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
     } finally {
       amountPadOpen = false;
     }
+  }
+
+  void updateEmbeddedAmount(int value) {
+    if (!mounted) return;
+    setState(() {
+      data['sourceAmount'] = value;
+      dirty = true;
+    });
+  }
+
+  void closeEmbeddedAmountPad([int? value]) {
+    if (!mounted || !amountPadOpen || !embeddedAmountPadEnabled) return;
+    setState(() {
+      data['sourceAmount'] = value ?? number(data['sourceAmount']);
+      amountPadOpen = false;
+      dirty = true;
+    });
+    if (autoDraftAllowed &&
+        app.settings['autoSaveTransactionDraft'] == 'enabled') {
+      app.setPreference(draftKey, jsonEncode(data));
+    }
+    schedulePendingAutoLocate();
+  }
+
+  void schedulePendingAutoLocate() {
+    if (!autoLocateAfterAmount || autoLocateWaitScheduled || gpsAttempted) {
+      return;
+    }
+    autoLocateWaitScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      while (mounted &&
+          (amountPadOpen || ModalRoute.of(context)?.isCurrent != true)) {
+        await Future<void>.delayed(const Duration(milliseconds: 100));
+      }
+      if (mounted &&
+          autoLocateAfterAmount &&
+          !gpsAttempted &&
+          data['geoLocation'] == null &&
+          app.settings['autoGetCurrentGeoLocation'] == true) {
+        autoLocateAfterAmount = false;
+        await autoLocate();
+      }
+      autoLocateWaitScheduled = false;
+    });
   }
 
   List<RecordData> categoryGroups() => app.categories
@@ -3155,6 +3217,8 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
     final quickAction = number(
       app.settings['quickAddButtonActionInMobileTransactionEditPage'],
     );
+    final landscape =
+        MediaQuery.orientationOf(context) == Orientation.landscape;
     final quickTitle = t(
       data['id'] != null || template
           ? 'Save'
@@ -3184,20 +3248,44 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
         ? 'Add Transaction'
         : 'Edit Transaction';
     return PopScope(
-      canPop: !dirty || readOnly || saved,
+      canPop: !amountPadOpen && (!dirty || readOnly || saved),
       onPopInvokedWithResult: (didPop, result) async {
-        if (!didPop) await leavePage();
+        if (didPop) return;
+        if (embeddedAmountPadEnabled && amountPadOpen) {
+          closeEmbeddedAmountPad();
+        } else {
+          await leavePage();
+        }
       },
       child: NativePage(
         title: t(title),
         busy: busy,
-        bottom: !readOnly && quickStyle == 1
+        onContentInteraction: embeddedAmountPadEnabled && amountPadOpen
+            ? closeEmbeddedAmountPad
+            : null,
+        bottom: embeddedAmountPadEnabled && amountPadOpen && !landscape
+            ? embeddedAmountPad(
+                number(data['sourceAmount']),
+                onChanged: updateEmbeddedAmount,
+                onDone: closeEmbeddedAmountPad,
+              )
+            : !readOnly && quickStyle == 1
             ? SizedBox(
                 height: 60,
                 child: Center(child: actionButton(quickTitle, quickSave)),
               )
             : null,
-        floating: !readOnly && quickStyle >= 2 && quickStyle <= 4
+        side: embeddedAmountPadEnabled && amountPadOpen && landscape
+            ? embeddedAmountPad(
+                number(data['sourceAmount']),
+                onChanged: updateEmbeddedAmount,
+                onDone: closeEmbeddedAmountPad,
+                compact: true,
+              )
+            : null,
+        floating: embeddedAmountPadEnabled && amountPadOpen
+            ? null
+            : !readOnly && quickStyle >= 2 && quickStyle <= 4
             ? Align(
                 alignment: const {
                   2: Alignment.bottomLeft,

@@ -218,6 +218,8 @@ class NativePage extends StatelessWidget {
     this.subnavbar,
     this.bottom,
     this.floating,
+    this.side,
+    this.onContentInteraction,
     this.onRefresh,
     this.onTitleTap,
     this.titleKey,
@@ -230,6 +232,8 @@ class NativePage extends StatelessWidget {
   final Widget? subnavbar;
   final Widget? bottom;
   final Widget? floating;
+  final Widget? side;
+  final VoidCallback? onContentInteraction;
   final Future<void> Function()? onRefresh;
   final VoidCallback? onTitleTap;
   final Key? titleKey;
@@ -335,24 +339,46 @@ class NativePage extends StatelessWidget {
             ),
             ?subnavbar,
             Expanded(
-              child: Stack(
-                fit: StackFit.expand,
+              child: Row(
                 children: [
-                  CustomScrollView(
-                    slivers: [
-                      if (onRefresh != null)
-                        CupertinoSliverRefreshControl(onRefresh: onRefresh),
-                      SliverPadding(
-                        padding: EdgeInsets.only(
-                          bottom: floating == null ? 24 : 88,
+                  Expanded(
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Listener(
+                          behavior: HitTestBehavior.translucent,
+                          onPointerUp: onContentInteraction == null
+                              ? null
+                              : (_) => onContentInteraction!(),
+                          child: CustomScrollView(
+                            slivers: [
+                              if (onRefresh != null)
+                                CupertinoSliverRefreshControl(
+                                  onRefresh: onRefresh,
+                                ),
+                              SliverPadding(
+                                padding: EdgeInsets.only(
+                                  bottom: floating == null ? 24 : 88,
+                                ),
+                                sliver: SliverList(
+                                  delegate: SliverChildListDelegate(children),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        sliver: SliverList(
-                          delegate: SliverChildListDelegate(children),
-                        ),
-                      ),
-                    ],
+                        ?floating,
+                      ],
+                    ),
                   ),
-                  ?floating,
+                  if (side != null)
+                    SizedBox(
+                      width: math.min(
+                        440,
+                        MediaQuery.sizeOf(context).width * .52,
+                      ),
+                      child: side,
+                    ),
                 ],
               ),
             ),
@@ -1593,6 +1619,14 @@ Future<int?> amountPad(
   );
 }
 
+Widget embeddedAmountPad(
+  int initial, {
+  required ValueChanged<int> onChanged,
+  required ValueChanged<int> onDone,
+  bool compact = false,
+}) =>
+    _AmountPad(initial, onChanged: onChanged, onDone: onDone, compact: compact);
+
 class _InstantCupertinoModalPopupRoute<T> extends CupertinoModalPopupRoute<T> {
   _InstantCupertinoModalPopupRoute({
     required super.builder,
@@ -1604,8 +1638,16 @@ class _InstantCupertinoModalPopupRoute<T> extends CupertinoModalPopupRoute<T> {
 }
 
 class _AmountPad extends StatefulWidget {
-  const _AmountPad(this.initial);
+  const _AmountPad(
+    this.initial, {
+    this.onChanged,
+    this.onDone,
+    this.compact = false,
+  });
   final int initial;
+  final ValueChanged<int>? onChanged;
+  final ValueChanged<int>? onDone;
+  final bool compact;
   @override
   State<_AmountPad> createState() => _AmountPadState();
 }
@@ -1620,7 +1662,14 @@ class _AmountPadState extends State<_AmountPad> {
   String? operator;
   bool replace = true;
   String? error;
+
+  int value() => accumulator != null && operator != null && !replace
+      ? Money.calculate('${Money.format(accumulator!)}$operator$input')
+      : Money.parse(input);
+
   void press(String key) {
+    int? changedValue;
+    int? doneValue;
     setState(() {
       error = null;
       try {
@@ -1647,10 +1696,7 @@ class _AmountPadState extends State<_AmountPad> {
         } else if (key == '±') {
           input = input.startsWith('-') ? input.substring(1) : '-$input';
         } else if (key == 'Done') {
-          final value = accumulator != null && operator != null && !replace
-              ? Money.calculate('${Money.format(accumulator!)}$operator$input')
-              : Money.parse(input);
-          Navigator.pop(context, value);
+          doneValue = value();
         } else {
           if (replace) {
             input = key == '.'
@@ -1670,40 +1716,67 @@ class _AmountPadState extends State<_AmountPad> {
             input = input.substring(0, input.length - 1);
           }
         }
+        if (key != 'Done') changedValue = value();
       } catch (e) {
         error = e.toString();
       }
     });
+    if (doneValue != null) {
+      if (widget.onDone != null) {
+        widget.onDone!(doneValue!);
+      } else {
+        Navigator.pop(context, doneValue);
+      }
+    } else if (changedValue != null) {
+      widget.onChanged?.call(changedValue!);
+    }
   }
 
   @override
   Widget build(BuildContext context) => SafeArea(
     child: Container(
-      color: CupertinoColors.systemBackground.resolveFrom(context),
-      height: math.min(
-        440,
-        MediaQuery.sizeOf(context).height -
-            MediaQuery.viewPaddingOf(context).vertical,
+      decoration: BoxDecoration(
+        color: CupertinoColors.systemBackground.resolveFrom(context),
+        border: Border(
+          top: widget.compact
+              ? BorderSide.none
+              : BorderSide(
+                  color: CupertinoColors.separator.resolveFrom(context),
+                ),
+          left: widget.compact
+              ? BorderSide(
+                  color: CupertinoColors.separator.resolveFrom(context),
+                )
+              : BorderSide.none,
+        ),
       ),
+      height: widget.compact
+          ? null
+          : math.min(
+              440,
+              MediaQuery.sizeOf(context).height -
+                  MediaQuery.viewPaddingOf(context).vertical,
+            ),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: EdgeInsets.all(widget.compact ? 6 : 12),
         child: Column(
           children: [
-            Expanded(
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  reverse: true,
-                  child: Text(
-                    app.formatter.digits(
-                      input.replaceAll('.', app.formatter.decimalSeparator),
+            if (!widget.compact)
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    reverse: true,
+                    child: Text(
+                      app.formatter.digits(
+                        input.replaceAll('.', app.formatter.decimalSeparator),
+                      ),
+                      style: const TextStyle(fontSize: 34, color: brand),
                     ),
-                    style: const TextStyle(fontSize: 34, color: brand),
                   ),
                 ),
               ),
-            ),
             if (error != null)
               Text(
                 app.errorText(FormatException(error!)),
