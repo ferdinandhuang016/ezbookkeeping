@@ -1630,7 +1630,7 @@ class _AmountPadState extends State<_AmountPad> {
           replace = true;
         } else if (key == '⌫') {
           input = input.length > 1 ? input.substring(0, input.length - 1) : '0';
-        } else if (['+', '−', '×', '÷', '='].contains(key)) {
+        } else if (['+', '−', '×', '÷'].contains(key)) {
           final right = Money.parse(input);
           if (accumulator != null && operator != null && !replace) {
             final left = accumulator!;
@@ -1641,7 +1641,7 @@ class _AmountPadState extends State<_AmountPad> {
           } else {
             accumulator = right;
           }
-          operator = key == '=' ? null : key;
+          operator = key;
           replace = true;
         } else if (key == '±') {
           input = input.startsWith('-') ? input.substring(1) : '-$input';
@@ -1652,10 +1652,18 @@ class _AmountPadState extends State<_AmountPad> {
           Navigator.pop(context, value);
         } else {
           if (replace) {
-            input = key == '.' ? '0.' : key;
+            input = key == '.'
+                ? '0.'
+                : key == '00'
+                ? '0'
+                : key;
             replace = false;
           } else if (key != '.' || !input.contains('.')) {
-            input = input == '0' && key != '.' ? key : input + key;
+            input = input == '0' && key != '.'
+                ? key == '00'
+                      ? '0'
+                      : key
+                : input + key;
           }
           if (input.contains('.') && input.split('.').last.length > 2) {
             input = input.substring(0, input.length - 1);
@@ -1704,10 +1712,10 @@ class _AmountPadState extends State<_AmountPad> {
               ),
             for (final row in [
               ['C', '±', '⌫', '÷'],
-              ['7', '8', '9', '×'],
+              ['1', '2', '3', '×'],
               ['4', '5', '6', '−'],
-              ['1', '2', '3', '+'],
-              ['0', '.', '=', 'Done'],
+              ['7', '8', '9', '+'],
+              ['00', '0', '.', 'Done'],
             ])
               Expanded(
                 child: Row(

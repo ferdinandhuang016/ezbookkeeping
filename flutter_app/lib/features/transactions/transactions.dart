@@ -2388,7 +2388,7 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
       'type': number(widget.query['type'] ?? 3),
       'sourceAmount': 0,
       'destinationAmount': 0,
-      'sourceAccountId': string(app.user['defaultAccountId']),
+      'sourceAccountId': '0',
       'destinationAccountId': '0',
       'categoryId': '0',
       'time': now.millisecondsSinceEpoch ~/ 1000,
@@ -2405,7 +2405,6 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
       'scheduledFrequency': '',
     };
     applyQuery();
-    applyDefaults();
     picturesExpanded =
         app.settings['alwaysShowTransactionPicturesInMobileTransactionEditPage'] ==
         true;
@@ -2430,7 +2429,6 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
               .timeZoneOffset
               .inMinutes;
         }
-        applyDefaults();
       } else if (id != null) {
         var item = lookup(template ? app.templates : app.transactions, id);
         if (item.isEmpty) {
@@ -2554,17 +2552,6 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
       if (mounted) await inform(context, app.errorText(error));
     } finally {
       consumingShares = false;
-    }
-  }
-
-  void applyDefaults() {
-    if (string(data['sourceAccountId']).isEmpty ||
-        string(data['sourceAccountId']) == '0') {
-      data['sourceAccountId'] = leafAccounts(app).firstOrNull?['id'] ?? '0';
-    }
-    if (string(data['categoryId']).isEmpty ||
-        string(data['categoryId']) == '0') {
-      data['categoryId'] = leafCategories(app, type).firstOrNull?['id'] ?? '0';
     }
   }
 
@@ -2861,10 +2848,7 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
             data.addAll({
               'sourceAmount': 0,
               'destinationAmount': 0,
-              'sourceAccountId':
-                  widget.query['accountId'] ??
-                  app.user['defaultAccountId'] ??
-                  '0',
+              'sourceAccountId': widget.query['accountId'] ?? '0',
               'destinationAccountId': '0',
               'categoryId': '0',
               'comment': '',
@@ -2877,7 +2861,6 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
               'timeZone': app.settings['timeZone'],
             });
             applyQuery();
-            applyDefaults();
             gpsAttempted = false;
           }
           saved = false;

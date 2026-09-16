@@ -5,8 +5,9 @@ import 'money.dart';
 
 typedef FormattingMap = Map<String, dynamic>;
 
-/// Keeps the original application's pixel increments and Android accessibility
-/// scaling. The preference is an enum (0..6), not a multiplier.
+/// Applies the compact application font-size preference while preserving
+/// Android accessibility scaling. The preference is an enum (0..6), not a
+/// multiplier.
 class BookkeepingTextScaler extends TextScaler {
   const BookkeepingTextScaler({
     required this.system,
@@ -14,11 +15,18 @@ class BookkeepingTextScaler extends TextScaler {
   });
   final TextScaler system;
   final int fontSizeType;
-  static const increments = [-1.0, 0.0, 1.0, 2.0, 3.0, 5.0, 7.0];
+  static const increments = [-2.0, -1.0, 0.0, 1.0, 2.0, 4.0, 6.0];
   @override
-  double scale(double fontSize) => system.scale(
-    (fontSize + increments[fontSizeType.clamp(0, 6)]).clamp(1, double.infinity),
-  );
+  double scale(double fontSize) {
+    final minimum = fontSize >= 12 ? 12.0 : fontSize;
+    return system.scale(
+      (fontSize + increments[fontSizeType.clamp(0, 6)]).clamp(
+        minimum,
+        double.infinity,
+      ),
+    );
+  }
+
   @override
   double get textScaleFactor => scale(14) / 14;
   @override

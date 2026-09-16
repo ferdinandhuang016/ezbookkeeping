@@ -30,6 +30,16 @@ void main() {
     ),
   );
 
+  test('default app text is compact without shrinking small labels', () {
+    const defaultScaler = BookkeepingTextScaler(
+      system: TextScaler.noScaling,
+      fontSizeType: 1,
+    );
+    expect(defaultScaler.scale(17), 16);
+    expect(defaultScaler.scale(12), 12);
+    expect(defaultScaler.scale(9), 9);
+  });
+
   test(
     'all numeral systems and grouping styles match original Web fixtures',
     () {
@@ -316,27 +326,27 @@ void main() {
       'Hello A',
     );
   });
-  test('font size preference uses source pixel increments and retains system accessibility', () {
+  test('font size preference uses compact increments and retains system accessibility', () {
     expect(
       const BookkeepingTextScaler(
         system: TextScaler.noScaling,
         fontSizeType: 0,
       ).scale(14),
-      13,
+      12,
     );
     expect(
       const BookkeepingTextScaler(
         system: TextScaler.noScaling,
         fontSizeType: 6,
       ).scale(17),
-      24,
+      23,
     );
     expect(
       const BookkeepingTextScaler(
         system: TextScaler.linear(2),
         fontSizeType: 2,
       ).scale(14),
-      30,
+      28,
     );
   });
 }
