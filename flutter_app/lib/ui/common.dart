@@ -549,6 +549,7 @@ class InputRow extends StatefulWidget {
     this.keyboard,
     this.readOnly = false,
     this.placeholder,
+    this.focusNode,
   });
   final String label;
   final String value;
@@ -558,6 +559,7 @@ class InputRow extends StatefulWidget {
   final TextInputType? keyboard;
   final bool readOnly;
   final String? placeholder;
+  final FocusNode? focusNode;
   @override
   State<InputRow> createState() => _InputRowState();
 }
@@ -602,6 +604,7 @@ class _InputRowState extends State<InputRow> {
             color: CupertinoColors.placeholderText.resolveFrom(context),
           ),
           controller: controller,
+          focusNode: widget.focusNode,
           onChanged: widget.onChanged,
           obscureText: widget.secret,
           maxLines: widget.lines,
@@ -1833,8 +1836,8 @@ class _AmountPadState extends State<_AmountPad> {
                 style: const TextStyle(color: CupertinoColors.destructiveRed),
               ),
             for (final row in [
-              ['C', '±', '⌫', '÷'],
-              ['1', '2', '3', '×'],
+              ['C', '÷', '×', '⌫'],
+              ['1', '2', '3', '±'],
               ['4', '5', '6', '−'],
               ['7', '8', '9', '+'],
               ['00', '0', '.', 'Done'],

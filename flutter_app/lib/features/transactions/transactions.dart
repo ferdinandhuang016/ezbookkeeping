@@ -2363,6 +2363,7 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
   String gpsStatus = '';
   bool consumingShares = false;
   bool shareReadFailed = false;
+  final descriptionFocusNode = FocusNode();
   bool get template => widget.route.startsWith('/template');
   bool get embeddedAmountPadEnabled =>
       !template && data['id'] == null && widget.route.endsWith('/add');
@@ -2415,6 +2416,12 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
         app.settings['alwaysShowTransactionPicturesInMobileTransactionEditPage'] ==
         true;
     Future.microtask(load);
+  }
+
+  @override
+  void dispose() {
+    descriptionFocusNode.dispose();
+    super.dispose();
   }
 
   Future<void> load() async {
@@ -2871,11 +2878,16 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
     if (chosen == null || !mounted) return;
     change('categoryId', chosen);
     if (openAccountAfter && mounted) {
-      await selectAccount('sourceAccountId', 'Account', leafAccounts(app));
+      final selected = await selectAccount(
+        'sourceAccountId',
+        'Account',
+        leafAccounts(app),
+      );
+      if (selected) await focusDescription();
     }
   }
 
-  Future<void> selectAccount(
+  Future<bool> selectAccount(
     String key,
     String title,
     List<RecordData> items,
@@ -2891,7 +2903,16 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
         nonBlocking: nonBlocking,
       ),
     );
-    if (chosen != null && mounted) change(key, chosen);
+    if (chosen == null || !mounted) return false;
+    change(key, chosen);
+    return true;
+  }
+
+  Future<void> focusDescription() async {
+    while (mounted && ModalRoute.of(context)?.isCurrent != true) {
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+    }
+    if (mounted) descriptionFocusNode.requestFocus();
   }
 
   Future<void> save({bool again = false, bool keepData = false}) async {
@@ -3586,6 +3607,7 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
                   value: string(data['comment']),
                   lines: 3,
                   readOnly: readOnly,
+                  focusNode: descriptionFocusNode,
                   onChanged: (value) => change('comment', value),
                 ),
                 if (!readOnly && data['id'] != null)
