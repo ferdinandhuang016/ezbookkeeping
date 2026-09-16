@@ -3368,13 +3368,12 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
                 if (!template)
                   ItemRow(
                     t('Transaction Time'),
-                    value: app.formatter.date(
+                    value: app.formatter.pattern(
                       app.formatter.transactionDate(
                         data,
                         originalTimezone: true,
                       ),
-                      long: true,
-                      withTime: true,
+                      'YYYY/MM/DD HH:mm',
                     ),
                     onTap: readOnly
                         ? null
