@@ -12,11 +12,18 @@ const fixtures = vi.hoisted(() => ({
         setMapCenterMarker: vi.fn(),
     },
     postMessage: vi.fn(),
+    initMapProvider: vi.fn(),
+    provider: 'amap',
+    amapKey: '',
 }));
 vi.mock('@/lib/map/index.ts', () => ({
     createMapInstance: () => fixtures.map,
-    initMapProvider: () => {},
+    initMapProvider: fixtures.initMapProvider,
     isSupportGetGeoLocationByClick: () => true,
+}));
+vi.mock('@/lib/server_settings.ts', () => ({
+    getMapProvider: () => fixtures.provider,
+    getAmapApplicationKey: () => fixtures.amapKey,
 }));
 vi.mock('@/lib/services.ts', () => ({ default: {} }));
 vi.mock('@/lib/web.ts', () => ({ getBasePath: () => '/books' }));
@@ -28,6 +35,9 @@ describe('native coordinate bridge ordering', () => {
         fixtures.map.dependencyLoaded = false;
         fixtures.map.inited = false;
         fixtures.postMessage.mockClear();
+        fixtures.initMapProvider.mockClear();
+        fixtures.provider = 'amap';
+        fixtures.amapKey = '';
         fixtures.map.initMapInstance.mockImplementation(() => { fixtures.map.inited = true; });
         vi.stubGlobal('window', { EbkMap: { postMessage: fixtures.postMessage }, setInterval, clearInterval });
         vi.stubGlobal('document', { getElementById: () => ({}) });
@@ -39,6 +49,7 @@ describe('native coordinate bridge ordering', () => {
     });
     it('keeps the latest GPS update until provider dependencies are ready', () => {
         window.configureNativeMap?.({ token: 'fixture', language: 'en', readOnly: false, coordinate: { latitude: 1, longitude: 2 }, zoomIn: '+', zoomOut: '-' });
+        expect(fixtures.initMapProvider).toHaveBeenCalledWith('en', 'openstreetmap');
         window.setNativeCoordinate?.({ latitude: 22.3, longitude: 114.2 });
         vi.advanceTimersByTime(200);
         expect(fixtures.map.initMapInstance).not.toHaveBeenCalled();
@@ -68,5 +79,14 @@ describe('native coordinate bridge ordering', () => {
         fixtures.postMessage.mockClear();
         fixtures.map.initMapInstance.mock.calls[0]?.[1].onClick?.({ latitude: 5, longitude: 6 });
         expect(fixtures.postMessage).not.toHaveBeenCalled();
+    });
+    it('falls back when an external map SDK does not become ready', () => {
+        fixtures.provider = 'amap';
+        fixtures.amapKey = 'configured';
+        window.configureNativeMap?.({ token: 'fixture', language: 'en', readOnly: false, zoomIn: '+', zoomOut: '-' });
+        expect(fixtures.initMapProvider).toHaveBeenCalledWith('en', 'amap');
+        vi.advanceTimersByTime(8100);
+        expect(fixtures.initMapProvider).toHaveBeenLastCalledWith('en', 'openstreetmap');
+        expect(fixtures.postMessage).not.toHaveBeenCalledWith(expect.stringContaining('error'));
     });
 });

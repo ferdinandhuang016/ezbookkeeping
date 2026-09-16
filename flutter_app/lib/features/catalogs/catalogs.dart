@@ -392,6 +392,11 @@ class _AccountListState extends NativeState<AccountListPage> {
           ? const EdgeInsetsDirectional.fromSTEB(34, 6, 12, 6)
           : const EdgeInsetsDirectional.fromSTEB(14, 6, 12, 6),
       onTap: () => context.push('/transaction/list?accountId=${item['id']}'),
+      trailing: iconButton(
+        CupertinoIcons.ellipsis,
+        t('More'),
+        () => accountActions(this, item),
+      ),
     ),
   );
 

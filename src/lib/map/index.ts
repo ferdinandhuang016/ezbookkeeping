@@ -9,8 +9,8 @@ import { AmapMapProvider } from './amap.ts';
 
 let mapProvider: MapProvider | null = null;
 
-export function initMapProvider(language?: string): void {
-    const mapProviderType = getMapProvider();
+export function initMapProvider(language?: string, provider?: string): void {
+    const mapProviderType = provider || getMapProvider();
 
     if (LEAFLET_TILE_SOURCES[mapProviderType] || mapProviderType === 'custom') {
         mapProvider = new LeafletMapProvider(mapProviderType);

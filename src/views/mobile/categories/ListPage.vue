@@ -51,6 +51,12 @@
                         </f7-badge>
                     </ItemIcon>
                 </template>
+                <template #after v-if="!sortable">
+                    <f7-link href="#" class="category-list-item-action" :aria-label="tt('More')"
+                             @click.stop.prevent="openCategoryActionSheet(category)">
+                        <f7-icon f7="ellipsis"></f7-icon>
+                    </f7-link>
+                </template>
                 <f7-swipeout-actions :left="textDirection === TextDirection.LTR"
                                      :right="textDirection === TextDirection.RTL"
                                      v-if="sortable">
@@ -77,6 +83,16 @@
                 <f7-actions-button :class="{ 'disabled': !categories || categories.length < 2 }" @click="setSortable()">{{ tt('Sort') }}</f7-actions-button>
                 <f7-actions-button v-if="!showHidden" @click="showHidden = true">{{ tt('Show Hidden Transaction Categories') }}</f7-actions-button>
                 <f7-actions-button v-if="showHidden" @click="showHidden = false">{{ tt('Hide Hidden Transaction Categories') }}</f7-actions-button>
+            </f7-actions-group>
+            <f7-actions-group>
+                <f7-actions-button bold close>{{ tt('Cancel') }}</f7-actions-button>
+            </f7-actions-group>
+        </f7-actions>
+
+        <f7-actions close-by-outside-click close-on-escape :opened="showCategoryActionSheet" @actions:closed="closeCategoryActionSheet">
+            <f7-actions-group v-if="categoryForActionSheet">
+                <f7-actions-button @click="edit(categoryForActionSheet)">{{ tt('Edit') }}</f7-actions-button>
+                <f7-actions-button color="red" @click="remove(categoryForActionSheet, false)">{{ tt('Delete') }}</f7-actions-button>
             </f7-actions-group>
             <f7-actions-group>
                 <f7-actions-button bold close>{{ tt('Cancel') }}</f7-actions-button>
@@ -133,7 +149,9 @@ const loadingError = ref<unknown | null>(null);
 const showHidden = ref<boolean>(false);
 const sortable = ref<boolean>(false);
 const categoryToDelete = ref<TransactionCategory | null>(null);
+const categoryForActionSheet = ref<TransactionCategory | null>(null);
 const showMoreActionSheet = ref<boolean>(false);
+const showCategoryActionSheet = ref<boolean>(false);
 const showDeleteActionSheet = ref<boolean>(false);
 const displayOrderModified = ref<boolean>(false);
 const displayOrderSaving = ref<boolean>(false);
@@ -268,7 +286,18 @@ function reload(done?: () => void): void {
 }
 
 function edit(category: TransactionCategory): void {
+    closeCategoryActionSheet();
     props.f7router.navigate('/category/edit?id=' + category.id);
+}
+
+function openCategoryActionSheet(category: TransactionCategory): void {
+    categoryForActionSheet.value = category;
+    showCategoryActionSheet.value = true;
+}
+
+function closeCategoryActionSheet(): void {
+    showCategoryActionSheet.value = false;
+    categoryForActionSheet.value = null;
 }
 
 function hide(category: TransactionCategory, hidden: boolean): void {
@@ -295,6 +324,7 @@ function remove(category: TransactionCategory | null, confirm: boolean): void {
     }
 
     if (!confirm) {
+        closeCategoryActionSheet();
         categoryToDelete.value = category;
         showDeleteActionSheet.value = true;
         return;
@@ -431,5 +461,11 @@ init();
 
 .category-list .item-footer {
     padding-top: 4px;
+}
+
+.category-list-item-action {
+    min-width: 44px;
+    min-height: 44px;
+    justify-content: center;
 }
 </style>

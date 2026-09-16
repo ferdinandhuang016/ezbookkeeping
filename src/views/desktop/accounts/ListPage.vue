@@ -251,7 +251,7 @@
                                                             {{ element.isAccountOrSubAccountHidden(activeSubAccount[element.id]) ? tt('Show') : tt('Hide') }}
                                                         </v-btn>
                                                         <v-btn class="ms-1" density="comfortable" color="default" variant="text"
-                                                               :class="{ 'd-none': loading, 'hover-display': !loading }"
+                                                               :class="{ 'd-none': loading }"
                                                                :disabled="loading" :prepend-icon="mdiPencilOutline"
                                                                v-if="!activeSubAccount[element.id] || element.getSubAccount(activeSubAccount[element.id])"
                                                                @click="edit(element)">
@@ -282,7 +282,7 @@
                                                             </v-menu>
                                                         </v-btn>
                                                         <v-btn class="ms-1" density="comfortable" color="default" variant="text"
-                                                               :class="{ 'd-none': loading, 'hover-display': !loading }"
+                                                               :class="{ 'd-none': loading }"
                                                                :disabled="loading" :prepend-icon="mdiDeleteOutline"
                                                                v-if="!activeSubAccount[element.id] || element.getSubAccount(activeSubAccount[element.id])"
                                                                @click="remove(element)">

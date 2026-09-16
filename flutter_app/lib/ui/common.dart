@@ -427,31 +427,72 @@ class ItemRow extends StatelessWidget {
           value!.isNotEmpty &&
           (constraints.maxWidth < 280 ||
               MediaQuery.textScalerOf(context).scale(17) > 21);
-      return CupertinoListTile.notched(
-        padding: padding,
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: destructive ? CupertinoColors.destructiveRed : color,
-                fontWeight: titleWeight,
-              ),
-            ),
-            if (stacked)
-              Text(
+      final valueWidget = stacked || value == null || value!.isEmpty
+          ? null
+          : ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: constraints.maxWidth * 0.42),
+              child: Text(
                 value!,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.end,
+              ),
+            );
+      final actionWidget =
+          trailing ??
+          (onTap == null ? null : const CupertinoListTileChevron());
+      final trailingWidget = valueWidget == null && actionWidget == null
+          ? null
+          : ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 44),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (valueWidget != null) valueWidget,
+                  if (valueWidget != null && actionWidget != null)
+                    const SizedBox(width: 8),
+                  if (actionWidget != null) actionWidget,
+                ],
+              ),
+            );
+      return CupertinoListTile.notched(
+        padding: padding,
+        title: stacked
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: destructive
+                          ? CupertinoColors.destructiveRed
+                          : color,
+                      fontWeight: titleWeight,
+                    ),
+                  ),
+                  Text(
+                    value!,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: CupertinoColors.secondaryLabel.resolveFrom(
+                        context,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : Text(
+                title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  color: CupertinoColors.secondaryLabel.resolveFrom(context),
+                  color: destructive ? CupertinoColors.destructiveRed : color,
+                  fontWeight: titleWeight,
                 ),
               ),
-          ],
-        ),
         subtitle: subtitle == null || subtitle!.isEmpty
             ? null
             : Text(
@@ -463,18 +504,7 @@ class ItemRow extends StatelessWidget {
                 ),
               ),
         leading: leading,
-        additionalInfo: stacked || value == null || value!.isEmpty
-            ? null
-            : Flexible(
-                child: Text(
-                  value!,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-        trailing:
-            trailing ??
-            (onTap == null ? null : const CupertinoListTileChevron()),
+        trailing: trailingWidget,
         onTap: onTap,
       );
     },

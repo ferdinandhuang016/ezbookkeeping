@@ -70,7 +70,6 @@
                               class="nested-list-item"
                               :id="getAccountDomId(account)"
                               :class="{ 'has-child-list-item': account.type === AccountType.MultiSubAccounts.type && hasVisibleSubAccount(account), 'actual-first-child': account.id === firstShowingIds.accounts[accountCategory.type], 'actual-last-child': account.id === lastShowingIds.accounts[accountCategory.type] }"
-                              :after="account.type === AccountType.SingleAccount.type ? accountBalanceOrAvailableCredit(account, undefined, showAvailableCreditForCreditCard, showAccountBalance) : ''"
                               :link="!sortable ? '/transaction/list?accountIds=' + account.id : null"
                               :key="account.id"
                               v-for="account in allCategorizedAccountsMap[accountCategory.type]!.accounts"
@@ -83,6 +82,13 @@
                                 <f7-icon f7="eye_slash_fill"></f7-icon>
                             </f7-badge>
                         </ItemIcon>
+                    </template>
+                    <template #after v-if="!sortable">
+                        <span v-if="account.type === AccountType.SingleAccount.type">{{ accountBalanceOrAvailableCredit(account, undefined, showAvailableCreditForCreditCard, showAccountBalance) }}</span>
+                        <f7-link href="#" class="account-list-item-action" :aria-label="tt('More')"
+                                 @click.stop.prevent="showMoreActionSheetForAccount(account)">
+                            <f7-icon f7="ellipsis"></f7-icon>
+                        </f7-link>
                     </template>
 
                     <template #title>
@@ -148,6 +154,10 @@
         </div>
 
         <f7-actions close-by-outside-click close-on-escape :opened="showAccountMoreActionSheet" @actions:closed="showAccountMoreActionSheet = false">
+            <f7-actions-group v-if="accountForMoreActionSheet">
+                <f7-actions-button @click="edit(accountForMoreActionSheet)">{{ tt('Edit') }}</f7-actions-button>
+                <f7-actions-button color="red" @click="remove(accountForMoreActionSheet, false)">{{ tt('Delete') }}</f7-actions-button>
+            </f7-actions-group>
             <f7-actions-group v-if="accountForMoreActionSheet && accountForMoreActionSheet.type === AccountType.SingleAccount.type">
                 <f7-actions-button @click="showReconciliationStatement(accountForMoreActionSheet)">{{ tt('Reconciliation Statement') }}</f7-actions-button>
                 <f7-actions-button @click="updateLastReconciledTime(accountForMoreActionSheet)" v-if="useLastReconciledTime">{{ tt('Mark as Reconciled') }}</f7-actions-button>
@@ -367,6 +377,8 @@ function reload(done?: () => void): void {
 }
 
 function edit(account: Account): void {
+    showAccountMoreActionSheet.value = false;
+    accountForMoreActionSheet.value = null;
     props.f7router.navigate('/account/edit?id=' + account.id);
 }
 
@@ -495,6 +507,8 @@ function remove(account: Account | null, confirm: boolean): void {
     }
 
     if (!confirm) {
+        showAccountMoreActionSheet.value = false;
+        accountForMoreActionSheet.value = null;
         accountToDelete.value = account;
         showDeleteActionSheet.value = true;
         return;
@@ -663,6 +677,12 @@ init();
 
 .account-list .item-footer {
     padding-top: 4px;
+}
+
+.account-list-item-action {
+    min-width: 44px;
+    min-height: 44px;
+    justify-content: center;
 }
 
 .account-list-credit-card-amount-link {

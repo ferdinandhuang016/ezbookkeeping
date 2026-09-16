@@ -2583,8 +2583,13 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
 
   Future<void> autoLocate() async {
     gpsAttempted = true;
-    gpsStatus = t('Getting Current Location');
+    if (mounted) {
+      setState(() => gpsStatus = t('Getting Current Location'));
+    }
     try {
+      if (!await Geolocator.isLocationServiceEnabled()) {
+        throw StateError('Location services disabled');
+      }
       var permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
@@ -2594,7 +2599,23 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
         throw StateError('Location permission denied');
       }
       if (!mounted) return;
-      final point = await getAmapCurrentLocation(context, app);
+      Map<String, dynamic> point;
+      try {
+        final position = await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.high,
+            timeLimit: Duration(seconds: 15),
+          ),
+        );
+        point = {
+          'latitude': position.latitude,
+          'longitude': position.longitude,
+          'name': '',
+        };
+      } catch (_) {
+        if (!mounted) return;
+        point = await getAmapCurrentLocation(context, app);
+      }
       if (mounted && data['geoLocation'] == null) {
         change('geoLocation', {
           'latitude': point['latitude'],
@@ -2713,7 +2734,7 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
   }
 
   String accountCurrency(String id) =>
-      string(lookup(accounts, id)['currency']);
+      string(lookup(flatten(app.accounts, 'subAccounts'), id)['currency']);
 
   Future<void> selectSourceCurrency() async {
     final currencies = leafAccounts(app)

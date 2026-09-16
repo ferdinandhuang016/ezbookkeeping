@@ -3,6 +3,7 @@ import { createMapInstance, initMapProvider, isSupportGetGeoLocationByClick } fr
 import type { MapInstance, MapLocation } from '@/lib/map/base.ts';
 import type { Coordinate } from '@/core/coordinate.ts';
 import services from '@/lib/services.ts';
+import { getAmapApplicationKey, getMapProvider } from '@/lib/server_settings.ts';
 import { getBasePath } from '@/lib/web.ts';
 
 interface NativeMapOptions {
@@ -46,15 +47,29 @@ window.configureNativeMap = options => {
     const proxyUrl = (layer: string, provider: string, language: string): string => `${getBasePath()}/proxy/map/${layer}/{z}/{x}/{y}.png?provider=${encodeURIComponent(provider)}&token=${encodeURIComponent(options.token)}&language=${encodeURIComponent(language)}`;
     services.generateMapProxyTileImageUrl = (provider, language) => proxyUrl('tile', provider, language);
     services.generateMapProxyAnnotationImageUrl = (provider, language) => proxyUrl('annotation', provider, language);
-    initMapProvider(options.language);
-    const started = Date.now();
+    let provider = getMapProvider();
+    let fallbackStarted = provider === 'openstreetmap';
+    if (provider === 'amap' && !getAmapApplicationKey()) {
+        provider = 'openstreetmap';
+        fallbackStarted = true;
+    }
+    initMapProvider(options.language, provider);
+    let started = Date.now();
     const timer = window.setInterval(() => {
         try {
             if (!map?.dependencyLoaded) map = createMapInstance({ enableZoomControl: true });
             if (!map || !map.dependencyLoaded) {
-                if (Date.now() - started > 30000) {
-                    window.clearInterval(timer);
-                    send({ type: 'error', message: 'Map could not be loaded' });
+                if (Date.now() - started > 8000) {
+                    if (!fallbackStarted) {
+                        provider = 'openstreetmap';
+                        fallbackStarted = true;
+                        map = null;
+                        started = Date.now();
+                        initMapProvider(options.language, provider);
+                    } else {
+                        window.clearInterval(timer);
+                        send({ type: 'error', message: 'Map could not be loaded' });
+                    }
                 }
                 return;
             }
