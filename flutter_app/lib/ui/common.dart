@@ -861,8 +861,10 @@ Future<T?> choose<T>(
   String title,
   Map<T, String> choices, {
   T? selected,
-}) => showCupertinoModalPopup<T>(
+  bool nonBlocking = false,
+}) => _showCupertinoPopup<T>(
   context: context,
+  nonBlocking: nonBlocking,
   builder: (sheetContext) => choices.length <= 12
       ? CupertinoActionSheet(
           title: Text(title),
@@ -912,6 +914,46 @@ Future<T?> choose<T>(
           ),
         ),
 );
+
+Future<T?> _showCupertinoPopup<T>({
+  required BuildContext context,
+  required WidgetBuilder builder,
+  bool nonBlocking = false,
+}) {
+  if (!nonBlocking) {
+    return showCupertinoModalPopup<T>(context: context, builder: builder);
+  }
+  return Navigator.of(context, rootNavigator: true).push(
+    _NonBlockingCupertinoModalPopupRoute<T>(
+      builder: (routeContext) {
+        final child = builder(routeContext);
+        if (MediaQuery.orientationOf(routeContext) != Orientation.landscape) {
+          return child;
+        }
+        return Align(
+          alignment: AlignmentDirectional.bottomEnd,
+          child: SizedBox(
+            width: math.min(440, MediaQuery.sizeOf(routeContext).width * .52),
+            child: child,
+          ),
+        );
+      },
+    ),
+  );
+}
+
+class _NonBlockingCupertinoModalPopupRoute<T>
+    extends CupertinoModalPopupRoute<T> {
+  _NonBlockingCupertinoModalPopupRoute({required super.builder})
+    : super(
+        barrierColor: CupertinoColors.transparent,
+        barrierDismissible: false,
+        semanticsDismissible: false,
+      );
+
+  @override
+  Widget buildModalBarrier() => const IgnorePointer(child: SizedBox.expand());
+}
 
 /// Original mobile popovers open toward the available side of their anchor.
 Future<T?> anchoredPopover<T>(
@@ -1031,8 +1073,10 @@ Future<String?> chooseGroupedRecord(
   required String selected,
   required String emptyText,
   bool showGroupHeaders = true,
-}) => showCupertinoModalPopup<String>(
+  bool nonBlocking = false,
+}) => _showCupertinoPopup<String>(
   context: context,
+  nonBlocking: nonBlocking,
   builder: (sheetContext) => SizedBox(
     height: MediaQuery.sizeOf(sheetContext).height * .5,
     child: ClipRRect(
@@ -1288,10 +1332,12 @@ Future<List<String>?> selectMany(
   List<RecordData> choices,
   Iterable<String> selected, {
   int minimumSelections = 0,
-}) => showCupertinoModalPopup<List<String>>(
+  bool nonBlocking = false,
+}) => _showCupertinoPopup<List<String>>(
   context: context,
+  nonBlocking: nonBlocking,
   builder: (_) => SizedBox(
-    height: MediaQuery.sizeOf(context).height * .82,
+    height: MediaQuery.sizeOf(context).height * (nonBlocking ? .5 : .82),
     child: ClipRRect(
       borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
       child: MultiSelectionPage(
@@ -1404,6 +1450,7 @@ Future<DateTime?> pickDate(
   DateTime initial, {
   bool time = true,
   bool withSeconds = true,
+  bool nonBlocking = false,
 }) async {
   DateTime chosen = initial;
   var mode = time ? 1 : 0;
@@ -1427,8 +1474,9 @@ Future<DateTime?> pickDate(
       FixedExtentScrollController(initialItem: initialIndex(token)),
   ];
   try {
-    return await showCupertinoModalPopup<DateTime>(
+    return await _showCupertinoPopup<DateTime>(
       context: context,
+      nonBlocking: nonBlocking,
       builder: (context) => StatefulBuilder(
         builder: (context, setSheetState) => Container(
           height: 340,

@@ -2354,8 +2354,10 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
   bool dirty = false;
   bool picturesExpanded = false;
   bool amountPadOpen = false;
+  bool selectorOpen = false;
   bool autoLocateAfterAmount = false;
   bool autoLocateWaitScheduled = false;
+  int selectorGeneration = 0;
   bool launcherAmountEntered = false;
   bool gpsAttempted = false;
   String gpsStatus = '';
@@ -2671,6 +2673,31 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
     }
   }
 
+  Future<T?> openSelector<T>(Future<T?> Function(bool nonBlocking) show) async {
+    if (!embeddedAmountPadEnabled) return show(false);
+    final generation = ++selectorGeneration;
+    setState(() => selectorOpen = true);
+    try {
+      return await show(true);
+    } finally {
+      if (mounted && selectorGeneration == generation) {
+        setState(() => selectorOpen = false);
+      }
+    }
+  }
+
+  void closeOpenSelector() {
+    if (!mounted || !selectorOpen) return;
+    selectorGeneration++;
+    setState(() => selectorOpen = false);
+    Navigator.of(context, rootNavigator: true).pop();
+  }
+
+  void handleContentInteraction() {
+    if (amountPadOpen) closeEmbeddedAmountPad();
+    if (selectorOpen) closeOpenSelector();
+  }
+
   void updateEmbeddedAmount(int value) {
     if (!mounted) return;
     setState(() {
@@ -2795,9 +2822,15 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
           ..sort();
     if (currencies.isEmpty) return;
     final current = accountCurrency(string(data['sourceAccountId']));
-    final selected = await choose<String>(context, t('Currency'), {
-      for (final currency in currencies) currency: currency,
-    }, selected: current);
+    final selected = await openSelector(
+      (nonBlocking) => choose<String>(
+        context,
+        t('Currency'),
+        {for (final currency in currencies) currency: currency},
+        selected: current,
+        nonBlocking: nonBlocking,
+      ),
+    );
     if (!mounted || selected == null || selected == current) return;
     final compatible = leafAccounts(app)
         .where((item) => string(item['currency']) == selected)
@@ -2810,13 +2843,16 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
   }
 
   Future<void> selectCategory() async {
-    final chosen = await chooseGroupedRecord(
-      context,
-      t('Category'),
-      categoryGroups(),
-      childrenKey: 'subCategories',
-      selected: string(data['categoryId']),
-      emptyText: t('No available category'),
+    final chosen = await openSelector(
+      (nonBlocking) => chooseGroupedRecord(
+        context,
+        t('Category'),
+        categoryGroups(),
+        childrenKey: 'subCategories',
+        selected: string(data['categoryId']),
+        emptyText: t('No available category'),
+        nonBlocking: nonBlocking,
+      ),
     );
     if (chosen != null && mounted) change('categoryId', chosen);
   }
@@ -2826,13 +2862,16 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
     String title,
     List<RecordData> items,
   ) async {
-    final chosen = await chooseGroupedRecord(
-      context,
-      t(title),
-      accountGroups(items),
-      childrenKey: 'subAccounts',
-      selected: string(data[key]),
-      emptyText: t('No available account'),
+    final chosen = await openSelector(
+      (nonBlocking) => chooseGroupedRecord(
+        context,
+        t(title),
+        accountGroups(items),
+        childrenKey: 'subAccounts',
+        selected: string(data[key]),
+        emptyText: t('No available account'),
+        nonBlocking: nonBlocking,
+      ),
     );
     if (chosen != null && mounted) change(key, chosen);
   }
@@ -3260,8 +3299,9 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
       child: NativePage(
         title: t(title),
         busy: busy,
-        onContentInteraction: embeddedAmountPadEnabled && amountPadOpen
-            ? closeEmbeddedAmountPad
+        onContentInteraction:
+            embeddedAmountPadEnabled && (amountPadOpen || selectorOpen)
+            ? handleContentInteraction
             : null,
         bottom: embeddedAmountPadEnabled && amountPadOpen && !landscape
             ? embeddedAmountPad(
@@ -3468,11 +3508,14 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
                         : type == 1
                         ? null
                         : () async {
-                            final value = await pickDate(
-                              context,
-                              t('Transaction Time'),
-                              transactionDate(data),
-                              withSeconds: false,
+                            final value = await openSelector(
+                              (nonBlocking) => pickDate(
+                                context,
+                                t('Transaction Time'),
+                                transactionDate(data),
+                                withSeconds: false,
+                                nonBlocking: nonBlocking,
+                              ),
                             );
                             if (value != null && mounted) {
                               setWallTime(value);
@@ -3506,13 +3549,16 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
                   onTap: readOnly
                       ? null
                       : () async {
-                          final value = await selectMany(
-                            context,
-                            t('Tags'),
-                            app.tags
-                                .where((item) => item['hidden'] != true)
-                                .toList(),
-                            (data['tagIds'] as List? ?? []).map(string),
+                          final value = await openSelector(
+                            (nonBlocking) => selectMany(
+                              context,
+                              t('Tags'),
+                              app.tags
+                                  .where((item) => item['hidden'] != true)
+                                  .toList(),
+                              (data['tagIds'] as List? ?? []).map(string),
+                              nonBlocking: nonBlocking,
+                            ),
                           );
                           if (value != null && mounted) change('tagIds', value);
                         },
