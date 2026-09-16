@@ -161,7 +161,7 @@ const chartOptions = computed<object>(() => {
             min: heatMapData.value.minValue.toDoubleNumber(),
             max: heatMapData.value.maxValue.toDoubleNumber(),
             inRange: {
-                color: isDarkMode.value ? [ '#1a1a1a', '#c67e48' ] : [ '#faf8f4', '#c67e48' ]
+                color: isDarkMode.value ? [ '#1a1a1a', '#d43f3f' ] : [ '#faf8f4', '#d43f3f' ]
             }
         },
         calendar: {

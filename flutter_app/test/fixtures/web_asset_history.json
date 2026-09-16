@@ -1,0 +1,246 @@
+{
+  "transactions": [
+    {
+      "id": "3842796021402828800",
+      "type": 1,
+      "time": 1789430400,
+      "utcOffset": 480,
+      "sourceAccountId": "3842796021268611072",
+      "sourceAmount": 100000,
+      "balanceDelta": 100000
+    },
+    {
+      "id": "3842796021402828801",
+      "type": 1,
+      "time": 1789430400,
+      "utcOffset": 480,
+      "sourceAccountId": "3842796021268611073",
+      "sourceAmount": 500000,
+      "balanceDelta": 500000
+    },
+    {
+      "id": "3842796021402828802",
+      "type": 1,
+      "time": 1789430400,
+      "utcOffset": 480,
+      "sourceAccountId": "3842796021268611074",
+      "sourceAmount": 50000,
+      "balanceDelta": 50000
+    },
+    {
+      "id": "3842796150251847680",
+      "type": 3,
+      "time": 1789441200,
+      "utcOffset": 480,
+      "sourceAccountId": "3842796021268611072",
+      "sourceAmount": 2850
+    },
+    {
+      "id": "3842796150251847681",
+      "type": 2,
+      "time": 1789437600,
+      "utcOffset": 480,
+      "sourceAccountId": "3842796021268611073",
+      "sourceAmount": 800000
+    },
+    {
+      "id": "3842796150251847682",
+      "type": 4,
+      "time": 1789444800,
+      "utcOffset": 480,
+      "sourceAccountId": "3842796021268611073",
+      "destinationAccountId": "3842796021268611074",
+      "sourceAmount": 72000,
+      "destinationAmount": 10000
+    },
+    {
+      "id": "3842800763046723584",
+      "type": 3,
+      "time": 1789443402,
+      "utcOffset": 0,
+      "sourceAccountId": "3842796021268611072",
+      "sourceAmount": 1234
+    },
+    {
+      "id": "3842804048696705024",
+      "type": 3,
+      "time": 1789444709,
+      "utcOffset": 0,
+      "sourceAccountId": "3842796021268611072",
+      "sourceAmount": 111
+    },
+    {
+      "id": "3842804596305035264",
+      "type": 3,
+      "time": 1789475400,
+      "utcOffset": 0,
+      "sourceAccountId": "3842796021268611072",
+      "sourceAmount": 1850
+    },
+    {
+      "id": "3842807392328744960",
+      "type": 3,
+      "time": 1789446521,
+      "utcOffset": 0,
+      "sourceAccountId": "3842796021268611072",
+      "sourceAmount": 333
+    },
+    {
+      "id": "3842822551415816192",
+      "type": 2,
+      "time": 1789453696,
+      "utcOffset": 480,
+      "sourceAccountId": "3842809043609452544",
+      "sourceAmount": 100
+    }
+  ],
+  "cases": [
+    {
+      "zone": "Asia/Hong_Kong",
+      "minTime": 1767196800,
+      "maxTime": 1798732799,
+      "serverDays": [
+        {
+          "year": 2026,
+          "month": 9,
+          "day": 15,
+          "items": [
+            {
+              "accountId": "3842796021268611072",
+              "accountOpeningBalance": "0",
+              "accountClosingBalance": "93622"
+            },
+            {
+              "accountId": "3842796021268611073",
+              "accountOpeningBalance": "0",
+              "accountClosingBalance": "1228000"
+            },
+            {
+              "accountId": "3842796021268611074",
+              "accountOpeningBalance": "0",
+              "accountClosingBalance": "60000"
+            },
+            {
+              "accountId": "3842809043609452544",
+              "accountOpeningBalance": "0",
+              "accountClosingBalance": "100"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "date": [
+            2026,
+            9,
+            15
+          ],
+          "balances": {
+            "3842796021268611072": 93622,
+            "3842796021268611073": 1228000,
+            "3842796021268611074": 60000,
+            "3842809043609452544": 100
+          }
+        }
+      ]
+    },
+    {
+      "zone": "Asia/Hong_Kong",
+      "minTime": 1789488000,
+      "maxTime": 1798732799,
+      "serverDays": [
+        {
+          "year": 2026,
+          "month": 9,
+          "day": 16,
+          "items": [
+            {
+              "accountId": "3842796021268611072",
+              "accountOpeningBalance": "93622",
+              "accountClosingBalance": "93622"
+            },
+            {
+              "accountId": "3842796021268611073",
+              "accountOpeningBalance": "1228000",
+              "accountClosingBalance": "1228000"
+            },
+            {
+              "accountId": "3842796021268611074",
+              "accountOpeningBalance": "60000",
+              "accountClosingBalance": "60000"
+            },
+            {
+              "accountId": "3842809043609452544",
+              "accountOpeningBalance": "100",
+              "accountClosingBalance": "100"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "date": [
+            2026,
+            9,
+            16
+          ],
+          "balances": {
+            "3842796021268611072": 93622,
+            "3842796021268611073": 1228000,
+            "3842796021268611074": 60000,
+            "3842809043609452544": 100
+          }
+        }
+      ]
+    },
+    {
+      "zone": "Asia/Hong_Kong",
+      "minTime": 1790784000,
+      "maxTime": 1793462399,
+      "serverDays": [
+        {
+          "year": 2026,
+          "month": 10,
+          "day": 1,
+          "items": [
+            {
+              "accountId": "3842796021268611072",
+              "accountOpeningBalance": "93622",
+              "accountClosingBalance": "93622"
+            },
+            {
+              "accountId": "3842796021268611073",
+              "accountOpeningBalance": "1228000",
+              "accountClosingBalance": "1228000"
+            },
+            {
+              "accountId": "3842796021268611074",
+              "accountOpeningBalance": "60000",
+              "accountClosingBalance": "60000"
+            },
+            {
+              "accountId": "3842809043609452544",
+              "accountOpeningBalance": "100",
+              "accountClosingBalance": "100"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "date": [
+            2026,
+            10,
+            1
+          ],
+          "balances": {
+            "3842796021268611072": 93622,
+            "3842796021268611073": 1228000,
+            "3842796021268611074": 60000,
+            "3842809043609452544": 100
+          }
+        }
+      ]
+    }
+  ]
+}

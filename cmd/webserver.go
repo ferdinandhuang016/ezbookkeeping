@@ -152,6 +152,7 @@ func startWebServer(c *core.CliContext) error {
 	}
 
 	router.StaticFile("/mobile", filepath.Join(config.StaticRootPath, "mobile.html"))
+	router.StaticFile("/native-map", filepath.Join(config.StaticRootPath, "native-map.html"))
 	router.Match([]string{http.MethodHead, http.MethodGet}, "/mobile#/*fragment", bindLocalFile(filepath.Join(config.StaticRootPath, "mobile.html")))  // add compatibility for browsers that send the full URL with the fragment to the server
 	router.Match([]string{http.MethodHead, http.MethodGet}, "/mobile#!/*fragment", bindLocalFile(filepath.Join(config.StaticRootPath, "mobile.html"))) // add compatibility for browsers that send the full URL with the fragment to the server
 	router.Static("/mobile/js", filepath.Join(config.StaticRootPath, "js"))
@@ -286,6 +287,7 @@ func startWebServer(c *core.CliContext) error {
 	apiRoute.Use(bindMiddleware(middlewares.RequestId(config), config))
 	apiRoute.Use(bindMiddleware(middlewares.RequestLog, config))
 	{
+		apiRoute.GET("/client/config.json", bindApi(api.ServerSettings.ClientConfigHandler, config))
 		if config.EnableInternalAuth {
 			apiRoute.POST("/authorize.json", bindApiWithTokenUpdate(api.Authorizations.AuthorizeHandler, config))
 		}
@@ -300,6 +302,8 @@ func startWebServer(c *core.CliContext) error {
 		}
 
 		if config.EnableOAuth2Login {
+			apiRoute.GET("/oauth2/native/start", bindRedirect(api.OAuth2Authentications.NativeStartHandler, config))
+			apiRoute.POST("/oauth2/native/exchange.json", bindApi(api.OAuth2Authentications.NativeExchangeHandler, config))
 			oauth2Route := apiRoute.Group("/oauth2")
 			oauth2Route.Use(bindMiddleware(middlewares.JWTOAuth2CallbackAuthorization(config), config))
 			{
@@ -337,6 +341,9 @@ func startWebServer(c *core.CliContext) error {
 		apiV1Route.Use(bindMiddleware(middlewares.JWTAuthorizationByHeader(config), config))
 		apiV1Route.Use(bindMiddleware(middlewares.APITokenIpLimit(config), config))
 		{
+			apiV1Route.GET("/sync/snapshot.json", bindApi(api.ClientSync.SnapshotHandler, config))
+			apiV1Route.GET("/sync/changes.json", bindApi(api.ClientSync.ChangesHandler, config))
+			apiV1Route.POST("/sync/push.json", bindApi(api.ClientSync.PushHandler, config))
 			// Tokens
 			apiV1Route.GET("/tokens/list.json", bindApi(api.Tokens.TokenListHandler, config))
 			apiV1Route.POST("/tokens/generate/api.json", bindApi(api.Tokens.TokenGenerateAPIHandler, config))

@@ -1,0 +1,466 @@
+{
+  "asset-summary": {
+    "type": "asset-summary",
+    "name": "Asset Summary",
+    "supportsSettings": [
+      {
+        "settingType": "customSelect",
+        "settingName": "height",
+        "displayName": "Widget Height",
+        "selectValues": [
+          {
+            "name": "Small",
+            "value": 1
+          },
+          {
+            "name": "Medium",
+            "value": 2
+          },
+          {
+            "name": "Large",
+            "value": 3
+          }
+        ]
+      },
+      {
+        "settingType": "color",
+        "settingName": "lightBackgroundColor",
+        "displayName": "Light Mode Background Color"
+      },
+      {
+        "settingType": "color",
+        "settingName": "darkBackgroundColor",
+        "displayName": "Dark Mode Background Color"
+      }
+    ],
+    "defaultSettings": {
+      "height": 3,
+      "lightBackgroundColor": "d43f3f",
+      "darkBackgroundColor": "a92f2f"
+    },
+    "dataRequirements": [
+      "accounts"
+    ]
+  },
+  "account-balance-list": {
+    "type": "account-balance-list",
+    "name": "Account Balance List",
+    "supportsSettings": [
+      {
+        "settingType": "textbox",
+        "settingName": "title",
+        "displayName": "Widget Title",
+        "placeholder": "Widget Title"
+      },
+      {
+        "settingType": "switch",
+        "settingName": "showTitle",
+        "displayName": "Show Title"
+      },
+      {
+        "settingType": "accountSelect",
+        "settingName": "accountIds",
+        "displayName": "Account",
+        "disableHiddenAccounts": true
+      },
+      {
+        "settingType": "itemCountSelect",
+        "settingName": "itemCount",
+        "displayName": "Item Count",
+        "itemCountValues": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "settingType": "customSelect",
+        "settingName": "sortBy",
+        "displayName": "Sort By",
+        "selectValues": [
+          {
+            "name": "Display Order",
+            "value": "displayOrder"
+          },
+          {
+            "name": "Balance",
+            "value": "balance"
+          }
+        ]
+      },
+      {
+        "settingType": "switch",
+        "settingName": "alwaysShowAmount",
+        "displayName": "Always Show Amount"
+      },
+      {
+        "settingType": "switch",
+        "settingName": "showAvailableCreditForCreditCard",
+        "displayName": "Show Available Credit for Credit Cards"
+      }
+    ],
+    "defaultSettings": {
+      "showTitle": false,
+      "accountIds": [],
+      "itemCount": 4,
+      "sortBy": "displayOrder",
+      "alwaysShowAmount": false,
+      "showAvailableCreditForCreditCard": false
+    },
+    "dataRequirements": [
+      "accounts"
+    ]
+  },
+  "current-month-overview": {
+    "type": "current-month-overview",
+    "name": "This Month's Income and Expense Overview",
+    "supportsSettings": [
+      {
+        "settingType": "customSelect",
+        "settingName": "height",
+        "displayName": "Widget Height",
+        "selectValues": [
+          {
+            "name": "Small",
+            "value": 1
+          },
+          {
+            "name": "Medium",
+            "value": 2
+          },
+          {
+            "name": "Large",
+            "value": 3
+          }
+        ]
+      },
+      {
+        "settingType": "color",
+        "settingName": "lightBackgroundColor",
+        "displayName": "Light Mode Background Color"
+      },
+      {
+        "settingType": "color",
+        "settingName": "darkBackgroundColor",
+        "displayName": "Dark Mode Background Color"
+      }
+    ],
+    "defaultSettings": {
+      "height": 3,
+      "lightBackgroundColor": "d43f3f",
+      "darkBackgroundColor": "a92f2f"
+    },
+    "dataRequirements": [
+      "transactionOverview"
+    ]
+  },
+  "current-month-expense-progress": {
+    "type": "current-month-expense-progress",
+    "name": "This Month's Expense Progress",
+    "supportsSettings": [
+      {
+        "settingType": "textbox",
+        "settingName": "title",
+        "displayName": "Widget Title",
+        "placeholder": "Widget Title"
+      },
+      {
+        "settingType": "switch",
+        "settingName": "showTitle",
+        "displayName": "Show Title"
+      }
+    ],
+    "defaultSettings": {
+      "showTitle": false
+    },
+    "dataRequirements": [
+      "transactionOverviewLast2Months"
+    ]
+  },
+  "period-income-expense": {
+    "type": "period-income-expense",
+    "name": "Period Income and Expense",
+    "supportsSettings": [
+      {
+        "settingType": "customSelect",
+        "settingName": "dateRanges",
+        "displayName": "Date Range",
+        "selectValues": [
+          {
+            "name": "Today",
+            "value": 1
+          },
+          {
+            "name": "This week",
+            "value": 5
+          },
+          {
+            "name": "This month",
+            "value": 7
+          },
+          {
+            "name": "This year",
+            "value": 9
+          }
+        ],
+        "multiple": true
+      }
+    ],
+    "defaultSettings": {
+      "dateRanges": [
+        1,
+        5,
+        7,
+        9
+      ]
+    },
+    "dataRequirements": [
+      "transactionOverview"
+    ]
+  },
+  "period-net-income-and-savings-rate": {
+    "type": "period-net-income-and-savings-rate",
+    "name": "Period Net Income and Savings Rate",
+    "supportsSettings": [
+      {
+        "settingType": "textbox",
+        "settingName": "title",
+        "displayName": "Widget Title",
+        "placeholder": "Widget Title"
+      },
+      {
+        "settingType": "switch",
+        "settingName": "showTitle",
+        "displayName": "Show Title"
+      },
+      {
+        "settingType": "customSelect",
+        "settingName": "dateRange",
+        "displayName": "Date Range",
+        "selectValues": [
+          {
+            "name": "Today",
+            "value": 1
+          },
+          {
+            "name": "This week",
+            "value": 5
+          },
+          {
+            "name": "This month",
+            "value": 7
+          },
+          {
+            "name": "This year",
+            "value": 9
+          }
+        ]
+      }
+    ],
+    "defaultSettings": {
+      "showTitle": false,
+      "dateRange": 7
+    },
+    "dataRequirements": [
+      "transactionOverview"
+    ]
+  },
+  "expense-category-ranking": {
+    "type": "expense-category-ranking",
+    "name": "Expense Category Ranking",
+    "supportsSettings": [
+      {
+        "settingType": "textbox",
+        "settingName": "title",
+        "displayName": "Widget Title",
+        "placeholder": "Widget Title"
+      },
+      {
+        "settingType": "switch",
+        "settingName": "showTitle",
+        "displayName": "Show Title"
+      },
+      {
+        "settingType": "customSelect",
+        "settingName": "dateRange",
+        "displayName": "Date Range",
+        "selectValues": [
+          {
+            "name": "This month",
+            "value": 7
+          },
+          {
+            "name": "This year",
+            "value": 9
+          }
+        ]
+      },
+      {
+        "settingType": "customSelect",
+        "settingName": "categoryLevel",
+        "displayName": "Category Level",
+        "selectValues": [
+          {
+            "name": "Primary Category",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary Category",
+            "value": "secondary"
+          }
+        ]
+      },
+      {
+        "settingType": "itemCountSelect",
+        "settingName": "itemCount",
+        "displayName": "Item Count",
+        "itemCountValues": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      }
+    ],
+    "defaultSettings": {
+      "showTitle": false,
+      "dateRange": 7,
+      "categoryLevel": "primary",
+      "itemCount": 4
+    },
+    "dataRequirements": [
+      "accounts",
+      "transactionCategories",
+      "transactionCategoryStatistics"
+    ]
+  },
+  "recent-transactions": {
+    "type": "recent-transactions",
+    "name": "Recent Transactions",
+    "supportsSettings": [
+      {
+        "settingType": "textbox",
+        "settingName": "title",
+        "displayName": "Widget Title",
+        "placeholder": "Widget Title"
+      },
+      {
+        "settingType": "switch",
+        "settingName": "showTitle",
+        "displayName": "Show Title"
+      },
+      {
+        "settingType": "itemCountSelect",
+        "settingName": "itemCount",
+        "displayName": "Item Count",
+        "itemCountValues": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "settingType": "accountSelect",
+        "settingName": "accountIds",
+        "displayName": "Account"
+      },
+      {
+        "settingType": "categorySelect",
+        "settingName": "categoryIds",
+        "displayName": "Category"
+      },
+      {
+        "settingType": "tagSelect",
+        "settingName": "tagFilter",
+        "displayName": "Tags"
+      },
+      {
+        "settingType": "amount",
+        "settingName": "amountFilter",
+        "displayName": "Amount"
+      },
+      {
+        "settingType": "textbox",
+        "settingName": "keyword",
+        "displayName": "Description",
+        "placeholder": "Filter Description"
+      }
+    ],
+    "defaultSettings": {
+      "showTitle": false,
+      "itemCount": 3,
+      "accountIds": [],
+      "categoryIds": [],
+      "tagFilter": "",
+      "amountFilter": "",
+      "keyword": ""
+    },
+    "dataRequirements": [
+      "recentTransactions"
+    ]
+  },
+  "transaction-calendar": {
+    "type": "transaction-calendar",
+    "name": "Transaction Calendar",
+    "supportsSettings": [
+      {
+        "settingType": "customSelect",
+        "settingName": "transactionTypes",
+        "displayName": "Transaction Type",
+        "selectValues": [
+          {
+            "name": "Income",
+            "value": 2
+          },
+          {
+            "name": "Expense",
+            "value": 3
+          }
+        ],
+        "multiple": true,
+        "minSelections": 1
+      },
+      {
+        "settingType": "switch",
+        "settingName": "showAlternateDate",
+        "displayName": "Show Alternate Date"
+      },
+      {
+        "settingType": "switch",
+        "settingName": "showAmount",
+        "displayName": "Show Amount"
+      }
+    ],
+    "defaultSettings": {
+      "transactionTypes": [
+        2,
+        3
+      ],
+      "showAlternateDate": true,
+      "showAmount": true
+    },
+    "dataRequirements": [
+      "currentMonthTransactions"
+    ]
+  }
+}

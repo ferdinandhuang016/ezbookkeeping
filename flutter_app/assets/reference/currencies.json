@@ -1,0 +1,1439 @@
+[
+  {
+    "code": "AED",
+    "fraction": 2,
+    "symbol": {
+      "normal": "Dh",
+      "plural": "Dhs"
+    },
+    "unit": "Dirham",
+    "name": "Dirham"
+  },
+  {
+    "code": "AFN",
+    "fraction": 2,
+    "symbol": {
+      "normal": "Af.",
+      "plural": "Afs."
+    },
+    "unit": "Afghani",
+    "name": "Afghani"
+  },
+  {
+    "code": "ALL",
+    "fraction": 2,
+    "symbol": {
+      "normal": "L"
+    },
+    "unit": "Lek",
+    "name": "Lek"
+  },
+  {
+    "code": "AMD",
+    "fraction": 2,
+    "symbol": {
+      "normal": "֏"
+    },
+    "unit": "Dram",
+    "name": "Dram"
+  },
+  {
+    "code": "ANG",
+    "fraction": 2,
+    "symbol": {
+      "normal": "ƒ"
+    },
+    "unit": "Guilder",
+    "name": "Guilder"
+  },
+  {
+    "code": "AOA",
+    "fraction": 2,
+    "symbol": {
+      "normal": "Kz"
+    },
+    "unit": "Kwanza",
+    "name": "Kwanza"
+  },
+  {
+    "code": "ARS",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Peso",
+    "name": "Peso"
+  },
+  {
+    "code": "AUD",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Dollar",
+    "name": "Dollar"
+  },
+  {
+    "code": "AWG",
+    "fraction": 2,
+    "symbol": {
+      "normal": "Afl."
+    },
+    "unit": "Florin",
+    "name": "Florin"
+  },
+  {
+    "code": "AZN",
+    "fraction": 2,
+    "symbol": {
+      "normal": "₼"
+    },
+    "unit": "Manat",
+    "name": "Manat"
+  },
+  {
+    "code": "BAM",
+    "fraction": 2,
+    "symbol": {
+      "normal": "KM"
+    },
+    "unit": "Mark",
+    "name": "Mark"
+  },
+  {
+    "code": "BBD",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Dollar",
+    "name": "Dollar"
+  },
+  {
+    "code": "BDT",
+    "fraction": 2,
+    "symbol": {
+      "normal": "৳"
+    },
+    "unit": "Taka",
+    "name": "Taka"
+  },
+  {
+    "code": "BGN",
+    "fraction": 2,
+    "symbol": {
+      "normal": "лв"
+    },
+    "unit": "Lev",
+    "name": "Lev"
+  },
+  {
+    "code": "BHD",
+    "fraction": 3,
+    "symbol": {
+      "normal": "BD"
+    },
+    "unit": "Dinar",
+    "name": "Dinar"
+  },
+  {
+    "code": "BIF",
+    "fraction": 0,
+    "symbol": {
+      "normal": "FBu"
+    },
+    "unit": "Franc",
+    "name": "Franc"
+  },
+  {
+    "code": "BMD",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Dollar",
+    "name": "Dollar"
+  },
+  {
+    "code": "BND",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Dollar",
+    "name": "Dollar"
+  },
+  {
+    "code": "BOB",
+    "fraction": 2,
+    "symbol": {
+      "normal": "Bs"
+    },
+    "unit": "Boliviano",
+    "name": "Boliviano"
+  },
+  {
+    "code": "BRL",
+    "fraction": 2,
+    "symbol": {
+      "normal": "R$"
+    },
+    "unit": "Real",
+    "name": "Real"
+  },
+  {
+    "code": "BSD",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Dollar",
+    "name": "Dollar"
+  },
+  {
+    "code": "BTN",
+    "fraction": 2,
+    "symbol": {
+      "normal": "Nu."
+    },
+    "unit": "Ngultrum",
+    "name": "Ngultrum"
+  },
+  {
+    "code": "BWP",
+    "fraction": 2,
+    "symbol": {
+      "normal": "P"
+    },
+    "unit": "Pula",
+    "name": "Pula"
+  },
+  {
+    "code": "BYN",
+    "fraction": 2,
+    "symbol": {
+      "normal": "Rbl",
+      "plural": "Rbls"
+    },
+    "unit": "Ruble",
+    "name": "Ruble"
+  },
+  {
+    "code": "BZD",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Dollar",
+    "name": "Dollar"
+  },
+  {
+    "code": "CAD",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Dollar",
+    "name": "Dollar"
+  },
+  {
+    "code": "CDF",
+    "fraction": 2,
+    "symbol": {
+      "normal": "FC"
+    },
+    "unit": "Franc",
+    "name": "Franc"
+  },
+  {
+    "code": "CHF",
+    "fraction": 2,
+    "symbol": {
+      "normal": "CHF"
+    },
+    "unit": "Franc",
+    "name": "Franc"
+  },
+  {
+    "code": "CLP",
+    "fraction": 0,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Peso",
+    "name": "Peso"
+  },
+  {
+    "code": "CNY",
+    "fraction": 2,
+    "symbol": {
+      "normal": "¥"
+    },
+    "unit": "Yuan",
+    "name": "Yuan"
+  },
+  {
+    "code": "COP",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Peso",
+    "name": "Peso"
+  },
+  {
+    "code": "CRC",
+    "fraction": 2,
+    "symbol": {
+      "normal": "₡"
+    },
+    "unit": "Colon",
+    "name": "Colon"
+  },
+  {
+    "code": "CUC",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Peso",
+    "name": "Peso"
+  },
+  {
+    "code": "CUP",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Peso",
+    "name": "Peso"
+  },
+  {
+    "code": "CVE",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Escudo",
+    "name": "Escudo"
+  },
+  {
+    "code": "CZK",
+    "fraction": 2,
+    "symbol": {
+      "normal": "Kč"
+    },
+    "unit": "Koruna",
+    "name": "Koruna"
+  },
+  {
+    "code": "DJF",
+    "fraction": 0,
+    "symbol": {
+      "normal": "Fdj"
+    },
+    "unit": "Franc",
+    "name": "Franc"
+  },
+  {
+    "code": "DKK",
+    "fraction": 2,
+    "symbol": {
+      "normal": "kr."
+    },
+    "unit": "Krone",
+    "name": "Krone"
+  },
+  {
+    "code": "DOP",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Peso",
+    "name": "Peso"
+  },
+  {
+    "code": "DZD",
+    "fraction": 2,
+    "symbol": {
+      "normal": "DA"
+    },
+    "unit": "Dinar",
+    "name": "Dinar"
+  },
+  {
+    "code": "EGP",
+    "fraction": 2,
+    "symbol": {
+      "normal": "£"
+    },
+    "unit": "Pound",
+    "name": "Pound"
+  },
+  {
+    "code": "ERN",
+    "fraction": 2,
+    "symbol": {
+      "normal": "Nfk"
+    },
+    "unit": "Nakfa",
+    "name": "Nakfa"
+  },
+  {
+    "code": "ETB",
+    "fraction": 2,
+    "symbol": {
+      "normal": "Br"
+    },
+    "unit": "Birr",
+    "name": "Birr"
+  },
+  {
+    "code": "EUR",
+    "fraction": 2,
+    "symbol": {
+      "normal": "€"
+    },
+    "unit": "Euro",
+    "name": "Euro"
+  },
+  {
+    "code": "FJD",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Dollar",
+    "name": "Dollar"
+  },
+  {
+    "code": "FKP",
+    "fraction": 2,
+    "symbol": {
+      "normal": "£"
+    },
+    "unit": "Pound",
+    "name": "Pound"
+  },
+  {
+    "code": "GBP",
+    "fraction": 2,
+    "symbol": {
+      "normal": "£"
+    },
+    "unit": "Pound",
+    "name": "Pound"
+  },
+  {
+    "code": "GEL",
+    "fraction": 2,
+    "symbol": {
+      "normal": "ლ"
+    },
+    "unit": "Lari",
+    "name": "Lari"
+  },
+  {
+    "code": "GHS",
+    "fraction": 2,
+    "symbol": {
+      "normal": "GH₵"
+    },
+    "unit": "Cedi",
+    "name": "Cedi"
+  },
+  {
+    "code": "GIP",
+    "fraction": 2,
+    "symbol": {
+      "normal": "£"
+    },
+    "unit": "Pound",
+    "name": "Pound"
+  },
+  {
+    "code": "GMD",
+    "fraction": 2,
+    "symbol": {
+      "normal": "D"
+    },
+    "unit": "Dalasi",
+    "name": "Dalasi"
+  },
+  {
+    "code": "GNF",
+    "fraction": 0,
+    "symbol": {
+      "normal": "FG"
+    },
+    "unit": "Franc",
+    "name": "Franc"
+  },
+  {
+    "code": "GTQ",
+    "fraction": 2,
+    "symbol": {
+      "normal": "Q"
+    },
+    "unit": "Quetzal",
+    "name": "Quetzal"
+  },
+  {
+    "code": "GYD",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Dollar",
+    "name": "Dollar"
+  },
+  {
+    "code": "HKD",
+    "fraction": 2,
+    "symbol": {
+      "normal": "HK$"
+    },
+    "unit": "Dollar",
+    "name": "Dollar"
+  },
+  {
+    "code": "HNL",
+    "fraction": 2,
+    "symbol": {
+      "normal": "L"
+    },
+    "unit": "Lempira",
+    "name": "Lempira"
+  },
+  {
+    "code": "HTG",
+    "fraction": 2,
+    "symbol": {
+      "normal": "G"
+    },
+    "unit": "Gourde",
+    "name": "Gourde"
+  },
+  {
+    "code": "HUF",
+    "fraction": 2,
+    "symbol": {
+      "normal": "Ft"
+    },
+    "unit": "Forint",
+    "name": "Forint"
+  },
+  {
+    "code": "IDR",
+    "fraction": 2,
+    "symbol": {
+      "normal": "Rp"
+    },
+    "unit": "Rupiah",
+    "name": "Rupiah"
+  },
+  {
+    "code": "ILS",
+    "fraction": 2,
+    "symbol": {
+      "normal": "₪"
+    },
+    "unit": "Shekel",
+    "name": "Shekel"
+  },
+  {
+    "code": "INR",
+    "fraction": 2,
+    "symbol": {
+      "normal": "₹"
+    },
+    "unit": "Rupee",
+    "name": "Rupee"
+  },
+  {
+    "code": "IQD",
+    "fraction": 3,
+    "symbol": {
+      "normal": "ID"
+    },
+    "unit": "Dinar",
+    "name": "Dinar"
+  },
+  {
+    "code": "IRR",
+    "fraction": 2,
+    "symbol": {
+      "normal": "Rl",
+      "plural": "Rls"
+    },
+    "unit": "Rial",
+    "name": "Rial"
+  },
+  {
+    "code": "ISK",
+    "fraction": 0,
+    "symbol": {
+      "normal": "kr"
+    },
+    "unit": "Krona",
+    "name": "Krona"
+  },
+  {
+    "code": "JMD",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Dollar",
+    "name": "Dollar"
+  },
+  {
+    "code": "JOD",
+    "fraction": 3,
+    "symbol": {
+      "normal": "د.أ"
+    },
+    "unit": "Dinar",
+    "name": "Dinar"
+  },
+  {
+    "code": "JPY",
+    "fraction": 0,
+    "symbol": {
+      "normal": "¥"
+    },
+    "unit": "Yen",
+    "name": "Yen"
+  },
+  {
+    "code": "KES",
+    "fraction": 2,
+    "symbol": {
+      "normal": "/="
+    },
+    "unit": "Shilling",
+    "name": "Shilling"
+  },
+  {
+    "code": "KGS",
+    "fraction": 2,
+    "symbol": {
+      "normal": "⃀"
+    },
+    "unit": "Som",
+    "name": "Som"
+  },
+  {
+    "code": "KHR",
+    "fraction": 2,
+    "symbol": {
+      "normal": "៛"
+    },
+    "unit": "Riel",
+    "name": "Riel"
+  },
+  {
+    "code": "KMF",
+    "fraction": 0,
+    "symbol": {
+      "normal": "CF"
+    },
+    "unit": "Franc",
+    "name": "Franc"
+  },
+  {
+    "code": "KPW",
+    "fraction": 2,
+    "symbol": {
+      "normal": "₩"
+    },
+    "unit": "Won",
+    "name": "Won"
+  },
+  {
+    "code": "KRW",
+    "fraction": 0,
+    "symbol": {
+      "normal": "₩"
+    },
+    "unit": "Won",
+    "name": "Won"
+  },
+  {
+    "code": "KWD",
+    "fraction": 3,
+    "symbol": {
+      "normal": "KD"
+    },
+    "unit": "Dinar",
+    "name": "Dinar"
+  },
+  {
+    "code": "KYD",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Dollar",
+    "name": "Dollar"
+  },
+  {
+    "code": "KZT",
+    "fraction": 2,
+    "symbol": {
+      "normal": "₸"
+    },
+    "unit": "Tenge",
+    "name": "Tenge"
+  },
+  {
+    "code": "LAK",
+    "fraction": 2,
+    "symbol": {
+      "normal": "₭"
+    },
+    "unit": "Kip",
+    "name": "Kip"
+  },
+  {
+    "code": "LBP",
+    "fraction": 2,
+    "symbol": {
+      "normal": "LL"
+    },
+    "unit": "Pound",
+    "name": "Pound"
+  },
+  {
+    "code": "LKR",
+    "fraction": 2,
+    "symbol": {
+      "normal": "රු"
+    },
+    "unit": "Rupee",
+    "name": "Rupee"
+  },
+  {
+    "code": "LRD",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Dollar",
+    "name": "Dollar"
+  },
+  {
+    "code": "LSL",
+    "fraction": 2,
+    "symbol": {
+      "normal": "L",
+      "plural": "M"
+    },
+    "unit": "Loti",
+    "name": "Loti"
+  },
+  {
+    "code": "LYD",
+    "fraction": 3,
+    "symbol": {
+      "normal": "LD"
+    },
+    "unit": "Dinar",
+    "name": "Dinar"
+  },
+  {
+    "code": "MAD",
+    "fraction": 2,
+    "symbol": {
+      "normal": "DH"
+    },
+    "unit": "Dirham",
+    "name": "Dirham"
+  },
+  {
+    "code": "MDL",
+    "fraction": 2,
+    "symbol": {
+      "normal": "L"
+    },
+    "unit": "Leu",
+    "name": "Leu"
+  },
+  {
+    "code": "MGA",
+    "fraction": 2,
+    "symbol": {
+      "normal": "Ar"
+    },
+    "unit": "Ariary",
+    "name": "Ariary"
+  },
+  {
+    "code": "MKD",
+    "fraction": 2,
+    "symbol": {
+      "normal": "DEN"
+    },
+    "unit": "Denar",
+    "name": "Denar"
+  },
+  {
+    "code": "MMK",
+    "fraction": 2,
+    "symbol": {
+      "normal": "K",
+      "plural": "Ks."
+    },
+    "unit": "Kyat",
+    "name": "Kyat"
+  },
+  {
+    "code": "MNT",
+    "fraction": 2,
+    "symbol": {
+      "normal": "₮"
+    },
+    "unit": "Tugrik",
+    "name": "Tugrik"
+  },
+  {
+    "code": "MOP",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Pataca",
+    "name": "Pataca"
+  },
+  {
+    "code": "MRU",
+    "fraction": 2,
+    "symbol": {
+      "normal": "UM"
+    },
+    "unit": "Ouguiya",
+    "name": "Ouguiya"
+  },
+  {
+    "code": "MUR",
+    "fraction": 2,
+    "symbol": {
+      "normal": "Re.",
+      "plural": "Rs."
+    },
+    "unit": "Rupee",
+    "name": "Rupee"
+  },
+  {
+    "code": "MVR",
+    "fraction": 2,
+    "symbol": {
+      "normal": "Rf."
+    },
+    "unit": "Rufiyaa",
+    "name": "Rufiyaa"
+  },
+  {
+    "code": "MWK",
+    "fraction": 2,
+    "symbol": {
+      "normal": "K"
+    },
+    "unit": "Kwacha",
+    "name": "Kwacha"
+  },
+  {
+    "code": "MXN",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Peso",
+    "name": "Peso"
+  },
+  {
+    "code": "MYR",
+    "fraction": 2,
+    "symbol": {
+      "normal": "RM"
+    },
+    "unit": "Ringgit",
+    "name": "Ringgit"
+  },
+  {
+    "code": "MZN",
+    "fraction": 2,
+    "symbol": {
+      "normal": "MT"
+    },
+    "unit": "Metical",
+    "name": "Metical"
+  },
+  {
+    "code": "NAD",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Dollar",
+    "name": "Dollar"
+  },
+  {
+    "code": "NGN",
+    "fraction": 2,
+    "symbol": {
+      "normal": "₦"
+    },
+    "unit": "Naira",
+    "name": "Naira"
+  },
+  {
+    "code": "NIO",
+    "fraction": 2,
+    "symbol": {
+      "normal": "C$"
+    },
+    "unit": "Cordoba",
+    "name": "Cordoba"
+  },
+  {
+    "code": "NOK",
+    "fraction": 2,
+    "symbol": {
+      "normal": "kr"
+    },
+    "unit": "Krone",
+    "name": "Krone"
+  },
+  {
+    "code": "NPR",
+    "fraction": 2,
+    "symbol": {
+      "normal": "रु"
+    },
+    "unit": "Rupee",
+    "name": "Rupee"
+  },
+  {
+    "code": "NZD",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Dollar",
+    "name": "Dollar"
+  },
+  {
+    "code": "OMR",
+    "fraction": 3,
+    "symbol": {
+      "normal": "R.O"
+    },
+    "unit": "Rial",
+    "name": "Rial"
+  },
+  {
+    "code": "PAB",
+    "fraction": 2,
+    "symbol": {
+      "normal": "B/."
+    },
+    "unit": "Balboa",
+    "name": "Balboa"
+  },
+  {
+    "code": "PEN",
+    "fraction": 2,
+    "symbol": {
+      "normal": "S/"
+    },
+    "unit": "Sol",
+    "name": "Sol"
+  },
+  {
+    "code": "PGK",
+    "fraction": 2,
+    "symbol": {
+      "normal": "K"
+    },
+    "unit": "Kina",
+    "name": "Kina"
+  },
+  {
+    "code": "PHP",
+    "fraction": 2,
+    "symbol": {
+      "normal": "₱"
+    },
+    "unit": "Peso",
+    "name": "Peso"
+  },
+  {
+    "code": "PKR",
+    "fraction": 2,
+    "symbol": {
+      "normal": "Re.",
+      "plural": "Rs."
+    },
+    "unit": "Rupee",
+    "name": "Rupee"
+  },
+  {
+    "code": "PLN",
+    "fraction": 2,
+    "symbol": {
+      "normal": "zł"
+    },
+    "unit": "Zloty",
+    "name": "Zloty"
+  },
+  {
+    "code": "PYG",
+    "fraction": 0,
+    "symbol": {
+      "normal": "₲"
+    },
+    "unit": "Guarani",
+    "name": "Guarani"
+  },
+  {
+    "code": "QAR",
+    "fraction": 2,
+    "symbol": {
+      "normal": "QR"
+    },
+    "unit": "Rial",
+    "name": "Rial"
+  },
+  {
+    "code": "RON",
+    "fraction": 2,
+    "symbol": {
+      "normal": "L"
+    },
+    "unit": "Leu",
+    "name": "Leu"
+  },
+  {
+    "code": "RSD",
+    "fraction": 2,
+    "symbol": {
+      "normal": "din."
+    },
+    "unit": "Dinar",
+    "name": "Dinar"
+  },
+  {
+    "code": "RUB",
+    "fraction": 2,
+    "symbol": {
+      "normal": "₽"
+    },
+    "unit": "Ruble",
+    "name": "Ruble"
+  },
+  {
+    "code": "RWF",
+    "fraction": 0,
+    "symbol": {
+      "normal": "FRw"
+    },
+    "unit": "Franc",
+    "name": "Franc"
+  },
+  {
+    "code": "SAR",
+    "fraction": 2,
+    "symbol": {
+      "normal": "SAR"
+    },
+    "unit": "Riyal",
+    "name": "Riyal"
+  },
+  {
+    "code": "SBD",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Dollar",
+    "name": "Dollar"
+  },
+  {
+    "code": "SCR",
+    "fraction": 2,
+    "symbol": {
+      "normal": "Re.",
+      "plural": "Rs."
+    },
+    "unit": "Rupee",
+    "name": "Rupee"
+  },
+  {
+    "code": "SDG",
+    "fraction": 2,
+    "symbol": {
+      "normal": "LS"
+    },
+    "unit": "Pound",
+    "name": "Pound"
+  },
+  {
+    "code": "SEK",
+    "fraction": 2,
+    "symbol": {
+      "normal": "kr"
+    },
+    "unit": "Krona",
+    "name": "Krona"
+  },
+  {
+    "code": "SGD",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Dollar",
+    "name": "Dollar"
+  },
+  {
+    "code": "SHP",
+    "fraction": 2,
+    "symbol": {
+      "normal": "£"
+    },
+    "unit": "Pound",
+    "name": "Pound"
+  },
+  {
+    "code": "SLE",
+    "fraction": 2,
+    "symbol": {
+      "normal": "Le"
+    },
+    "unit": "Leone",
+    "name": "Leone"
+  },
+  {
+    "code": "SOS",
+    "fraction": 2,
+    "symbol": {
+      "normal": "Sh.So."
+    },
+    "unit": "Shilling",
+    "name": "Shilling"
+  },
+  {
+    "code": "SRD",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Dollar",
+    "name": "Dollar"
+  },
+  {
+    "code": "SSP",
+    "fraction": 2,
+    "symbol": {
+      "normal": "SS£"
+    },
+    "unit": "Pound",
+    "name": "Pound"
+  },
+  {
+    "code": "STN",
+    "fraction": 2,
+    "symbol": {
+      "normal": "Db"
+    },
+    "unit": "Dobra",
+    "name": "Dobra"
+  },
+  {
+    "code": "SVC",
+    "fraction": 2,
+    "symbol": {
+      "normal": "₡"
+    },
+    "unit": "Colon",
+    "name": "Colon"
+  },
+  {
+    "code": "SYP",
+    "fraction": 2,
+    "symbol": {
+      "normal": "LS"
+    },
+    "unit": "Pound",
+    "name": "Pound"
+  },
+  {
+    "code": "SZL",
+    "fraction": 2,
+    "symbol": {
+      "normal": "E"
+    },
+    "unit": "Lilangeni",
+    "name": "Lilangeni"
+  },
+  {
+    "code": "THB",
+    "fraction": 2,
+    "symbol": {
+      "normal": "฿"
+    },
+    "unit": "Baht",
+    "name": "Baht"
+  },
+  {
+    "code": "TJS",
+    "fraction": 2,
+    "symbol": {
+      "normal": "SM"
+    },
+    "unit": "Somoni",
+    "name": "Somoni"
+  },
+  {
+    "code": "TMT",
+    "fraction": 2,
+    "symbol": {
+      "normal": "m"
+    },
+    "unit": "Manat",
+    "name": "Manat"
+  },
+  {
+    "code": "TND",
+    "fraction": 3,
+    "symbol": {
+      "normal": "DT"
+    },
+    "unit": "Dinar",
+    "name": "Dinar"
+  },
+  {
+    "code": "TOP",
+    "fraction": 2,
+    "symbol": {
+      "normal": "T$"
+    },
+    "unit": "Paanga",
+    "name": "Paanga"
+  },
+  {
+    "code": "TRY",
+    "fraction": 2,
+    "symbol": {
+      "normal": "₺"
+    },
+    "unit": "Lira",
+    "name": "Lira"
+  },
+  {
+    "code": "TTD",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Dollar",
+    "name": "Dollar"
+  },
+  {
+    "code": "TWD",
+    "fraction": 2,
+    "symbol": {
+      "normal": "NT$"
+    },
+    "unit": "Dollar",
+    "name": "Dollar"
+  },
+  {
+    "code": "TZS",
+    "fraction": 2,
+    "symbol": {
+      "normal": "/="
+    },
+    "unit": "Shilling",
+    "name": "Shilling"
+  },
+  {
+    "code": "UAH",
+    "fraction": 2,
+    "symbol": {
+      "normal": "₴"
+    },
+    "unit": "Hryvnia",
+    "name": "Hryvnia"
+  },
+  {
+    "code": "UGX",
+    "fraction": 0,
+    "symbol": {
+      "normal": "/="
+    },
+    "unit": "Shilling",
+    "name": "Shilling"
+  },
+  {
+    "code": "USD",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Dollar",
+    "name": "Dollar"
+  },
+  {
+    "code": "UYU",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Peso",
+    "name": "Peso"
+  },
+  {
+    "code": "UZS",
+    "fraction": 2,
+    "unit": "Sum",
+    "name": "Sum"
+  },
+  {
+    "code": "VED",
+    "fraction": 2,
+    "symbol": {
+      "normal": "Bs.D"
+    },
+    "unit": "Bolivar",
+    "name": "Bolivar"
+  },
+  {
+    "code": "VES",
+    "fraction": 2,
+    "symbol": {
+      "normal": "Bs.S"
+    },
+    "unit": "Bolivar",
+    "name": "Bolivar"
+  },
+  {
+    "code": "VND",
+    "fraction": 0,
+    "symbol": {
+      "normal": "₫"
+    },
+    "unit": "Dong",
+    "name": "Dong"
+  },
+  {
+    "code": "VUV",
+    "fraction": 0,
+    "symbol": {
+      "normal": "VT"
+    },
+    "unit": "Vatu",
+    "name": "Vatu"
+  },
+  {
+    "code": "WST",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Tala",
+    "name": "Tala"
+  },
+  {
+    "code": "XAF",
+    "fraction": 0,
+    "symbol": {
+      "normal": "F.CFA"
+    },
+    "unit": "Franc",
+    "name": "Franc"
+  },
+  {
+    "code": "XCD",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Dollar",
+    "name": "Dollar"
+  },
+  {
+    "code": "XOF",
+    "fraction": 0,
+    "symbol": {
+      "normal": "F.CFA"
+    },
+    "unit": "Franc",
+    "name": "Franc"
+  },
+  {
+    "code": "XPF",
+    "fraction": 0,
+    "symbol": {
+      "normal": "F"
+    },
+    "unit": "Franc",
+    "name": "Franc"
+  },
+  {
+    "code": "XSU",
+    "symbol": {
+      "normal": "S/."
+    },
+    "unit": "Sucre",
+    "name": "Sucre"
+  },
+  {
+    "code": "YER",
+    "fraction": 2,
+    "symbol": {
+      "normal": "YRl",
+      "plural": "YRls"
+    },
+    "unit": "Rial",
+    "name": "Rial"
+  },
+  {
+    "code": "ZAR",
+    "fraction": 2,
+    "symbol": {
+      "normal": "R"
+    },
+    "unit": "Rand",
+    "name": "Rand"
+  },
+  {
+    "code": "ZMW",
+    "fraction": 2,
+    "symbol": {
+      "normal": "K"
+    },
+    "unit": "Kwacha",
+    "name": "Kwacha"
+  },
+  {
+    "code": "ZWG",
+    "fraction": 2,
+    "symbol": {
+      "normal": "ZiG"
+    },
+    "unit": "ZiG",
+    "name": "ZiG"
+  },
+  {
+    "code": "ZWL",
+    "fraction": 2,
+    "symbol": {
+      "normal": "$"
+    },
+    "unit": "Dollar",
+    "name": "Dollar"
+  }
+]

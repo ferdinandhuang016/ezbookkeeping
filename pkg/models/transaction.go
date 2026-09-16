@@ -141,6 +141,7 @@ type Transaction struct {
 	Comment              string            `xorm:"VARCHAR(255) NOT NULL"`
 	GeoLongitude         float64           `xorm:"INDEX(IDX_transaction_uid_deleted_time_longitude_latitude)"`
 	GeoLatitude          float64           `xorm:"INDEX(IDX_transaction_uid_deleted_time_longitude_latitude)"`
+	GeoLocationName      string            `xorm:"VARCHAR(255)"`
 	CreatedIp            string            `xorm:"VARCHAR(39)"`
 	ScheduledCreated     bool
 	CreatedUnixTime      int64
@@ -176,6 +177,7 @@ type TransactionCreateRequest struct {
 	PictureIds           []string                       `json:"pictureIds"`
 	Comment              string                         `json:"comment" binding:"max=255"`
 	GeoLocation          *TransactionGeoLocationRequest `json:"geoLocation" binding:"omitempty"`
+	GeoLocationName      string                         `json:"geoLocationName" binding:"max=255"`
 	ClientSessionId      string                         `json:"clientSessionId"`
 }
 
@@ -195,6 +197,7 @@ type TransactionModifyRequest struct {
 	PictureIds           []string                       `json:"pictureIds"`
 	Comment              string                         `json:"comment" binding:"max=255"`
 	GeoLocation          *TransactionGeoLocationRequest `json:"geoLocation" binding:"omitempty"`
+	GeoLocationName      string                         `json:"geoLocationName" binding:"max=255"`
 }
 
 // TransactionImportRequest represents all parameters of transaction import request
@@ -422,6 +425,7 @@ type TransactionInfoResponse struct {
 	DestinationAccountId int64                                    `json:"destinationAccountId,string,omitempty"`
 	DestinationAccount   *AccountInfoResponse                     `json:"destinationAccount,omitempty"`
 	SourceAmount         int64                                    `json:"sourceAmount"`
+	BalanceDelta         *int64                                   `json:"balanceDelta,omitempty"` // Actual adjustment delta, populated only for synchronization.
 	DestinationAmount    *int64                                   `json:"destinationAmount,omitempty"`
 	HideAmount           bool                                     `json:"hideAmount"`
 	TagIds               []string                                 `json:"tagIds"`
@@ -429,6 +433,7 @@ type TransactionInfoResponse struct {
 	Pictures             TransactionPictureInfoBasicResponseSlice `json:"pictures,omitempty"`
 	Comment              string                                   `json:"comment"`
 	GeoLocation          *TransactionGeoLocationResponse          `json:"geoLocation,omitempty"`
+	GeoLocationName      string                                   `json:"geoLocationName,omitempty"`
 	Editable             bool                                     `json:"editable"`
 }
 
@@ -661,6 +666,7 @@ func (t *Transaction) ToTransactionInfoResponse(tagIds []int64, editable bool) *
 		TagIds:               utils.Int64ArrayToStringArray(tagIds),
 		Comment:              t.Comment,
 		GeoLocation:          geoLocation,
+		GeoLocationName:      t.GeoLocationName,
 		Editable:             editable,
 	}
 }

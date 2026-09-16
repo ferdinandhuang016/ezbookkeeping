@@ -70,9 +70,10 @@ export function getContrastTextColor(backgroundColor: ColorValue): ColorValue {
 export function getContrastIconColor(backgroundColor: ColorValue): ColorValue {
     const normalizedColor = backgroundColor.replace(/^#/, '');
 
-    if (!/^[0-9a-fA-F]{6}$/.test(normalizedColor) || normalizedColor.toLowerCase() === DEFAULT_MOBILE_OVERVIEW_WIDGET_LIGHT_BACKGROUND_COLOR) {
-        return 'c67e48';
-    } else if (normalizedColor.toLowerCase() === DEFAULT_MOBILE_OVERVIEW_WIDGET_DARK_BACKGROUND_COLOR) {
+    if (!/^[0-9a-fA-F]{6}$/.test(normalizedColor)) {
+        return 'd43f3f';
+    } else if (normalizedColor.toLowerCase() === DEFAULT_MOBILE_OVERVIEW_WIDGET_LIGHT_BACKGROUND_COLOR ||
+        normalizedColor.toLowerCase() === DEFAULT_MOBILE_OVERVIEW_WIDGET_DARK_BACKGROUND_COLOR) {
         return 'ffffff99';
     }
 

@@ -157,8 +157,8 @@ export default defineConfig(() => {
                 injectRegister: false,
                 manifestFilename: 'manifest.json',
                 manifest: {
-                    name: 'ezBookkeeping',
-                    short_name: 'ezBookkeeping',
+                    name: 'Danggui Expense',
+                    short_name: 'Danggui Expense',
                     description: 'An open source, powerful, self-hosted personal finance app that is easy to use.',
                     theme_color: '#C67E48',
                     background_color: '#F6F7F8',
@@ -169,12 +169,12 @@ export default defineConfig(() => {
                     prefer_related_applications: false,
                     icons: [
                         {
-                            src: 'img/ezbookkeeping-192.png',
+                            src: 'img/danggui-expense-192.png',
                             sizes: '192x192',
                             type: 'image/png'
                         },
                         {
-                            src: 'img/ezbookkeeping-512.png',
+                            src: 'img/danggui-expense-512.png',
                             sizes: '512x512',
                             type: 'image/png'
                         }
@@ -249,6 +249,7 @@ export default defineConfig(() => {
                     index: resolve(SRC_DIR, 'index.html'),
                     desktop: resolve(SRC_DIR, 'desktop.html'),
                     mobile: resolve(SRC_DIR, 'mobile.html'),
+                    nativeMap: resolve(SRC_DIR, 'native-map.html'),
                     'vendor-framework7-ltr': resolve(SRC_DIR, 'mobile-ltr.scss'),
                     'vendor-framework7-rtl': resolve(SRC_DIR, 'mobile-rtl.scss')
                 },

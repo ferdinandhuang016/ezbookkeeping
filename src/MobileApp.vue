@@ -42,10 +42,10 @@ const tokensStore = useTokensStore();
 const exchangeRatesStore = useExchangeRatesStore();
 
 const f7params = ref<Framework7Parameters>({
-    name: 'ezBookkeeping',
+    name: 'Danggui Expense',
     theme: 'ios',
     colors: {
-        primary: '#c67e48'
+        primary: '#d43f3f'
     },
     routes: routes,
     darkMode: (() => {
@@ -113,6 +113,7 @@ const notification = ref<Notification.Notification | null>(null);
 const hasPushPopupBackdrop = ref<boolean | undefined>(undefined);
 const hasBackdrop = ref<boolean | undefined>(undefined);
 const currentNotificationContent = computed<string | null>(() => rootStore.currentNotification);
+const appTitle = computed<string>(() => tt('global.app.title'));
 
 function setThemeColorMeta(darkMode: boolean | undefined): void {
     if (hasPushPopupBackdrop.value) {
@@ -216,6 +217,11 @@ watch(currentNotificationContent, (newValue) => {
         });
     }
 });
+
+watch(appTitle, (newValue) => {
+    document.title = newValue;
+    document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', newValue);
+}, { immediate: true });
 
 let localeDefaultSettings = initLocale(userStore.currentUserLanguage, settingsStore.appSettings.timeZone);
 settingsStore.updateLocalizedDefaultSettings(localeDefaultSettings);

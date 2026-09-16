@@ -9,13 +9,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, useTemplateRef } from 'vue';
+import { ref, computed, watch, useTemplateRef } from 'vue';
 
 import { useI18n } from '@/locales/helpers.ts';
 
 import type { Coordinate } from '@/core/coordinate.ts';
 import { isNumber } from '@/lib/common.ts';
-import type { MapInstance } from '@/lib/map/base.ts';
+import type { MapInstance, MapLocation } from '@/lib/map/base.ts';
 import { createMapInstance } from '@/lib/map/index.ts';
 
 const props = defineProps<{
@@ -23,11 +23,13 @@ const props = defineProps<{
     mapClass?: string;
     mapStyle?: Record<string, string>;
     enableZoomControl?: boolean;
+    editable?: boolean;
     geoLocation?: Coordinate;
 }>();
 
 const emit = defineEmits<{
     (e: 'click', geoLocation: Coordinate): void;
+    (e: 'change', geoLocation: MapLocation): void;
 }>();
 
 const { tt, getCurrentLanguageInfo } = useI18n();
@@ -99,6 +101,10 @@ function initMapView(): void {
             onClick: (geoLocation: Coordinate) => {
                 emit('click', geoLocation);
             },
+            markerDraggable: props.editable,
+            onMarkerMove: (geoLocation: MapLocation) => {
+                emit('change', geoLocation);
+            },
             onZoomChange(level: number) {
                 if (isNumber(level)) {
                     zoomLevel.value = level;
@@ -123,6 +129,10 @@ function initMapView(): void {
         mapInstance.value.removeMapCenterMarker();
     }
 }
+
+watch(() => props.editable, editable => {
+    mapInstance.value?.setMapCenterMarkerDraggable?.(editable === true);
+});
 
 function setMarkerPosition(geoLocation?: Coordinate): void {
     if (!mapInstance.value) {

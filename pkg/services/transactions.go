@@ -629,7 +629,7 @@ func (s *TransactionService) CreateTransaction(c core.Context, transaction *mode
 
 	userDataDb := s.UserDataDB(transaction.Uid)
 
-	return userDataDb.DoTransaction(c, func(sess *xorm.Session) error {
+	return userDataDb.DoLedgerTransaction(c, transaction.Uid, []int64{transaction.TransactionId}, func(sess *xorm.Session) error {
 		return s.doCreateTransaction(c, userDataDb, sess, transaction, transactionTagIndexes, tagIds, pictureIds, pictureUpdateModel)
 	})
 }
@@ -737,7 +737,7 @@ func (s *TransactionService) BatchCreateTransactions(c core.Context, uid int64, 
 
 	userDataDb := s.UserDataDB(uid)
 
-	return userDataDb.DoTransaction(c, func(sess *xorm.Session) error {
+	return userDataDb.DoLedgerTransaction(c, uid, nil, func(sess *xorm.Session) error {
 		for i := 0; i < len(transactions); i++ {
 			transaction := transactions[i]
 			transactionTagIndexes := allTransactionTagIndexes[transaction.TransactionId]
@@ -1007,7 +1007,7 @@ func (s *TransactionService) ModifyTransaction(c core.Context, transaction *mode
 		}
 	}
 
-	err := s.UserDataDB(transaction.Uid).DoTransaction(c, func(sess *xorm.Session) error {
+	err := s.UserDataDB(transaction.Uid).DoLedgerTransaction(c, transaction.Uid, []int64{transaction.TransactionId}, func(sess *xorm.Session) error {
 		// Get and verify current transaction
 		oldTransaction := &models.Transaction{}
 		has, err := sess.ID(transaction.TransactionId).Where("uid=? AND deleted=?", transaction.Uid, false).Get(oldTransaction)
@@ -1174,6 +1174,10 @@ func (s *TransactionService) ModifyTransaction(c core.Context, transaction *mode
 
 		if transaction.GeoLatitude != oldTransaction.GeoLatitude {
 			updateCols = append(updateCols, "geo_latitude")
+		}
+
+		if transaction.GeoLocationName != oldTransaction.GeoLocationName {
+			updateCols = append(updateCols, "geo_location_name")
 		}
 
 		// Get and verify tags
@@ -1591,7 +1595,7 @@ func (s *TransactionService) BatchUpdateTransactionsCategory(c core.Context, uid
 		UpdatedUnixTime: now,
 	}
 
-	return s.UserDataDB(uid).DoTransaction(c, func(sess *xorm.Session) error {
+	return s.UserDataDB(uid).DoLedgerTransaction(c, uid, nil, func(sess *xorm.Session) error {
 		updatedRows, err := sess.Cols("category_id", "updated_unix_time").Where("uid=? AND deleted=?", uid, false).In("transaction_id", uniqueTransactionIds).Update(updateModel)
 
 		if err != nil {
@@ -1674,7 +1678,7 @@ func (s *TransactionService) BatchAddTagsToTransactions(c core.Context, uid int6
 		tagIds = append(tagIds, tagId)
 	}
 
-	return s.UserDataDB(uid).DoTransaction(c, func(sess *xorm.Session) error {
+	return s.UserDataDB(uid).DoLedgerTransaction(c, uid, nil, func(sess *xorm.Session) error {
 		// Get and verify tags
 		err := s.isTagsValid(sess, uid, transactionTagIndexes, tagIds)
 
@@ -1714,7 +1718,7 @@ func (s *TransactionService) BatchRemoveTagsFromTransactions(c core.Context, uid
 		DeletedUnixTime: now,
 	}
 
-	return s.UserDataDB(uid).DoTransaction(c, func(sess *xorm.Session) error {
+	return s.UserDataDB(uid).DoLedgerTransaction(c, uid, nil, func(sess *xorm.Session) error {
 		deletedRows, err := sess.Cols("deleted", "deleted_unix_time").Where("uid=? AND deleted=?", uid, false).In("transaction_id", uniqueTransactionIds).In("tag_id", uniqueTagIds).Update(tagIndexUpdateModel)
 
 		if err != nil {
@@ -1745,7 +1749,7 @@ func (s *TransactionService) BatchClearAllTagsFromTransactions(c core.Context, u
 		DeletedUnixTime: now,
 	}
 
-	return s.UserDataDB(uid).DoTransaction(c, func(sess *xorm.Session) error {
+	return s.UserDataDB(uid).DoLedgerTransaction(c, uid, nil, func(sess *xorm.Session) error {
 		deletedRows, err := sess.Cols("deleted", "deleted_unix_time").Where("uid=? AND deleted=?", uid, false).In("transaction_id", uniqueTransactionIds).Update(tagIndexUpdateModel)
 
 		if err != nil {
@@ -1772,7 +1776,7 @@ func (s *TransactionService) MoveAllTransactionsBetweenAccounts(c core.Context, 
 		return errs.ErrCannotMoveTransactionToSameAccount
 	}
 
-	return s.UserDataDB(uid).DoTransaction(c, func(sess *xorm.Session) error {
+	return s.UserDataDB(uid).DoLedgerTransaction(c, uid, nil, func(sess *xorm.Session) error {
 		// get and verify from and to account
 		fromAccount := &models.Account{}
 		has, err := sess.ID(fromAccountId).Where("uid=? AND deleted=?", uid, false).Get(fromAccount)
@@ -2030,7 +2034,7 @@ func (s *TransactionService) DeleteTransaction(c core.Context, uid int64, transa
 		DeletedUnixTime: now,
 	}
 
-	return s.UserDataDB(uid).DoTransaction(c, func(sess *xorm.Session) error {
+	return s.UserDataDB(uid).DoLedgerTransaction(c, uid, nil, func(sess *xorm.Session) error {
 		// Get and verify current transaction
 		oldTransaction := &models.Transaction{}
 		has, err := sess.ID(transactionId).Where("uid=? AND deleted=?", uid, false).Get(oldTransaction)
@@ -2187,7 +2191,10 @@ func (s *TransactionService) DeleteAllTransactions(c core.Context, uid int64, de
 		DeletedUnixTime: now,
 	}
 
-	return s.UserDataDB(uid).DoTransaction(c, func(sess *xorm.Session) error {
+	return s.UserDataDB(uid).DoLedgerTransaction(c, uid, nil, func(sess *xorm.Session) error {
+		if err := s.UserDataDB(uid).ResetSyncGeneration(c, sess, uid); err != nil {
+			return err
+		}
 		// Update all transactions to deleted
 		_, err := sess.Cols("deleted", "deleted_unix_time").Where("uid=? AND deleted=?", uid, false).Update(updateModel)
 
@@ -2288,6 +2295,7 @@ func (s *TransactionService) GetRelatedTransferTransaction(originalTransaction *
 		Comment:              originalTransaction.Comment,
 		GeoLongitude:         originalTransaction.GeoLongitude,
 		GeoLatitude:          originalTransaction.GeoLatitude,
+		GeoLocationName:      originalTransaction.GeoLocationName,
 		CreatedIp:            originalTransaction.CreatedIp,
 		CreatedUnixTime:      originalTransaction.CreatedUnixTime,
 		UpdatedUnixTime:      originalTransaction.UpdatedUnixTime,

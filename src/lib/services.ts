@@ -975,7 +975,7 @@ export default {
         return `${BAIDU_MAP_JAVASCRIPT_URL}&ak=${getBaiduMapAK()}&callback=${callbackFnName}`;
     },
     generateAmapJavascriptUrl: (callbackFnName: string): string => {
-        return `${AMAP_JAVASCRIPT_URL}&key=${getAmapApplicationKey()}&plugin=AMap.ToolBar&callback=${callbackFnName}`;
+        return `${AMAP_JAVASCRIPT_URL}&key=${getAmapApplicationKey()}&plugin=AMap.ToolBar,AMap.Geolocation,AMap.Geocoder&callback=${callbackFnName}`;
     },
     generateAmapApiInternalProxyUrl: (): string => {
         return `${window.location.origin}${getBasePath()}${BASE_AMAP_API_PROXY_URL_PATH}`;

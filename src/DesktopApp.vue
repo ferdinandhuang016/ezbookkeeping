@@ -72,6 +72,7 @@ const initialRoutePath: string = (() => {
 const showNotification = ref<boolean>(false);
 
 const currentNotificationContent = computed<string | null>(() => rootStore.currentNotification);
+const appTitle = computed<string>(() => tt('global.app.title'));
 
 onMounted(() => {
     document.addEventListener('DOMContentLoaded', () => {
@@ -83,6 +84,11 @@ onMounted(() => {
 watch(currentNotificationContent, (newValue) => {
     showNotification.value = !!newValue;
 });
+
+watch(appTitle, (newValue) => {
+    document.title = newValue;
+    document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', newValue);
+}, { immediate: true });
 
 if (settingsStore.appSettings.theme === ThemeType.Light) {
     theme.change(ThemeType.Light);

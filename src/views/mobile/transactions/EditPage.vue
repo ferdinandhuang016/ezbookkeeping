@@ -346,13 +346,14 @@
             >
                 <template #title>
                     <f7-block class="list-item-custom-title no-padding no-margin">
-                        <span v-if="transaction.geoLocation">{{ `(${formatCoordinate(transaction.geoLocation, coordinateDisplayType)})` }}</span>
+                        <span v-if="transaction.geoLocation">{{ `${transaction.geoLocationName ? `${transaction.geoLocationName} · ` : ''}(${formatCoordinate(transaction.geoLocation, coordinateDisplayType)})` }}</span>
                         <span v-else-if="!transaction.geoLocation">{{ geoLocationStatusInfo }}</span>
                     </f7-block>
                 </template>
 
                 <map-sheet :readonly="mode === TransactionEditPageMode.View"
                            v-model="transaction.geoLocation"
+                           v-model:location-name="transaction.geoLocationName"
                            v-model:set-geo-location-by-click-map="setGeoLocationByClickMap"
                            v-model:show="showGeoLocationMapSheet">
                 </map-sheet>
@@ -565,6 +566,7 @@ import {
     parseDateTimeFromUnixTimeWithTimezoneOffset
 } from '@/lib/datetime.ts';
 import { formatCoordinate } from '@/lib/coordinate.ts';
+import { getCurrentGeoLocation, isCurrentGeoLocationSupported } from '@/lib/geolocation.ts';
 import { generateRandomUUID } from '@/lib/misc.ts';
 import { getTransactionPrimaryCategoryName, getTransactionSecondaryCategoryName } from '@/lib/category.ts';
 import { type SetTransactionOptions } from '@/lib/transaction.ts';
@@ -600,7 +602,6 @@ const { showAlert, showConfirm, showCancelableLoading, showToast, routeBackOnErr
 
 const {
     mode,
-    isSupportGeoLocation,
     editId,
     addByTemplateId,
     duplicateFromId,
@@ -1047,7 +1048,7 @@ function init(): void {
             }
 
             if (fromTransaction && query['withGeoLocation'] && query['withGeoLocation'] === 'true') {
-                transaction.value.setGeoLocation(fromTransaction.geoLocation);
+                transaction.value.setGeoLocation(fromTransaction.geoLocation, fromTransaction.geoLocationName);
             }
         } else if (pageTypeAndMode.type === TransactionEditPageType.Template && query['id'] && responses[4] instanceof TransactionTemplate) {
             const template = responses[4];
@@ -1311,7 +1312,7 @@ function pasteAmount(type: 'sourceAmount' | 'destinationAmount'): void {
 }
 
 function updateGeoLocation(forceUpdate: boolean): void {
-    if (!isSupportGeoLocation) {
+    if (!isCurrentGeoLocationSupported()) {
         logger.warn('this browser does not support geo location');
 
         if (forceUpdate) {
@@ -1320,31 +1321,19 @@ function updateGeoLocation(forceUpdate: boolean): void {
         return;
     }
 
-    navigator.geolocation.getCurrentPosition(function (position) {
-        if (!position || !position.coords) {
-            logger.error('current position is null');
-            geoLocationStatus.value = GeoLocationStatus.Error;
+    geoLocationStatus.value = GeoLocationStatus.Getting;
 
-            if (forceUpdate) {
-                showToast('Unable to retrieve current position');
-            }
-
-            return;
-        }
-
+    getCurrentGeoLocation().then(position => {
         geoLocationStatus.value = GeoLocationStatus.Success;
-
-        transaction.value.setLatitudeAndLongitude(position.coords.latitude, position.coords.longitude);
-    }, function (err) {
-        logger.error('cannot retrieve current position', err);
+        transaction.value.setLatitudeAndLongitude(position.latitude, position.longitude, position.name);
+    }).catch(error => {
+        logger.error('cannot retrieve current position', error);
         geoLocationStatus.value = GeoLocationStatus.Error;
 
         if (forceUpdate) {
             showToast('Unable to retrieve current position');
         }
     });
-
-    geoLocationStatus.value = GeoLocationStatus.Getting;
 }
 
 function clearGeoLocation(): void {

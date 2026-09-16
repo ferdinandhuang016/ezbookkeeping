@@ -1,0 +1,156 @@
+[
+  {
+    "label": "Windows Chrome",
+    "token": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+      "tokenType": 1,
+      "tokenId": "1",
+      "isCurrent": true
+    },
+    "expected": {
+      "name": "Current",
+      "details": "Windows 10 (Chrome 140.0.0.0)",
+      "device": "desktop"
+    }
+  },
+  {
+    "label": "Mac Firefox",
+    "token": {
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:128.0) Gecko/20100101 Firefox/128.0",
+      "tokenType": 1,
+      "tokenId": "2",
+      "isCurrent": false
+    },
+    "expected": {
+      "name": "Other Device",
+      "details": "Macintosh (Firefox 128.0)",
+      "device": "desktop"
+    }
+  },
+  {
+    "label": "Linux Firefox",
+    "token": {
+      "userAgent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0",
+      "tokenType": 1,
+      "tokenId": "3",
+      "isCurrent": false
+    },
+    "expected": {
+      "name": "Other Device",
+      "details": "Ubuntu (Firefox 128.0)",
+      "device": "desktop"
+    }
+  },
+  {
+    "label": "Android Phone",
+    "token": {
+      "userAgent": "Mozilla/5.0 (Linux; Android 13; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Mobile Safari/537.36",
+      "tokenType": 1,
+      "tokenId": "4",
+      "isCurrent": false
+    },
+    "expected": {
+      "name": "Other Device",
+      "details": "SM-S918B (Chrome 140.0.0.0)",
+      "device": "phone"
+    }
+  },
+  {
+    "label": "iPhone Safari",
+    "token": {
+      "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1",
+      "tokenType": 1,
+      "tokenId": "5",
+      "isCurrent": false
+    },
+    "expected": {
+      "name": "Other Device",
+      "details": "iPhone (Mobile Safari 16.0)",
+      "device": "phone"
+    }
+  },
+  {
+    "label": "iPad Safari",
+    "token": {
+      "userAgent": "Mozilla/5.0 (iPad; CPU OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1",
+      "tokenType": 1,
+      "tokenId": "6",
+      "isCurrent": false
+    },
+    "expected": {
+      "name": "Other Device",
+      "details": "iPad (Mobile Safari 16.0)",
+      "device": "tablet"
+    }
+  },
+  {
+    "label": "Smart TV",
+    "token": {
+      "userAgent": "Mozilla/5.0 (SMART-TV; LINUX; Tizen 6.0) AppleWebKit/537.36 (KHTML, like Gecko) 85.0.4183.93/6.0 TV Safari/537.36",
+      "tokenType": 1,
+      "tokenId": "7",
+      "isCurrent": false
+    },
+    "expected": {
+      "name": "Other Device",
+      "details": "Tizen 6.0 (Safari)",
+      "device": "tv"
+    }
+  },
+  {
+    "label": "Wearable",
+    "token": {
+      "userAgent": "Mozilla/5.0 (Linux; Android 7.1.1; LG Watch Sport Build/NXH19X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.132 Mobile Safari/537.36",
+      "tokenType": 1,
+      "tokenId": "8",
+      "isCurrent": false
+    },
+    "expected": {
+      "name": "Other Device",
+      "details": "Watch Sport (Chrome 57.0.2987.132)",
+      "device": "wearable"
+    }
+  },
+  {
+    "label": "Unknown",
+    "token": {
+      "userAgent": "",
+      "tokenType": 1,
+      "tokenId": "9",
+      "isCurrent": false
+    },
+    "expected": {
+      "name": "Other Device",
+      "details": "Unknown Device",
+      "device": "desktop"
+    }
+  },
+  {
+    "label": "API token",
+    "token": {
+      "userAgent": "Automation token",
+      "tokenType": 8,
+      "tokenId": "10",
+      "isCurrent": false
+    },
+    "expected": {
+      "name": "API Token",
+      "details": "Automation token",
+      "device": "api"
+    }
+  },
+  {
+    "label": "MCP token",
+    "token": {
+      "userAgent": "Local MCP integration",
+      "tokenType": 5,
+      "tokenId": "11",
+      "isCurrent": false
+    },
+    "expected": {
+      "name": "MCP Token",
+      "details": "Local MCP integration",
+      "device": "mcp"
+    }
+  }
+]

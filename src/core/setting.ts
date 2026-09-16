@@ -228,7 +228,7 @@ export const DEFAULT_APPLICATION_SETTINGS: ApplicationSettings = {
     quickSaveButtonStyleInMobileTransactionListPage: TransactionQuickSaveButtonStyle.Default.type,
     quickAddButtonActionInMobileTransactionEditPage: TransactionQuickAddButtonActionType.Default.type,
     autoSaveTransactionDraft: 'disabled',
-    autoGetCurrentGeoLocation: false,
+    autoGetCurrentGeoLocation: true,
     alwaysShowTransactionPicturesInMobileTransactionEditPage: false,
     transactionPictureQuality: ImageUploadQualityType.Default.type,
     // AI Clipboard Text Recognition

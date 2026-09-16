@@ -222,6 +222,22 @@ func TestTransactionInfoResponseSliceLess(t *testing.T) {
 	assert.Equal(t, int64(4), transactionRespSlice[4].Id)
 }
 
+func TestTransactionToTransactionInfoResponseIncludesGeoLocationName(t *testing.T) {
+	transaction := &Transaction{
+		TransactionId:   1,
+		Type:            TRANSACTION_DB_TYPE_EXPENSE,
+		GeoLatitude:     39.9,
+		GeoLongitude:    116.3,
+		GeoLocationName: "Office",
+	}
+
+	response := transaction.ToTransactionInfoResponse(nil, true)
+
+	assert.Equal(t, "Office", response.GeoLocationName)
+	assert.Equal(t, 39.9, response.GeoLocation.Latitude)
+	assert.Equal(t, 116.3, response.GeoLocation.Longitude)
+}
+
 func TestTransactionStatisticTrendsResponseItemSliceLess(t *testing.T) {
 	var transactionTrendsSlice TransactionStatisticTrendsResponseItemSlice
 	transactionTrendsSlice = append(transactionTrendsSlice, &TransactionStatisticTrendsResponseItem{

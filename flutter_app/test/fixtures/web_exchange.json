@@ -1,0 +1,41 @@
+{
+  "cases": [
+    {
+      "amount": "1",
+      "fromRate": "2",
+      "toRate": "1",
+      "expected": "0"
+    },
+    {
+      "amount": "-1",
+      "fromRate": "2",
+      "toRate": "1",
+      "expected": "0"
+    },
+    {
+      "amount": "3",
+      "fromRate": "2",
+      "toRate": "1",
+      "expected": "1"
+    },
+    {
+      "amount": "-3",
+      "fromRate": "2",
+      "toRate": "1",
+      "expected": "-1"
+    },
+    {
+      "amount": "999999999999999",
+      "fromRate": "7.12345678",
+      "toRate": "0.98765432",
+      "expected": "138648180301025"
+    }
+  ],
+  "grouped": {
+    "sameAccountCategory": "1",
+    "differentAccounts": "0",
+    "differentCategories": "0",
+    "differentMonths": "0",
+    "overviewSameCurrency": "1"
+  }
+}

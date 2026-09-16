@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">归归账本</string>
+    <string name="shortcut_add_transaction">記一筆</string>
+    <string name="widget_quick_add">記一筆</string>
+    <string name="widget_summary_name">當月概要</string>
+    <string name="widget_summary_description">顯示當月收入、支出、總計和同比變化</string>
+    <string name="widget_income">收入</string>
+    <string name="widget_expense">支出</string>
+    <string name="widget_total">總計</string>
+    <string name="widget_net_total">總額</string>
+    <string name="widget_this_month">當月</string>
+    <string name="widget_month_value">%1$d年%2$d月</string>
+    <string name="widget_yoy_value">同比 %1$s</string>
+    <string name="widget_open_to_update">開啟應用程式以更新</string>
+</resources>

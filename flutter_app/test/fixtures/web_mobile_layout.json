@@ -1,0 +1,1627 @@
+[
+  {
+    "input": {
+      "widgets": [
+        {
+          "id": "widget-0",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "ffcc00",
+            "darkBackgroundColor": "c67e48"
+          }
+        },
+        {
+          "id": "widget-1",
+          "type": "account-balance-list",
+          "settings": {
+            "showTitle": false,
+            "accountIds": [],
+            "itemCount": 4,
+            "sortBy": "displayOrder",
+            "alwaysShowAmount": false,
+            "showAvailableCreditForCreditCard": false
+          }
+        },
+        {
+          "id": "widget-2",
+          "type": "current-month-overview",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "ffcc00",
+            "darkBackgroundColor": "c67e48"
+          }
+        },
+        {
+          "id": "widget-3",
+          "type": "current-month-expense-progress",
+          "settings": {
+            "showTitle": false
+          }
+        },
+        {
+          "id": "widget-4",
+          "type": "period-income-expense",
+          "settings": {
+            "dateRanges": [
+              1,
+              5,
+              7,
+              9
+            ]
+          }
+        },
+        {
+          "id": "widget-5",
+          "type": "period-net-income-and-savings-rate",
+          "settings": {
+            "showTitle": false,
+            "dateRange": 7
+          }
+        },
+        {
+          "id": "widget-6",
+          "type": "expense-category-ranking",
+          "settings": {
+            "showTitle": false,
+            "dateRange": 7,
+            "categoryLevel": "primary",
+            "itemCount": 4
+          }
+        },
+        {
+          "id": "widget-7",
+          "type": "recent-transactions",
+          "settings": {
+            "showTitle": false,
+            "itemCount": 3,
+            "accountIds": [],
+            "categoryIds": [],
+            "tagFilter": "",
+            "amountFilter": "",
+            "keyword": ""
+          }
+        },
+        {
+          "id": "widget-8",
+          "type": "transaction-calendar",
+          "settings": {
+            "transactionTypes": [
+              2,
+              3
+            ],
+            "showAlternateDate": true,
+            "showAmount": true
+          }
+        }
+      ]
+    },
+    "expected": {
+      "widgets": [
+        {
+          "id": "widget-0",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "ffcc00",
+            "darkBackgroundColor": "c67e48"
+          }
+        },
+        {
+          "id": "widget-1",
+          "type": "account-balance-list",
+          "settings": {
+            "showTitle": false,
+            "accountIds": [],
+            "itemCount": 4,
+            "sortBy": "displayOrder",
+            "alwaysShowAmount": false,
+            "showAvailableCreditForCreditCard": false
+          }
+        },
+        {
+          "id": "widget-2",
+          "type": "current-month-overview",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "ffcc00",
+            "darkBackgroundColor": "c67e48"
+          }
+        },
+        {
+          "id": "widget-3",
+          "type": "current-month-expense-progress",
+          "settings": {
+            "showTitle": false
+          }
+        },
+        {
+          "id": "widget-4",
+          "type": "period-income-expense",
+          "settings": {
+            "dateRanges": [
+              1,
+              5,
+              7,
+              9
+            ]
+          }
+        },
+        {
+          "id": "widget-5",
+          "type": "period-net-income-and-savings-rate",
+          "settings": {
+            "showTitle": false,
+            "dateRange": 7
+          }
+        },
+        {
+          "id": "widget-6",
+          "type": "expense-category-ranking",
+          "settings": {
+            "showTitle": false,
+            "dateRange": 7,
+            "categoryLevel": "primary",
+            "itemCount": 4
+          }
+        },
+        {
+          "id": "widget-7",
+          "type": "recent-transactions",
+          "settings": {
+            "showTitle": false,
+            "itemCount": 3,
+            "accountIds": [],
+            "categoryIds": [],
+            "tagFilter": "",
+            "amountFilter": "",
+            "keyword": ""
+          }
+        },
+        {
+          "id": "widget-8",
+          "type": "transaction-calendar",
+          "settings": {
+            "transactionTypes": [
+              2,
+              3
+            ],
+            "showAlternateDate": true,
+            "showAmount": true
+          }
+        }
+      ]
+    }
+  },
+  {
+    "input": {
+      "widgets": [
+        null,
+        {},
+        {
+          "id": "unknown",
+          "type": "future-widget"
+        },
+        {
+          "id": "month",
+          "type": "current-month-overview",
+          "settings": {
+            "height": 99,
+            "darkBackgroundColor": "ABCDEF",
+            "lightBackgroundColor": "#000",
+            "unknown": true
+          }
+        },
+        {
+          "id": "month",
+          "type": "asset-summary"
+        },
+        {
+          "id": "period",
+          "type": "period-income-expense",
+          "settings": {
+            "dateRanges": [
+              9,
+              1,
+              1,
+              999
+            ]
+          }
+        },
+        {
+          "id": "recent",
+          "type": "recent-transactions",
+          "settings": {
+            "accountIds": [
+              "a",
+              1,
+              "b"
+            ],
+            "amountFilter": "bt:-2:20",
+            "tagFilter": "invalid-preserved",
+            "itemCount": 999,
+            "title": "   ",
+            "showTitle": false
+          }
+        }
+      ]
+    },
+    "expected": {
+      "widgets": [
+        {
+          "id": "month",
+          "type": "current-month-overview",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "abcdef"
+          }
+        },
+        {
+          "id": "period",
+          "type": "period-income-expense",
+          "settings": {
+            "dateRanges": [
+              9,
+              1
+            ]
+          }
+        },
+        {
+          "id": "recent",
+          "type": "recent-transactions",
+          "settings": {
+            "showTitle": false,
+            "itemCount": 3,
+            "accountIds": [
+              "a",
+              "b"
+            ],
+            "categoryIds": [],
+            "tagFilter": "invalid-preserved",
+            "amountFilter": "bt:-2:20",
+            "keyword": ""
+          }
+        }
+      ]
+    }
+  },
+  {
+    "input": {
+      "widgets": [
+        {
+          "id": "widget-0",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-1",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-2",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-3",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-4",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-5",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-6",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-7",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-8",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-9",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-10",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-11",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-12",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-13",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-14",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-15",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-16",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-17",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-18",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-19",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-20",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-21",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-22",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-23",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-24",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-25",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-26",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-27",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-28",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-29",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-30",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-31",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-32",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-33",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-34",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-35",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-36",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-37",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-38",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-39",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-40",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-41",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-42",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-43",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-44",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-45",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-46",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-47",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-48",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-49",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-50",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-51",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-52",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-53",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-54",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-55",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-56",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-57",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-58",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-59",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-60",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-61",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-62",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-63",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-64",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-65",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-66",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-67",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-68",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-69",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-70",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-71",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-72",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-73",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-74",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-75",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-76",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-77",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-78",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-79",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-80",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-81",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-82",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-83",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-84",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-85",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-86",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-87",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-88",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-89",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-90",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-91",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-92",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-93",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-94",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-95",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-96",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-97",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-98",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-99",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-100",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-101",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-102",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-103",
+          "type": "asset-summary"
+        },
+        {
+          "id": "widget-104",
+          "type": "asset-summary"
+        }
+      ]
+    },
+    "expected": {
+      "widgets": [
+        {
+          "id": "widget-0",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-1",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-2",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-3",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-4",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-5",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-6",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-7",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-8",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-9",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-10",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-11",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-12",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-13",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-14",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-15",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-16",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-17",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-18",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-19",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-20",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-21",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-22",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-23",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-24",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-25",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-26",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-27",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-28",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-29",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-30",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-31",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-32",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-33",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-34",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-35",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-36",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-37",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-38",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-39",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-40",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-41",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-42",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-43",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-44",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-45",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-46",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-47",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-48",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-49",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-50",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-51",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-52",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-53",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-54",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-55",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-56",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-57",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-58",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-59",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-60",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-61",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-62",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-63",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-64",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-65",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-66",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-67",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-68",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-69",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-70",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-71",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-72",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-73",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-74",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-75",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-76",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-77",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-78",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-79",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-80",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-81",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-82",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-83",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-84",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-85",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-86",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-87",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-88",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-89",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-90",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-91",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-92",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-93",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-94",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-95",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-96",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-97",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-98",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        },
+        {
+          "id": "widget-99",
+          "type": "asset-summary",
+          "settings": {
+            "height": 3,
+            "lightBackgroundColor": "d43f3f",
+            "darkBackgroundColor": "a92f2f"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "input": {
+      "widgets": []
+    },
+    "expected": {
+      "widgets": []
+    }
+  }
+]

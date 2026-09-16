@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
-import type { Coordinate } from '@/core/coordinate.ts';
-import type { MapProvider, MapInstance, MapCreateOptions, MapInstanceInitOptions } from './base.ts';
+import { convertGCJ02ToWGS84, type Coordinate } from '@/core/coordinate.ts';
+import type { MapProvider, MapInstance, MapCreateOptions, MapInstanceInitOptions, MapLocation } from './base.ts';
 
 import { isFunction, isArray } from '@/lib/common.ts';
 import { asyncLoadAssets } from '@/lib/misc.ts';
@@ -34,11 +34,11 @@ export class AmapMapProvider implements MapProvider {
         if (!window._AMapSecurityConfig) {
             const amapSecurityConfig = {};
 
-            if (getAmapSecurityVerificationMethod() === 'internalproxy') {
+            if (getAmapSecurityVerificationMethod() === 'internal_proxy') {
                 amapSecurityConfig.serviceHost = services.generateAmapApiInternalProxyUrl();
-            } else if (getAmapSecurityVerificationMethod() === 'externalproxy') {
+            } else if (getAmapSecurityVerificationMethod() === 'external_proxy') {
                 amapSecurityConfig.serviceHost = getAmapApiExternalProxyUrl();
-            } else if (getAmapSecurityVerificationMethod() === 'plaintext') {
+            } else if (getAmapSecurityVerificationMethod() === 'plain_text') {
                 amapSecurityConfig.securityJsCode = getAmapApplicationSecret();
             }
 
@@ -59,6 +59,75 @@ export class AmapMapProvider implements MapProvider {
     }
 }
 
+export function getAmapLocationName(result: unknown): string | undefined {
+    const value = result as Record<string, unknown> | null;
+    const pois = value?.pois as Array<Record<string, unknown>> | undefined;
+    const candidates = [ value?.poiName, pois?.[0]?.name, value?.formattedAddress ];
+
+    for (const candidate of candidates) {
+        if (typeof candidate === 'string' && candidate.trim()) {
+            return candidate.trim().substring(0, 255);
+        }
+    }
+
+    return undefined;
+}
+
+function getAmapLocationNameByPosition(position: unknown): Promise<string | undefined> {
+    const AMap = AmapMapProvider.AMap;
+
+    if (!AMap?.Geocoder) {
+        return Promise.resolve(undefined);
+    }
+
+    return new Promise(resolve => {
+        new AMap.Geocoder().getAddress(position, (status, result) => {
+            if (status !== 'complete' || result?.info !== 'OK') {
+                resolve(undefined);
+                return;
+            }
+
+            resolve(getAmapLocationName(result.regeocode));
+        });
+    });
+}
+
+export function getAmapCurrentGeoLocation(): Promise<MapLocation> {
+    const provider = new AmapMapProvider();
+
+    return provider.asyncLoadAssets().then(() => new Promise((resolve, reject) => {
+        const AMap = AmapMapProvider.AMap;
+
+        if (!AMap?.Geolocation) {
+            reject(new Error('AMap geolocation is unavailable'));
+            return;
+        }
+
+        const geolocation = new AMap.Geolocation({
+            enableHighAccuracy: true,
+            timeout: 20000,
+            needAddress: true,
+            extensions: 'all'
+        });
+
+        geolocation.getCurrentPosition((status, result) => {
+            const position = result?.position;
+            const latitude = position?.getLat?.() ?? position?.lat;
+            const longitude = position?.getLng?.() ?? position?.lng;
+
+            if (status !== 'complete' || !Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+                reject(result || new Error('AMap geolocation failed'));
+                return;
+            }
+
+            resolve({
+                ...convertGCJ02ToWGS84({ latitude, longitude }),
+                name: getAmapLocationName(result)
+            });
+        });
+    }));
+}
+
 export class AmapMapInstance implements MapInstance {
     public dependencyLoaded: boolean = false;
     public inited: boolean = false;
@@ -72,6 +141,8 @@ export class AmapMapInstance implements MapInstance {
     private amapToolbar: unknown = null;
     private amapCenterPosition: unknown = null;
     private amapCenterMarker: unknown | null;
+    private mapInitOptions: MapInstanceInitOptions | null = null;
+    private markerMoveSequence: number = 0;
 
     public constructor(options: MapCreateOptions) {
         this.dependencyLoaded = !!AmapMapProvider.AMap;
@@ -84,6 +155,7 @@ export class AmapMapInstance implements MapInstance {
         }
 
         const AMap = AmapMapProvider.AMap;
+        this.mapInitOptions = options;
         const amapInstance = new AMap.Map(mapContainer, {
             zoom: options.zoomLevel,
             center: [ options.initCenter.longitude, options.initCenter.latitude ],
@@ -239,6 +311,19 @@ export class AmapMapInstance implements MapInstance {
         this.amapCenterMarker = null;
     }
 
+    public setMapCenterMarkerDraggable(draggable: boolean): void {
+        if (!this.mapInitOptions) {
+            return;
+        }
+
+        this.mapInitOptions = {
+            ...this.mapInitOptions,
+            markerDraggable: draggable
+        };
+        this.amapCenterMarker?.setDraggable?.(draggable);
+        this.amapCenterMarker?.setCursor?.(draggable ? 'move' : 'default');
+    }
+
     public zoomIn(): void {
         if (!this.amapInstance) {
             return;
@@ -264,11 +349,34 @@ export class AmapMapInstance implements MapInstance {
 
         if (!this.amapCenterMarker) {
             this.amapCenterMarker = new AMap.Marker({
-                position: point
+                position: point,
+                draggable: this.mapInitOptions?.markerDraggable === true,
+                cursor: this.mapInitOptions?.markerDraggable === true ? 'move' : 'default'
             });
+            this.amapCenterMarker.on('dragend', event => this.onMarkerMove(event?.lnglat ?? this.amapCenterMarker?.getPosition?.()));
             this.amapInstance.add(this.amapCenterMarker);
         } else {
             this.amapCenterMarker.setPosition(point);
         }
+    }
+
+    private onMarkerMove(point: unknown): void {
+        const latitude = point?.getLat?.() ?? point?.lat;
+        const longitude = point?.getLng?.() ?? point?.lng;
+
+        if (!this.mapInitOptions?.onMarkerMove || !Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+            return;
+        }
+
+        const sequence = ++this.markerMoveSequence;
+        const coordinate = convertGCJ02ToWGS84({ latitude, longitude });
+
+        getAmapLocationNameByPosition(point).then(name => {
+            if (sequence !== this.markerMoveSequence) {
+                return;
+            }
+
+            this.mapInitOptions?.onMarkerMove?.({ ...coordinate, name });
+        });
     }
 }

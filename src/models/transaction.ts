@@ -29,6 +29,7 @@ export class Transaction implements TransactionInfoResponse {
     public hideAmount: boolean;
     public tagIds: string[];
     public comment: string;
+    public geoLocationName: string = '';
     public editable: boolean;
 
     private _pictures?: TransactionPicture[];
@@ -208,20 +209,24 @@ export class Transaction implements TransactionInfoResponse {
         return this._geoLocation.toNormalizedCoordinate();
     }
 
-    public setGeoLocation(geoLocation?: Coordinate): void {
+    public setGeoLocation(geoLocation?: Coordinate, geoLocationName?: string): void {
         if (geoLocation) {
             this._geoLocation = TransactionGeoLocation.createNewGeoLocation(geoLocation.latitude, geoLocation.longitude);
+            this.geoLocationName = geoLocationName ?? '';
         } else {
             this._geoLocation = undefined;
+            this.geoLocationName = '';
         }
     }
 
-    public setLatitudeAndLongitude(latitude: number, longitude: number): void {
+    public setLatitudeAndLongitude(latitude: number, longitude: number, geoLocationName?: string): void {
         this._geoLocation = TransactionGeoLocation.createNewGeoLocation(latitude, longitude);
+        this.geoLocationName = geoLocationName ?? '';
     }
 
     public removeGeoLocation(): void {
         this._geoLocation = undefined;
+        this.geoLocationName = '';
     }
 
     public setDisplayDate(gregorianCalendarYearDashMonthDashDay: TextualYearMonthDay, gregorianCalendarDayOfMonth: number, displayDayOfWeek: WeekDay): void {
@@ -245,6 +250,7 @@ export class Transaction implements TransactionInfoResponse {
             pictureIds: this.getPictureIds(),
             comment: this.comment,
             geoLocation: this.getNormalizedGeoLocation(),
+            geoLocationName: this._geoLocation ? this.geoLocationName : '',
             clientSessionId: clientSessionId
         };
     }
@@ -270,7 +276,8 @@ export class Transaction implements TransactionInfoResponse {
             tagIds: this.tagIds,
             pictureIds: this.getPictureIds(),
             comment: this.comment,
-            geoLocation: this.getNormalizedGeoLocation()
+            geoLocation: this.getNormalizedGeoLocation(),
+            geoLocationName: this._geoLocation ? this.geoLocationName : ''
         };
     }
 
@@ -361,7 +368,7 @@ export class Transaction implements TransactionInfoResponse {
         }
 
         if (transactionResponse.geoLocation) {
-            transaction.setLatitudeAndLongitude(transactionResponse.geoLocation.latitude, transactionResponse.geoLocation.longitude);
+            transaction.setLatitudeAndLongitude(transactionResponse.geoLocation.latitude, transactionResponse.geoLocation.longitude, transactionResponse.geoLocationName);
         }
 
         return transaction;
@@ -544,6 +551,7 @@ export interface TransactionCreateRequest {
     readonly pictureIds: string[];
     readonly comment: string;
     readonly geoLocation?: TransactionGeoLocationRequest;
+    readonly geoLocationName: string;
     readonly clientSessionId: string;
 }
 
@@ -562,6 +570,7 @@ export interface TransactionModifyRequest {
     readonly pictureIds: string[];
     readonly comment: string;
     readonly geoLocation?: TransactionGeoLocationRequest;
+    readonly geoLocationName: string;
 }
 
 export interface TransactionBatchUpdateCategoryRequest {
@@ -673,6 +682,7 @@ export interface TransactionInfoResponse {
     readonly pictures?: TransactionPictureInfoBasicResponse[];
     readonly comment: string;
     readonly geoLocation?: TransactionGeoLocationResponse;
+    readonly geoLocationName?: string;
     readonly editable: boolean;
 }
 

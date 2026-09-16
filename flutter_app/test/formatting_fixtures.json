@@ -1,0 +1,6456 @@
+{
+  "amounts": [
+    {
+      "system": 1,
+      "grouping": 1,
+      "value": "-123456789012345678",
+      "expected": "-1234567890123456,78"
+    },
+    {
+      "system": 1,
+      "grouping": 2,
+      "value": "-123456789012345678",
+      "expected": "-1 234 567 890 123 456,78"
+    },
+    {
+      "system": 1,
+      "grouping": 3,
+      "value": "-123456789012345678",
+      "expected": "-1 23 45 67 89 01 23 456,78"
+    },
+    {
+      "system": 2,
+      "grouping": 1,
+      "value": "-123456789012345678",
+      "expected": "-١٢٣٤٥٦٧٨٩٠١٢٣٤٥٦,٧٨"
+    },
+    {
+      "system": 2,
+      "grouping": 2,
+      "value": "-123456789012345678",
+      "expected": "-١ ٢٣٤ ٥٦٧ ٨٩٠ ١٢٣ ٤٥٦,٧٨"
+    },
+    {
+      "system": 2,
+      "grouping": 3,
+      "value": "-123456789012345678",
+      "expected": "-١ ٢٣ ٤٥ ٦٧ ٨٩ ٠١ ٢٣ ٤٥٦,٧٨"
+    },
+    {
+      "system": 3,
+      "grouping": 1,
+      "value": "-123456789012345678",
+      "expected": "-۱۲۳۴۵۶۷۸۹۰۱۲۳۴۵۶,۷۸"
+    },
+    {
+      "system": 3,
+      "grouping": 2,
+      "value": "-123456789012345678",
+      "expected": "-۱ ۲۳۴ ۵۶۷ ۸۹۰ ۱۲۳ ۴۵۶,۷۸"
+    },
+    {
+      "system": 3,
+      "grouping": 3,
+      "value": "-123456789012345678",
+      "expected": "-۱ ۲۳ ۴۵ ۶۷ ۸۹ ۰۱ ۲۳ ۴۵۶,۷۸"
+    },
+    {
+      "system": 4,
+      "grouping": 1,
+      "value": "-123456789012345678",
+      "expected": "-၁၂၃၄၅၆၇၈၉၀၁၂၃၄၅၆,၇၈"
+    },
+    {
+      "system": 4,
+      "grouping": 2,
+      "value": "-123456789012345678",
+      "expected": "-၁ ၂၃၄ ၅၆၇ ၈၉၀ ၁၂၃ ၄၅၆,၇၈"
+    },
+    {
+      "system": 4,
+      "grouping": 3,
+      "value": "-123456789012345678",
+      "expected": "-၁ ၂၃ ၄၅ ၆၇ ၈၉ ၀၁ ၂၃ ၄၅၆,၇၈"
+    },
+    {
+      "system": 5,
+      "grouping": 1,
+      "value": "-123456789012345678",
+      "expected": "-१२३४५६७८९०१२३४५६,७८"
+    },
+    {
+      "system": 5,
+      "grouping": 2,
+      "value": "-123456789012345678",
+      "expected": "-१ २३४ ५६७ ८९० १२३ ४५६,७८"
+    },
+    {
+      "system": 5,
+      "grouping": 3,
+      "value": "-123456789012345678",
+      "expected": "-१ २३ ४५ ६७ ८९ ०१ २३ ४५६,७८"
+    }
+  ],
+  "chinese": [
+    {
+      "date": [
+        1999,
+        2,
+        16
+      ],
+      "expected": {
+        "gregorianYear": 1999,
+        "gregorianMonth": 2,
+        "gregorianDay": 16,
+        "year": 1999,
+        "month": 1,
+        "day": 1,
+        "displayYear": "一九九九",
+        "displayMonth": "正月",
+        "displayDay": "初一",
+        "isLeapMonth": false,
+        "solarTermName": ""
+      }
+    },
+    {
+      "date": [
+        2000,
+        2,
+        5
+      ],
+      "expected": {
+        "gregorianYear": 2000,
+        "gregorianMonth": 2,
+        "gregorianDay": 5,
+        "year": 2000,
+        "month": 1,
+        "day": 1,
+        "displayYear": "二〇〇〇",
+        "displayMonth": "正月",
+        "displayDay": "初一",
+        "isLeapMonth": false,
+        "solarTermName": ""
+      }
+    },
+    {
+      "date": [
+        2023,
+        3,
+        22
+      ],
+      "expected": {
+        "gregorianYear": 2023,
+        "gregorianMonth": 3,
+        "gregorianDay": 22,
+        "year": 2023,
+        "month": 2,
+        "day": 1,
+        "displayYear": "二〇二三",
+        "displayMonth": "闰二月",
+        "displayDay": "初一",
+        "isLeapMonth": true,
+        "solarTermName": ""
+      }
+    },
+    {
+      "date": [
+        2024,
+        2,
+        10
+      ],
+      "expected": {
+        "gregorianYear": 2024,
+        "gregorianMonth": 2,
+        "gregorianDay": 10,
+        "year": 2024,
+        "month": 1,
+        "day": 1,
+        "displayYear": "二〇二四",
+        "displayMonth": "正月",
+        "displayDay": "初一",
+        "isLeapMonth": false,
+        "solarTermName": ""
+      }
+    },
+    {
+      "date": [
+        2025,
+        7,
+        25
+      ],
+      "expected": {
+        "gregorianYear": 2025,
+        "gregorianMonth": 7,
+        "gregorianDay": 25,
+        "year": 2025,
+        "month": 6,
+        "day": 1,
+        "displayYear": "二〇二五",
+        "displayMonth": "闰六月",
+        "displayDay": "初一",
+        "isLeapMonth": true,
+        "solarTermName": ""
+      }
+    },
+    {
+      "date": [
+        2026,
+        9,
+        15
+      ],
+      "expected": {
+        "gregorianYear": 2026,
+        "gregorianMonth": 9,
+        "gregorianDay": 15,
+        "year": 2026,
+        "month": 8,
+        "day": 5,
+        "displayYear": "二〇二六",
+        "displayMonth": "八月",
+        "displayDay": "初五",
+        "isLeapMonth": false,
+        "solarTermName": ""
+      }
+    },
+    {
+      "date": [
+        2100,
+        12,
+        31
+      ],
+      "expected": {
+        "gregorianYear": 2100,
+        "gregorianMonth": 12,
+        "gregorianDay": 31,
+        "year": 2100,
+        "month": 12,
+        "day": 1,
+        "displayYear": "二一〇〇",
+        "displayMonth": "腊月",
+        "displayDay": "初一",
+        "isLeapMonth": false,
+        "solarTermName": ""
+      }
+    }
+  ],
+  "persian": [
+    {
+      "date": [
+        1900,
+        1,
+        1
+      ],
+      "expected": {
+        "jy": 1278,
+        "jm": 10,
+        "jd": 11
+      }
+    },
+    {
+      "date": [
+        2000,
+        2,
+        29
+      ],
+      "expected": {
+        "jy": 1378,
+        "jm": 12,
+        "jd": 10
+      }
+    },
+    {
+      "date": [
+        2021,
+        3,
+        20
+      ],
+      "expected": {
+        "jy": 1399,
+        "jm": 12,
+        "jd": 30
+      }
+    },
+    {
+      "date": [
+        2021,
+        3,
+        21
+      ],
+      "expected": {
+        "jy": 1400,
+        "jm": 1,
+        "jd": 1
+      }
+    },
+    {
+      "date": [
+        2024,
+        3,
+        20
+      ],
+      "expected": {
+        "jy": 1403,
+        "jm": 1,
+        "jd": 1
+      }
+    },
+    {
+      "date": [
+        2025,
+        3,
+        20
+      ],
+      "expected": {
+        "jy": 1403,
+        "jm": 12,
+        "jd": 30
+      }
+    },
+    {
+      "date": [
+        2025,
+        3,
+        21
+      ],
+      "expected": {
+        "jy": 1404,
+        "jm": 1,
+        "jd": 1
+      }
+    },
+    {
+      "date": [
+        2099,
+        12,
+        31
+      ],
+      "expected": {
+        "jy": 1478,
+        "jm": 10,
+        "jd": 11
+      }
+    }
+  ],
+  "dates": [
+    {
+      "language": "de",
+      "display": 1,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024-03-20"
+    },
+    {
+      "language": "de",
+      "display": 1,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "03/20/2024"
+    },
+    {
+      "language": "de",
+      "display": 1,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20.03.2024"
+    },
+    {
+      "language": "de",
+      "display": 1,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024 März 20"
+    },
+    {
+      "language": "de",
+      "display": 1,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "März 20, 2024"
+    },
+    {
+      "language": "de",
+      "display": 1,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20. März 2024"
+    },
+    {
+      "language": "de",
+      "display": 2,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567-03-20"
+    },
+    {
+      "language": "de",
+      "display": 2,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "03/20/2567"
+    },
+    {
+      "language": "de",
+      "display": 2,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20.03.2567"
+    },
+    {
+      "language": "de",
+      "display": 2,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567 März 20"
+    },
+    {
+      "language": "de",
+      "display": 2,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "März 20, 2567"
+    },
+    {
+      "language": "de",
+      "display": 2,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20. März 2567"
+    },
+    {
+      "language": "de",
+      "display": 3,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403-01-01"
+    },
+    {
+      "language": "de",
+      "display": 3,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01/01/1403"
+    },
+    {
+      "language": "de",
+      "display": 3,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01.01.1403"
+    },
+    {
+      "language": "de",
+      "display": 3,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403 فروردین 01"
+    },
+    {
+      "language": "de",
+      "display": 3,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "فروردین 1, 1403"
+    },
+    {
+      "language": "de",
+      "display": 3,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1. فروردین 1403"
+    },
+    {
+      "language": "el",
+      "display": 1,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024-3-20"
+    },
+    {
+      "language": "el",
+      "display": 1,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "3/20/2024"
+    },
+    {
+      "language": "el",
+      "display": 1,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20/3/2024"
+    },
+    {
+      "language": "el",
+      "display": 1,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024 Μάρτιος 20"
+    },
+    {
+      "language": "el",
+      "display": 1,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "Μάρτιος 20, 2024"
+    },
+    {
+      "language": "el",
+      "display": 1,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 Μάρτιος 2024"
+    },
+    {
+      "language": "el",
+      "display": 2,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567-3-20"
+    },
+    {
+      "language": "el",
+      "display": 2,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "3/20/2567"
+    },
+    {
+      "language": "el",
+      "display": 2,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20/3/2567"
+    },
+    {
+      "language": "el",
+      "display": 2,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567 Μάρτιος 20"
+    },
+    {
+      "language": "el",
+      "display": 2,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "Μάρτιος 20, 2567"
+    },
+    {
+      "language": "el",
+      "display": 2,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 Μάρτιος 2567"
+    },
+    {
+      "language": "el",
+      "display": 3,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403-1-1"
+    },
+    {
+      "language": "el",
+      "display": 3,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1/1/1403"
+    },
+    {
+      "language": "el",
+      "display": 3,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1/1/1403"
+    },
+    {
+      "language": "el",
+      "display": 3,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403 فروردین 01"
+    },
+    {
+      "language": "el",
+      "display": 3,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "فروردین 1, 1403"
+    },
+    {
+      "language": "el",
+      "display": 3,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1 فروردین 1403"
+    },
+    {
+      "language": "en",
+      "display": 1,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024-3-20"
+    },
+    {
+      "language": "en",
+      "display": 1,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "3/20/2024"
+    },
+    {
+      "language": "en",
+      "display": 1,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20/3/2024"
+    },
+    {
+      "language": "en",
+      "display": 1,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024 March 20"
+    },
+    {
+      "language": "en",
+      "display": 1,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "March 20, 2024"
+    },
+    {
+      "language": "en",
+      "display": 1,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 March, 2024"
+    },
+    {
+      "language": "en",
+      "display": 2,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567-3-20"
+    },
+    {
+      "language": "en",
+      "display": 2,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "3/20/2567"
+    },
+    {
+      "language": "en",
+      "display": 2,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20/3/2567"
+    },
+    {
+      "language": "en",
+      "display": 2,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567 March 20"
+    },
+    {
+      "language": "en",
+      "display": 2,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "March 20, 2567"
+    },
+    {
+      "language": "en",
+      "display": 2,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 March, 2567"
+    },
+    {
+      "language": "en",
+      "display": 3,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403-1-1"
+    },
+    {
+      "language": "en",
+      "display": 3,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1/1/1403"
+    },
+    {
+      "language": "en",
+      "display": 3,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1/1/1403"
+    },
+    {
+      "language": "en",
+      "display": 3,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403 فروردین 01"
+    },
+    {
+      "language": "en",
+      "display": 3,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "فروردین 1, 1403"
+    },
+    {
+      "language": "en",
+      "display": 3,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1 فروردین, 1403"
+    },
+    {
+      "language": "es",
+      "display": 1,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024/03/20"
+    },
+    {
+      "language": "es",
+      "display": 1,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "03/20/2024"
+    },
+    {
+      "language": "es",
+      "display": 1,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20/03/2024"
+    },
+    {
+      "language": "es",
+      "display": 1,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024 marzo 20"
+    },
+    {
+      "language": "es",
+      "display": 1,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "marzo 20, 2024"
+    },
+    {
+      "language": "es",
+      "display": 1,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 de marzo de 2024"
+    },
+    {
+      "language": "es",
+      "display": 2,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567/03/20"
+    },
+    {
+      "language": "es",
+      "display": 2,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "03/20/2567"
+    },
+    {
+      "language": "es",
+      "display": 2,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20/03/2567"
+    },
+    {
+      "language": "es",
+      "display": 2,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567 marzo 20"
+    },
+    {
+      "language": "es",
+      "display": 2,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "marzo 20, 2567"
+    },
+    {
+      "language": "es",
+      "display": 2,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 de marzo de 2567"
+    },
+    {
+      "language": "es",
+      "display": 3,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403/01/01"
+    },
+    {
+      "language": "es",
+      "display": 3,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01/01/1403"
+    },
+    {
+      "language": "es",
+      "display": 3,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01/01/1403"
+    },
+    {
+      "language": "es",
+      "display": 3,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403 فروردین 01"
+    },
+    {
+      "language": "es",
+      "display": 3,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "فروردین 1, 1403"
+    },
+    {
+      "language": "es",
+      "display": 3,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1 de فروردین de 1403"
+    },
+    {
+      "language": "fr",
+      "display": 1,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024-03-20"
+    },
+    {
+      "language": "fr",
+      "display": 1,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "03/20/2024"
+    },
+    {
+      "language": "fr",
+      "display": 1,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20/03/2024"
+    },
+    {
+      "language": "fr",
+      "display": 1,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024 mars 20"
+    },
+    {
+      "language": "fr",
+      "display": 1,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "mars 20, 2024"
+    },
+    {
+      "language": "fr",
+      "display": 1,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 mars 2024"
+    },
+    {
+      "language": "fr",
+      "display": 2,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567-03-20"
+    },
+    {
+      "language": "fr",
+      "display": 2,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "03/20/2567"
+    },
+    {
+      "language": "fr",
+      "display": 2,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20/03/2567"
+    },
+    {
+      "language": "fr",
+      "display": 2,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567 mars 20"
+    },
+    {
+      "language": "fr",
+      "display": 2,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "mars 20, 2567"
+    },
+    {
+      "language": "fr",
+      "display": 2,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 mars 2567"
+    },
+    {
+      "language": "fr",
+      "display": 3,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403-01-01"
+    },
+    {
+      "language": "fr",
+      "display": 3,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01/01/1403"
+    },
+    {
+      "language": "fr",
+      "display": 3,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01/01/1403"
+    },
+    {
+      "language": "fr",
+      "display": 3,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403 فروردین 01"
+    },
+    {
+      "language": "fr",
+      "display": 3,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "فروردین 1, 1403"
+    },
+    {
+      "language": "fr",
+      "display": 3,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1 فروردین 1403"
+    },
+    {
+      "language": "it",
+      "display": 1,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024-03-20"
+    },
+    {
+      "language": "it",
+      "display": 1,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "03/20/2024"
+    },
+    {
+      "language": "it",
+      "display": 1,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20/03/2024"
+    },
+    {
+      "language": "it",
+      "display": 1,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024 marzo 20"
+    },
+    {
+      "language": "it",
+      "display": 1,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "marzo 20 2024"
+    },
+    {
+      "language": "it",
+      "display": 1,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 marzo 2024"
+    },
+    {
+      "language": "it",
+      "display": 2,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567-03-20"
+    },
+    {
+      "language": "it",
+      "display": 2,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "03/20/2567"
+    },
+    {
+      "language": "it",
+      "display": 2,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20/03/2567"
+    },
+    {
+      "language": "it",
+      "display": 2,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567 marzo 20"
+    },
+    {
+      "language": "it",
+      "display": 2,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "marzo 20 2567"
+    },
+    {
+      "language": "it",
+      "display": 2,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 marzo 2567"
+    },
+    {
+      "language": "it",
+      "display": 3,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403-01-01"
+    },
+    {
+      "language": "it",
+      "display": 3,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01/01/1403"
+    },
+    {
+      "language": "it",
+      "display": 3,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01/01/1403"
+    },
+    {
+      "language": "it",
+      "display": 3,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403 فروردین 01"
+    },
+    {
+      "language": "it",
+      "display": 3,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "فروردین 1 1403"
+    },
+    {
+      "language": "it",
+      "display": 3,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1 فروردین 1403"
+    },
+    {
+      "language": "ja",
+      "display": 1,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024/3/20"
+    },
+    {
+      "language": "ja",
+      "display": 1,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "3/20/2024"
+    },
+    {
+      "language": "ja",
+      "display": 1,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20/3/2024"
+    },
+    {
+      "language": "ja",
+      "display": 1,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024年3月20日"
+    },
+    {
+      "language": "ja",
+      "display": 1,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "3月20日2024年"
+    },
+    {
+      "language": "ja",
+      "display": 1,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20日3月2024年"
+    },
+    {
+      "language": "ja",
+      "display": 2,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567/3/20"
+    },
+    {
+      "language": "ja",
+      "display": 2,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "3/20/2567"
+    },
+    {
+      "language": "ja",
+      "display": 2,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20/3/2567"
+    },
+    {
+      "language": "ja",
+      "display": 2,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567年3月20日"
+    },
+    {
+      "language": "ja",
+      "display": 2,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "3月20日2567年"
+    },
+    {
+      "language": "ja",
+      "display": 2,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20日3月2567年"
+    },
+    {
+      "language": "ja",
+      "display": 3,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403/1/1"
+    },
+    {
+      "language": "ja",
+      "display": 3,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1/1/1403"
+    },
+    {
+      "language": "ja",
+      "display": 3,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1/1/1403"
+    },
+    {
+      "language": "ja",
+      "display": 3,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403年1月1日"
+    },
+    {
+      "language": "ja",
+      "display": 3,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1月1日1403年"
+    },
+    {
+      "language": "ja",
+      "display": 3,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1日1月1403年"
+    },
+    {
+      "language": "kn",
+      "display": 1,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024-03-20"
+    },
+    {
+      "language": "kn",
+      "display": 1,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "03-20-2024"
+    },
+    {
+      "language": "kn",
+      "display": 1,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20-03-2024"
+    },
+    {
+      "language": "kn",
+      "display": 1,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024 ಮಾರ್ಚ್ 20"
+    },
+    {
+      "language": "kn",
+      "display": 1,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "ಮಾರ್ಚ್ 20 2024"
+    },
+    {
+      "language": "kn",
+      "display": 1,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 ಮಾರ್ಚ್ 2024"
+    },
+    {
+      "language": "kn",
+      "display": 2,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567-03-20"
+    },
+    {
+      "language": "kn",
+      "display": 2,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "03-20-2567"
+    },
+    {
+      "language": "kn",
+      "display": 2,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20-03-2567"
+    },
+    {
+      "language": "kn",
+      "display": 2,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567 ಮಾರ್ಚ್ 20"
+    },
+    {
+      "language": "kn",
+      "display": 2,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "ಮಾರ್ಚ್ 20 2567"
+    },
+    {
+      "language": "kn",
+      "display": 2,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 ಮಾರ್ಚ್ 2567"
+    },
+    {
+      "language": "kn",
+      "display": 3,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403-01-01"
+    },
+    {
+      "language": "kn",
+      "display": 3,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01-01-1403"
+    },
+    {
+      "language": "kn",
+      "display": 3,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01-01-1403"
+    },
+    {
+      "language": "kn",
+      "display": 3,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403 فروردین 01"
+    },
+    {
+      "language": "kn",
+      "display": 3,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "فروردین 01 1403"
+    },
+    {
+      "language": "kn",
+      "display": 3,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01 فروردین 1403"
+    },
+    {
+      "language": "ko",
+      "display": 1,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024-03-20"
+    },
+    {
+      "language": "ko",
+      "display": 1,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "03/20/2024"
+    },
+    {
+      "language": "ko",
+      "display": 1,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20/03/2024"
+    },
+    {
+      "language": "ko",
+      "display": 1,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024년 3월 20일"
+    },
+    {
+      "language": "ko",
+      "display": 1,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "3월 20일 2024년"
+    },
+    {
+      "language": "ko",
+      "display": 1,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20일 3월 2024년"
+    },
+    {
+      "language": "ko",
+      "display": 2,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567-03-20"
+    },
+    {
+      "language": "ko",
+      "display": 2,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "03/20/2567"
+    },
+    {
+      "language": "ko",
+      "display": 2,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20/03/2567"
+    },
+    {
+      "language": "ko",
+      "display": 2,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567년 3월 20일"
+    },
+    {
+      "language": "ko",
+      "display": 2,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "3월 20일 2567년"
+    },
+    {
+      "language": "ko",
+      "display": 2,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20일 3월 2567년"
+    },
+    {
+      "language": "ko",
+      "display": 3,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403-01-01"
+    },
+    {
+      "language": "ko",
+      "display": 3,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01/01/1403"
+    },
+    {
+      "language": "ko",
+      "display": 3,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01/01/1403"
+    },
+    {
+      "language": "ko",
+      "display": 3,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403년 1월 1일"
+    },
+    {
+      "language": "ko",
+      "display": 3,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1월 1일 1403년"
+    },
+    {
+      "language": "ko",
+      "display": 3,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1일 1월 1403년"
+    },
+    {
+      "language": "nl",
+      "display": 1,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024-3-20"
+    },
+    {
+      "language": "nl",
+      "display": 1,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "3/20/2024"
+    },
+    {
+      "language": "nl",
+      "display": 1,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20-3-2024"
+    },
+    {
+      "language": "nl",
+      "display": 1,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024 maart 20"
+    },
+    {
+      "language": "nl",
+      "display": 1,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "maart 20 2024"
+    },
+    {
+      "language": "nl",
+      "display": 1,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 maart 2024"
+    },
+    {
+      "language": "nl",
+      "display": 2,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567-3-20"
+    },
+    {
+      "language": "nl",
+      "display": 2,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "3/20/2567"
+    },
+    {
+      "language": "nl",
+      "display": 2,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20-3-2567"
+    },
+    {
+      "language": "nl",
+      "display": 2,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567 maart 20"
+    },
+    {
+      "language": "nl",
+      "display": 2,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "maart 20 2567"
+    },
+    {
+      "language": "nl",
+      "display": 2,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 maart 2567"
+    },
+    {
+      "language": "nl",
+      "display": 3,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403-1-1"
+    },
+    {
+      "language": "nl",
+      "display": 3,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1/1/1403"
+    },
+    {
+      "language": "nl",
+      "display": 3,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1-1-1403"
+    },
+    {
+      "language": "nl",
+      "display": 3,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403 فروردین 01"
+    },
+    {
+      "language": "nl",
+      "display": 3,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "فروردین 1 1403"
+    },
+    {
+      "language": "nl",
+      "display": 3,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1 فروردین 1403"
+    },
+    {
+      "language": "pt-BR",
+      "display": 1,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024/03/20"
+    },
+    {
+      "language": "pt-BR",
+      "display": 1,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "03/20/2024"
+    },
+    {
+      "language": "pt-BR",
+      "display": 1,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20/03/2024"
+    },
+    {
+      "language": "pt-BR",
+      "display": 1,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024 março 20"
+    },
+    {
+      "language": "pt-BR",
+      "display": 1,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "março 20, 2024"
+    },
+    {
+      "language": "pt-BR",
+      "display": 1,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 de março de 2024"
+    },
+    {
+      "language": "pt-BR",
+      "display": 2,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567/03/20"
+    },
+    {
+      "language": "pt-BR",
+      "display": 2,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "03/20/2567"
+    },
+    {
+      "language": "pt-BR",
+      "display": 2,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20/03/2567"
+    },
+    {
+      "language": "pt-BR",
+      "display": 2,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567 março 20"
+    },
+    {
+      "language": "pt-BR",
+      "display": 2,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "março 20, 2567"
+    },
+    {
+      "language": "pt-BR",
+      "display": 2,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 de março de 2567"
+    },
+    {
+      "language": "pt-BR",
+      "display": 3,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403/01/01"
+    },
+    {
+      "language": "pt-BR",
+      "display": 3,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01/01/1403"
+    },
+    {
+      "language": "pt-BR",
+      "display": 3,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01/01/1403"
+    },
+    {
+      "language": "pt-BR",
+      "display": 3,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403 فروردین 01"
+    },
+    {
+      "language": "pt-BR",
+      "display": 3,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "فروردین 1, 1403"
+    },
+    {
+      "language": "pt-BR",
+      "display": 3,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1 de فروردین de 1403"
+    },
+    {
+      "language": "ro",
+      "display": 1,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024-03-20"
+    },
+    {
+      "language": "ro",
+      "display": 1,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "03/20/2024"
+    },
+    {
+      "language": "ro",
+      "display": 1,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20.03.2024"
+    },
+    {
+      "language": "ro",
+      "display": 1,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024 martie 20"
+    },
+    {
+      "language": "ro",
+      "display": 1,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "martie 20, 2024"
+    },
+    {
+      "language": "ro",
+      "display": 1,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 martie 2024"
+    },
+    {
+      "language": "ro",
+      "display": 2,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567-03-20"
+    },
+    {
+      "language": "ro",
+      "display": 2,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "03/20/2567"
+    },
+    {
+      "language": "ro",
+      "display": 2,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20.03.2567"
+    },
+    {
+      "language": "ro",
+      "display": 2,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567 martie 20"
+    },
+    {
+      "language": "ro",
+      "display": 2,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "martie 20, 2567"
+    },
+    {
+      "language": "ro",
+      "display": 2,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 martie 2567"
+    },
+    {
+      "language": "ro",
+      "display": 3,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403-01-01"
+    },
+    {
+      "language": "ro",
+      "display": 3,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01/01/1403"
+    },
+    {
+      "language": "ro",
+      "display": 3,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01.01.1403"
+    },
+    {
+      "language": "ro",
+      "display": 3,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403 فروردین 01"
+    },
+    {
+      "language": "ro",
+      "display": 3,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "فروردین 1, 1403"
+    },
+    {
+      "language": "ro",
+      "display": 3,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1 فروردین 1403"
+    },
+    {
+      "language": "ru",
+      "display": 1,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024-03-20"
+    },
+    {
+      "language": "ru",
+      "display": 1,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "03/20/2024"
+    },
+    {
+      "language": "ru",
+      "display": 1,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20.03.2024"
+    },
+    {
+      "language": "ru",
+      "display": 1,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024 март 20"
+    },
+    {
+      "language": "ru",
+      "display": 1,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "март 20, 2024"
+    },
+    {
+      "language": "ru",
+      "display": 1,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 март 2024 г."
+    },
+    {
+      "language": "ru",
+      "display": 2,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567-03-20"
+    },
+    {
+      "language": "ru",
+      "display": 2,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "03/20/2567"
+    },
+    {
+      "language": "ru",
+      "display": 2,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20.03.2567"
+    },
+    {
+      "language": "ru",
+      "display": 2,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567 март 20"
+    },
+    {
+      "language": "ru",
+      "display": 2,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "март 20, 2567"
+    },
+    {
+      "language": "ru",
+      "display": 2,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 март 2567 г."
+    },
+    {
+      "language": "ru",
+      "display": 3,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403-01-01"
+    },
+    {
+      "language": "ru",
+      "display": 3,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01/01/1403"
+    },
+    {
+      "language": "ru",
+      "display": 3,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01.01.1403"
+    },
+    {
+      "language": "ru",
+      "display": 3,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403 فروردین 01"
+    },
+    {
+      "language": "ru",
+      "display": 3,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "فروردین 1, 1403"
+    },
+    {
+      "language": "ru",
+      "display": 3,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1 فروردین 1403 г."
+    },
+    {
+      "language": "sl",
+      "display": 1,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024-03-20"
+    },
+    {
+      "language": "sl",
+      "display": 1,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "03/20/2024"
+    },
+    {
+      "language": "sl",
+      "display": 1,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20.03.2024"
+    },
+    {
+      "language": "sl",
+      "display": 1,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024 marec 20"
+    },
+    {
+      "language": "sl",
+      "display": 1,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "marec 20, 2024"
+    },
+    {
+      "language": "sl",
+      "display": 1,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20. marec 2024"
+    },
+    {
+      "language": "sl",
+      "display": 2,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567-03-20"
+    },
+    {
+      "language": "sl",
+      "display": 2,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "03/20/2567"
+    },
+    {
+      "language": "sl",
+      "display": 2,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20.03.2567"
+    },
+    {
+      "language": "sl",
+      "display": 2,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567 marec 20"
+    },
+    {
+      "language": "sl",
+      "display": 2,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "marec 20, 2567"
+    },
+    {
+      "language": "sl",
+      "display": 2,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20. marec 2567"
+    },
+    {
+      "language": "sl",
+      "display": 3,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403-01-01"
+    },
+    {
+      "language": "sl",
+      "display": 3,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01/01/1403"
+    },
+    {
+      "language": "sl",
+      "display": 3,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01.01.1403"
+    },
+    {
+      "language": "sl",
+      "display": 3,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403 فروردین 01"
+    },
+    {
+      "language": "sl",
+      "display": 3,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "فروردین 1, 1403"
+    },
+    {
+      "language": "sl",
+      "display": 3,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1. فروردین 1403"
+    },
+    {
+      "language": "ta",
+      "display": 1,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024-03-20"
+    },
+    {
+      "language": "ta",
+      "display": 1,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "03-20-2024"
+    },
+    {
+      "language": "ta",
+      "display": 1,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20-03-2024"
+    },
+    {
+      "language": "ta",
+      "display": 1,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024 மார்ச் 20"
+    },
+    {
+      "language": "ta",
+      "display": 1,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "மார்ச் 20 2024"
+    },
+    {
+      "language": "ta",
+      "display": 1,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 மார்ச் 2024"
+    },
+    {
+      "language": "ta",
+      "display": 2,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567-03-20"
+    },
+    {
+      "language": "ta",
+      "display": 2,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "03-20-2567"
+    },
+    {
+      "language": "ta",
+      "display": 2,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20-03-2567"
+    },
+    {
+      "language": "ta",
+      "display": 2,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567 மார்ச் 20"
+    },
+    {
+      "language": "ta",
+      "display": 2,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "மார்ச் 20 2567"
+    },
+    {
+      "language": "ta",
+      "display": 2,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 மார்ச் 2567"
+    },
+    {
+      "language": "ta",
+      "display": 3,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403-01-01"
+    },
+    {
+      "language": "ta",
+      "display": 3,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01-01-1403"
+    },
+    {
+      "language": "ta",
+      "display": 3,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01-01-1403"
+    },
+    {
+      "language": "ta",
+      "display": 3,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403 فروردین 01"
+    },
+    {
+      "language": "ta",
+      "display": 3,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "فروردین 01 1403"
+    },
+    {
+      "language": "ta",
+      "display": 3,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01 فروردین 1403"
+    },
+    {
+      "language": "th",
+      "display": 1,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024-3-20"
+    },
+    {
+      "language": "th",
+      "display": 1,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "3/20/2024"
+    },
+    {
+      "language": "th",
+      "display": 1,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20/3/2024"
+    },
+    {
+      "language": "th",
+      "display": 1,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024 มีนาคม 20"
+    },
+    {
+      "language": "th",
+      "display": 1,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "มีนาคม 20, 2024"
+    },
+    {
+      "language": "th",
+      "display": 1,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 มีนาคม 2024"
+    },
+    {
+      "language": "th",
+      "display": 2,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567-3-20"
+    },
+    {
+      "language": "th",
+      "display": 2,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "3/20/2567"
+    },
+    {
+      "language": "th",
+      "display": 2,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20/3/2567"
+    },
+    {
+      "language": "th",
+      "display": 2,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567 มีนาคม 20"
+    },
+    {
+      "language": "th",
+      "display": 2,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "มีนาคม 20, 2567"
+    },
+    {
+      "language": "th",
+      "display": 2,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 มีนาคม 2567"
+    },
+    {
+      "language": "th",
+      "display": 3,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403-1-1"
+    },
+    {
+      "language": "th",
+      "display": 3,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1/1/1403"
+    },
+    {
+      "language": "th",
+      "display": 3,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1/1/1403"
+    },
+    {
+      "language": "th",
+      "display": 3,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403 فروردین 01"
+    },
+    {
+      "language": "th",
+      "display": 3,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "فروردین 1, 1403"
+    },
+    {
+      "language": "th",
+      "display": 3,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1 فروردین 1403"
+    },
+    {
+      "language": "tr",
+      "display": 1,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024-03-20"
+    },
+    {
+      "language": "tr",
+      "display": 1,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "03/20/2024"
+    },
+    {
+      "language": "tr",
+      "display": 1,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20.03.2024"
+    },
+    {
+      "language": "tr",
+      "display": 1,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024 Mart 20"
+    },
+    {
+      "language": "tr",
+      "display": 1,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "Mart 20 2024"
+    },
+    {
+      "language": "tr",
+      "display": 1,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 Mart 2024"
+    },
+    {
+      "language": "tr",
+      "display": 2,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567-03-20"
+    },
+    {
+      "language": "tr",
+      "display": 2,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "03/20/2567"
+    },
+    {
+      "language": "tr",
+      "display": 2,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20.03.2567"
+    },
+    {
+      "language": "tr",
+      "display": 2,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567 Mart 20"
+    },
+    {
+      "language": "tr",
+      "display": 2,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "Mart 20 2567"
+    },
+    {
+      "language": "tr",
+      "display": 2,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 Mart 2567"
+    },
+    {
+      "language": "tr",
+      "display": 3,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403-01-01"
+    },
+    {
+      "language": "tr",
+      "display": 3,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01/01/1403"
+    },
+    {
+      "language": "tr",
+      "display": 3,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01.01.1403"
+    },
+    {
+      "language": "tr",
+      "display": 3,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403 فروردین 01"
+    },
+    {
+      "language": "tr",
+      "display": 3,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "فروردین 1 1403"
+    },
+    {
+      "language": "tr",
+      "display": 3,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1 فروردین 1403"
+    },
+    {
+      "language": "uk",
+      "display": 1,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024-03-20"
+    },
+    {
+      "language": "uk",
+      "display": 1,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "03/20/2024"
+    },
+    {
+      "language": "uk",
+      "display": 1,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20.03.2024"
+    },
+    {
+      "language": "uk",
+      "display": 1,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024 березень 20"
+    },
+    {
+      "language": "uk",
+      "display": 1,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "березень 20, 2024"
+    },
+    {
+      "language": "uk",
+      "display": 1,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 березень 2024 р."
+    },
+    {
+      "language": "uk",
+      "display": 2,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567-03-20"
+    },
+    {
+      "language": "uk",
+      "display": 2,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "03/20/2567"
+    },
+    {
+      "language": "uk",
+      "display": 2,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20.03.2567"
+    },
+    {
+      "language": "uk",
+      "display": 2,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567 березень 20"
+    },
+    {
+      "language": "uk",
+      "display": 2,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "березень 20, 2567"
+    },
+    {
+      "language": "uk",
+      "display": 2,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 березень 2567 р."
+    },
+    {
+      "language": "uk",
+      "display": 3,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403-01-01"
+    },
+    {
+      "language": "uk",
+      "display": 3,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01/01/1403"
+    },
+    {
+      "language": "uk",
+      "display": 3,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01.01.1403"
+    },
+    {
+      "language": "uk",
+      "display": 3,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403 فروردین 01"
+    },
+    {
+      "language": "uk",
+      "display": 3,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "فروردین 1, 1403"
+    },
+    {
+      "language": "uk",
+      "display": 3,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1 فروردین 1403 р."
+    },
+    {
+      "language": "vi",
+      "display": 1,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024-03-20"
+    },
+    {
+      "language": "vi",
+      "display": 1,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "03/20/2024"
+    },
+    {
+      "language": "vi",
+      "display": 1,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20/03/2024"
+    },
+    {
+      "language": "vi",
+      "display": 1,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024 tháng 3 20"
+    },
+    {
+      "language": "vi",
+      "display": 1,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "tháng 3 20 2024"
+    },
+    {
+      "language": "vi",
+      "display": 1,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 tháng 3 2024"
+    },
+    {
+      "language": "vi",
+      "display": 2,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567-03-20"
+    },
+    {
+      "language": "vi",
+      "display": 2,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "03/20/2567"
+    },
+    {
+      "language": "vi",
+      "display": 2,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20/03/2567"
+    },
+    {
+      "language": "vi",
+      "display": 2,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567 tháng 3 20"
+    },
+    {
+      "language": "vi",
+      "display": 2,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "tháng 3 20 2567"
+    },
+    {
+      "language": "vi",
+      "display": 2,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20 tháng 3 2567"
+    },
+    {
+      "language": "vi",
+      "display": 3,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403-01-01"
+    },
+    {
+      "language": "vi",
+      "display": 3,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01/01/1403"
+    },
+    {
+      "language": "vi",
+      "display": 3,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01/01/1403"
+    },
+    {
+      "language": "vi",
+      "display": 3,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403 فروردین 01"
+    },
+    {
+      "language": "vi",
+      "display": 3,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "فروردین 01 1403"
+    },
+    {
+      "language": "vi",
+      "display": 3,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "01 فروردین 1403"
+    },
+    {
+      "language": "zh-Hans",
+      "display": 1,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024-3-20"
+    },
+    {
+      "language": "zh-Hans",
+      "display": 1,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "3/20/2024"
+    },
+    {
+      "language": "zh-Hans",
+      "display": 1,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20/3/2024"
+    },
+    {
+      "language": "zh-Hans",
+      "display": 1,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024年3月20日"
+    },
+    {
+      "language": "zh-Hans",
+      "display": 1,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "3/20/2024"
+    },
+    {
+      "language": "zh-Hans",
+      "display": 1,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20/3/2024"
+    },
+    {
+      "language": "zh-Hans",
+      "display": 2,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567-3-20"
+    },
+    {
+      "language": "zh-Hans",
+      "display": 2,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "3/20/2567"
+    },
+    {
+      "language": "zh-Hans",
+      "display": 2,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20/3/2567"
+    },
+    {
+      "language": "zh-Hans",
+      "display": 2,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567年3月20日"
+    },
+    {
+      "language": "zh-Hans",
+      "display": 2,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "3/20/2567"
+    },
+    {
+      "language": "zh-Hans",
+      "display": 2,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20/3/2567"
+    },
+    {
+      "language": "zh-Hans",
+      "display": 3,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403-1-1"
+    },
+    {
+      "language": "zh-Hans",
+      "display": 3,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1/1/1403"
+    },
+    {
+      "language": "zh-Hans",
+      "display": 3,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1/1/1403"
+    },
+    {
+      "language": "zh-Hans",
+      "display": 3,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403年1月1日"
+    },
+    {
+      "language": "zh-Hans",
+      "display": 3,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1/1/1403"
+    },
+    {
+      "language": "zh-Hans",
+      "display": 3,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1/1/1403"
+    },
+    {
+      "language": "zh-Hant",
+      "display": 1,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024-3-20"
+    },
+    {
+      "language": "zh-Hant",
+      "display": 1,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "3/20/2024"
+    },
+    {
+      "language": "zh-Hant",
+      "display": 1,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20/3/2024"
+    },
+    {
+      "language": "zh-Hant",
+      "display": 1,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2024年3月20日"
+    },
+    {
+      "language": "zh-Hant",
+      "display": 1,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "3/20/2024"
+    },
+    {
+      "language": "zh-Hant",
+      "display": 1,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20/3/2024"
+    },
+    {
+      "language": "zh-Hant",
+      "display": 2,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567-3-20"
+    },
+    {
+      "language": "zh-Hant",
+      "display": 2,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "3/20/2567"
+    },
+    {
+      "language": "zh-Hant",
+      "display": 2,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20/3/2567"
+    },
+    {
+      "language": "zh-Hant",
+      "display": 2,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "2567年3月20日"
+    },
+    {
+      "language": "zh-Hant",
+      "display": 2,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "3/20/2567"
+    },
+    {
+      "language": "zh-Hant",
+      "display": 2,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "20/3/2567"
+    },
+    {
+      "language": "zh-Hant",
+      "display": 3,
+      "long": false,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403-1-1"
+    },
+    {
+      "language": "zh-Hant",
+      "display": 3,
+      "long": false,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1/1/1403"
+    },
+    {
+      "language": "zh-Hant",
+      "display": 3,
+      "long": false,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1/1/1403"
+    },
+    {
+      "language": "zh-Hant",
+      "display": 3,
+      "long": true,
+      "order": 1,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1403年1月1日"
+    },
+    {
+      "language": "zh-Hant",
+      "display": 3,
+      "long": true,
+      "order": 2,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1/1/1403"
+    },
+    {
+      "language": "zh-Hant",
+      "display": 3,
+      "long": true,
+      "order": 3,
+      "date": [
+        2024,
+        3,
+        20,
+        13,
+        5,
+        9
+      ],
+      "expected": "1/1/1403"
+    }
+  ],
+  "billingRanges": [
+    {
+      "date": [
+        2023,
+        2,
+        15
+      ],
+      "statementDay": 28,
+      "type": 51,
+      "expected": {
+        "dateType": 51,
+        "maxTime": 1677628799,
+        "minTime": 1675209600
+      }
+    },
+    {
+      "date": [
+        2023,
+        2,
+        15
+      ],
+      "statementDay": 28,
+      "type": 52,
+      "expected": {
+        "dateType": 52,
+        "maxTime": 1674950399,
+        "minTime": 1672531200
+      }
+    },
+    {
+      "date": [
+        2023,
+        2,
+        15
+      ],
+      "statementDay": 29,
+      "type": 51,
+      "expected": {
+        "dateType": 51,
+        "maxTime": 1677715199,
+        "minTime": 1675296000
+      }
+    },
+    {
+      "date": [
+        2023,
+        2,
+        15
+      ],
+      "statementDay": 29,
+      "type": 52,
+      "expected": {
+        "dateType": 52,
+        "maxTime": 1675295999,
+        "minTime": 1672617600
+      }
+    },
+    {
+      "date": [
+        2023,
+        2,
+        15
+      ],
+      "statementDay": 30,
+      "type": 51,
+      "expected": {
+        "dateType": 51,
+        "maxTime": 1677801599,
+        "minTime": 1675382400
+      }
+    },
+    {
+      "date": [
+        2023,
+        2,
+        15
+      ],
+      "statementDay": 30,
+      "type": 52,
+      "expected": {
+        "dateType": 52,
+        "maxTime": 1675382399,
+        "minTime": 1672704000
+      }
+    },
+    {
+      "date": [
+        2023,
+        2,
+        15
+      ],
+      "statementDay": 31,
+      "type": 51,
+      "expected": {
+        "dateType": 51,
+        "maxTime": 1677887999,
+        "minTime": 1675468800
+      }
+    },
+    {
+      "date": [
+        2023,
+        2,
+        15
+      ],
+      "statementDay": 31,
+      "type": 52,
+      "expected": {
+        "dateType": 52,
+        "maxTime": 1675468799,
+        "minTime": 1672790400
+      }
+    },
+    {
+      "date": [
+        2023,
+        2,
+        28
+      ],
+      "statementDay": 28,
+      "type": 51,
+      "expected": {
+        "dateType": 51,
+        "maxTime": 1677628799,
+        "minTime": 1675209600
+      }
+    },
+    {
+      "date": [
+        2023,
+        2,
+        28
+      ],
+      "statementDay": 28,
+      "type": 52,
+      "expected": {
+        "dateType": 52,
+        "maxTime": 1674950399,
+        "minTime": 1672531200
+      }
+    },
+    {
+      "date": [
+        2023,
+        2,
+        28
+      ],
+      "statementDay": 29,
+      "type": 51,
+      "expected": {
+        "dateType": 51,
+        "maxTime": 1677715199,
+        "minTime": 1675296000
+      }
+    },
+    {
+      "date": [
+        2023,
+        2,
+        28
+      ],
+      "statementDay": 29,
+      "type": 52,
+      "expected": {
+        "dateType": 52,
+        "maxTime": 1675295999,
+        "minTime": 1672617600
+      }
+    },
+    {
+      "date": [
+        2023,
+        2,
+        28
+      ],
+      "statementDay": 30,
+      "type": 51,
+      "expected": {
+        "dateType": 51,
+        "maxTime": 1677801599,
+        "minTime": 1675382400
+      }
+    },
+    {
+      "date": [
+        2023,
+        2,
+        28
+      ],
+      "statementDay": 30,
+      "type": 52,
+      "expected": {
+        "dateType": 52,
+        "maxTime": 1675382399,
+        "minTime": 1672704000
+      }
+    },
+    {
+      "date": [
+        2023,
+        2,
+        28
+      ],
+      "statementDay": 31,
+      "type": 51,
+      "expected": {
+        "dateType": 51,
+        "maxTime": 1677887999,
+        "minTime": 1675468800
+      }
+    },
+    {
+      "date": [
+        2023,
+        2,
+        28
+      ],
+      "statementDay": 31,
+      "type": 52,
+      "expected": {
+        "dateType": 52,
+        "maxTime": 1675468799,
+        "minTime": 1672790400
+      }
+    },
+    {
+      "date": [
+        2024,
+        2,
+        29
+      ],
+      "statementDay": 28,
+      "type": 51,
+      "expected": {
+        "dateType": 51,
+        "maxTime": 1711670399,
+        "minTime": 1709164800
+      }
+    },
+    {
+      "date": [
+        2024,
+        2,
+        29
+      ],
+      "statementDay": 28,
+      "type": 52,
+      "expected": {
+        "dateType": 52,
+        "maxTime": 1709164799,
+        "minTime": 1706486400
+      }
+    },
+    {
+      "date": [
+        2024,
+        2,
+        29
+      ],
+      "statementDay": 29,
+      "type": 51,
+      "expected": {
+        "dateType": 51,
+        "maxTime": 1709251199,
+        "minTime": 1706745600
+      }
+    },
+    {
+      "date": [
+        2024,
+        2,
+        29
+      ],
+      "statementDay": 29,
+      "type": 52,
+      "expected": {
+        "dateType": 52,
+        "maxTime": 1706572799,
+        "minTime": 1704067200
+      }
+    },
+    {
+      "date": [
+        2024,
+        2,
+        29
+      ],
+      "statementDay": 30,
+      "type": 51,
+      "expected": {
+        "dateType": 51,
+        "maxTime": 1709337599,
+        "minTime": 1706832000
+      }
+    },
+    {
+      "date": [
+        2024,
+        2,
+        29
+      ],
+      "statementDay": 30,
+      "type": 52,
+      "expected": {
+        "dateType": 52,
+        "maxTime": 1706831999,
+        "minTime": 1704153600
+      }
+    },
+    {
+      "date": [
+        2024,
+        2,
+        29
+      ],
+      "statementDay": 31,
+      "type": 51,
+      "expected": {
+        "dateType": 51,
+        "maxTime": 1709423999,
+        "minTime": 1706918400
+      }
+    },
+    {
+      "date": [
+        2024,
+        2,
+        29
+      ],
+      "statementDay": 31,
+      "type": 52,
+      "expected": {
+        "dateType": 52,
+        "maxTime": 1706918399,
+        "minTime": 1704240000
+      }
+    },
+    {
+      "date": [
+        2024,
+        3,
+        31
+      ],
+      "statementDay": 28,
+      "type": 51,
+      "expected": {
+        "dateType": 51,
+        "maxTime": 1714348799,
+        "minTime": 1711670400
+      }
+    },
+    {
+      "date": [
+        2024,
+        3,
+        31
+      ],
+      "statementDay": 28,
+      "type": 52,
+      "expected": {
+        "dateType": 52,
+        "maxTime": 1711670399,
+        "minTime": 1709164800
+      }
+    },
+    {
+      "date": [
+        2024,
+        3,
+        31
+      ],
+      "statementDay": 29,
+      "type": 51,
+      "expected": {
+        "dateType": 51,
+        "maxTime": 1714435199,
+        "minTime": 1711756800
+      }
+    },
+    {
+      "date": [
+        2024,
+        3,
+        31
+      ],
+      "statementDay": 29,
+      "type": 52,
+      "expected": {
+        "dateType": 52,
+        "maxTime": 1711756799,
+        "minTime": 1709164800
+      }
+    },
+    {
+      "date": [
+        2024,
+        3,
+        31
+      ],
+      "statementDay": 30,
+      "type": 51,
+      "expected": {
+        "dateType": 51,
+        "maxTime": 1714521599,
+        "minTime": 1711843200
+      }
+    },
+    {
+      "date": [
+        2024,
+        3,
+        31
+      ],
+      "statementDay": 30,
+      "type": 52,
+      "expected": {
+        "dateType": 52,
+        "maxTime": 1711843199,
+        "minTime": 1709164800
+      }
+    },
+    {
+      "date": [
+        2024,
+        3,
+        31
+      ],
+      "statementDay": 31,
+      "type": 51,
+      "expected": {
+        "dateType": 51,
+        "maxTime": 1711929599,
+        "minTime": 1709251200
+      }
+    },
+    {
+      "date": [
+        2024,
+        3,
+        31
+      ],
+      "statementDay": 31,
+      "type": 52,
+      "expected": {
+        "dateType": 52,
+        "maxTime": 1709251199,
+        "minTime": 1706745600
+      }
+    }
+  ]
+}

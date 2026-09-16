@@ -76,8 +76,12 @@ func (a *TransactionPicturesApi) TransactionPictureUploadHandler(c *core.WebCont
 		log.Errorf(c, "[transaction_pictures.TransactionPictureUploadHandler] failed to get transaction picture file from request for user \"uid:%d\", because %s", uid, err.Error())
 		return nil, errs.ErrOperationFailed
 	}
+	defer pictureFile.Close()
 
 	pictureInfo := a.createNewPictureInfoModel(uid, fileExtension, c.ClientIP())
+	if uploadIds := form.Value["upload_id"]; len(uploadIds) > 0 && uploadIds[0] != "" {
+		return a.uploadPictureIdempotent(c, pictureInfo, pictureFile, uploadIds[0])
+	}
 
 	clientSessionIds := form.Value["clientSessionId"]
 	clientSessionId := ""

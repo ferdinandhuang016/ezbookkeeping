@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="widget_background">#FF000000</color>
+    <color name="widget_surface">#FF1C1C1E</color>
+    <color name="widget_text">#FFFFFFFF</color>
+    <color name="widget_text_secondary">#FF98989D</color>
+    <color name="widget_primary">#FFD43F3F</color>
+    <color name="widget_tab_active">#FFFFFFFF</color>
+    <color name="widget_trend_red">#FFFF5A5F</color>
+    <color name="widget_trend_green">#FF34C759</color>
+</resources>

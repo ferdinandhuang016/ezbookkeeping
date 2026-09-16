@@ -44,6 +44,10 @@ func updateDatabaseStructure(c *core.CliContext) error {
 
 func updateAllDatabaseTablesStructure(c *core.CliContext) error {
 	var err error
+	err = datastore.Container.UserDataStore.SyncStructs(new(models.SyncLedgerState), new(models.SyncRecord), new(models.SyncChange), new(models.SyncOperationReceipt), new(models.SyncPictureReceipt), new(models.NativeOAuthSession))
+	if err != nil {
+		return err
+	}
 
 	err = datastore.Container.UserStore.SyncStructs(new(models.User))
 

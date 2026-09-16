@@ -74,3 +74,40 @@ export function getNormalizedCoordinate(value: Coordinate): Coordinate {
         longitude: normalizedLongitude
     };
 }
+
+const GCJ02_ELLIPSOID_SEMI_MAJOR_AXIS: number = 6378245.0;
+const GCJ02_ELLIPSOID_ECCENTRICITY_SQUARED: number = 0.006693421622965943;
+
+// AMap returns GCJ-02 coordinates in mainland China, while transaction
+// coordinates are stored as WGS84 so every configured map provider can use them.
+export function convertGCJ02ToWGS84(value: Coordinate): Coordinate {
+    if (value.longitude < 72.004 || value.longitude > 137.8347 || value.latitude < 0.8293 || value.latitude > 55.8271) {
+        return { ...value };
+    }
+
+    const longitudeOffset = value.longitude - 105.0;
+    const latitudeOffset = value.latitude - 35.0;
+    let latitudeDelta = -100.0 + 2.0 * longitudeOffset + 3.0 * latitudeOffset + 0.2 * latitudeOffset * latitudeOffset
+        + 0.1 * longitudeOffset * latitudeOffset + 0.2 * Math.sqrt(Math.abs(longitudeOffset));
+    let longitudeDelta = 300.0 + longitudeOffset + 2.0 * latitudeOffset + 0.1 * longitudeOffset * longitudeOffset
+        + 0.1 * longitudeOffset * latitudeOffset + 0.1 * Math.sqrt(Math.abs(longitudeOffset));
+
+    latitudeDelta += (20.0 * Math.sin(6.0 * longitudeOffset * Math.PI) + 20.0 * Math.sin(2.0 * longitudeOffset * Math.PI)) * 2.0 / 3.0;
+    latitudeDelta += (20.0 * Math.sin(latitudeOffset * Math.PI) + 40.0 * Math.sin(latitudeOffset / 3.0 * Math.PI)) * 2.0 / 3.0;
+    latitudeDelta += (160.0 * Math.sin(latitudeOffset / 12.0 * Math.PI) + 320 * Math.sin(latitudeOffset * Math.PI / 30.0)) * 2.0 / 3.0;
+    longitudeDelta += (20.0 * Math.sin(6.0 * longitudeOffset * Math.PI) + 20.0 * Math.sin(2.0 * longitudeOffset * Math.PI)) * 2.0 / 3.0;
+    longitudeDelta += (20.0 * Math.sin(longitudeOffset * Math.PI) + 40.0 * Math.sin(longitudeOffset / 3.0 * Math.PI)) * 2.0 / 3.0;
+    longitudeDelta += (150.0 * Math.sin(longitudeOffset / 12.0 * Math.PI) + 300.0 * Math.sin(longitudeOffset / 30.0 * Math.PI)) * 2.0 / 3.0;
+
+    const radianLatitude = value.latitude / 180.0 * Math.PI;
+    let magic = Math.sin(radianLatitude);
+    magic = 1 - GCJ02_ELLIPSOID_ECCENTRICITY_SQUARED * magic * magic;
+    const squareRootMagic = Math.sqrt(magic);
+    latitudeDelta = latitudeDelta * 180.0 / ((GCJ02_ELLIPSOID_SEMI_MAJOR_AXIS * (1 - GCJ02_ELLIPSOID_ECCENTRICITY_SQUARED)) / (magic * squareRootMagic) * Math.PI);
+    longitudeDelta = longitudeDelta * 180.0 / (GCJ02_ELLIPSOID_SEMI_MAJOR_AXIS / squareRootMagic * Math.cos(radianLatitude) * Math.PI);
+
+    return getNormalizedCoordinate({
+        latitude: value.latitude - latitudeDelta,
+        longitude: value.longitude - longitudeDelta
+    });
+}

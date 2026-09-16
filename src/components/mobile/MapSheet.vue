@@ -14,8 +14,8 @@
         </f7-toolbar>
         <f7-page-content class="no-margin no-padding">
             <map-view ref="map" height="var(--ebk-map-sheet-height)"
-                      :enable-zoom-control="false" :geo-location="geoLocation"
-                      @click="updateSpecifiedGeoLocation">
+                      :enable-zoom-control="false" :editable="!readonly" :geo-location="geoLocation"
+                      @click="updateSpecifiedGeoLocation" @change="updateDraggedGeoLocation">
                 <template #error-title="{ mapSupported, mapDependencyLoaded }">
                     <div class="display-flex map-sheet-error-title padding justify-content-space-between align-items-center">
                         <div class="ebk-sheet-title" v-if="!mapSupported"><b>{{ tt('Unsupported Map Provider') }}</b></div>
@@ -43,6 +43,7 @@ import MapView from '@/components/common/MapView.vue';
 import { useI18n } from '@/locales/helpers.ts';
 
 import type { Coordinate } from '@/core/coordinate.ts';
+import type { MapLocation } from '@/lib/map/base.ts';
 
 import { isSupportGetGeoLocationByClick } from '@/lib/map/index.ts';
 
@@ -50,6 +51,7 @@ type MapViewType = InstanceType<typeof MapView>;
 
 const props = defineProps<{
     modelValue?: Coordinate;
+    locationName?: string;
     readonly?: boolean;
     setGeoLocationByClickMap?: boolean;
     show: boolean;
@@ -57,6 +59,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     (e: 'update:modelValue', value: Coordinate | undefined): void;
+    (e: 'update:locationName', value: string): void;
     (e: 'update:setGeoLocationByClickMap', value: boolean): void;
     (e: 'update:show', value: boolean): void;
 }>();
@@ -79,6 +82,15 @@ function updateSpecifiedGeoLocation(coordinate: Coordinate): void {
         geoLocation.value = coordinate;
         map.value?.setMarkerPosition(coordinate);
     }
+}
+
+function updateDraggedGeoLocation(location: MapLocation): void {
+    if (props.readonly) {
+        return;
+    }
+
+    geoLocation.value = location;
+    emit('update:locationName', location.name ?? '');
 }
 
 function switchSetGeoLocationByClickMap(value: boolean): void {

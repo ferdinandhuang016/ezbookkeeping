@@ -13,11 +13,11 @@ describe('getContrastTextColor', () => {
 });
 
 describe('getContrastIconColor', () => {
-    it('uses the original icon color for the default light background', () => {
-        expect(getContrastIconColor('ffcc00')).toBe('c67e48');
+    it('uses a translucent white icon for the default light background', () => {
+        expect(getContrastIconColor('d43f3f')).toBe('ffffff99');
     });
 
-    it('lightens a dark background with the original default opacity', () => {
-        expect(getContrastIconColor('c67e48')).toBe('ffffff99');
+    it('uses the same readable icon treatment for the default dark background', () => {
+        expect(getContrastIconColor('a92f2f')).toBe('ffffff99');
     });
 });

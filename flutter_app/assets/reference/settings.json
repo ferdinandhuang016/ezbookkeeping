@@ -1,0 +1,2805 @@
+{
+  "options": {
+    "CalendarDisplayType": [
+      {
+        "type": 1,
+        "typeName": "Gregorian",
+        "name": "Gregorian",
+        "primaryCalendarType": 0,
+        "id": 1
+      },
+      {
+        "type": 2,
+        "typeName": "Buddhist",
+        "name": "Buddhist",
+        "primaryCalendarType": 1,
+        "id": 2
+      },
+      {
+        "type": 3,
+        "typeName": "GregorianWithChinese",
+        "name": "Gregorian with Chinese Calendar",
+        "primaryCalendarType": 0,
+        "secondaryCalendarType": 2,
+        "id": 3
+      },
+      {
+        "type": 4,
+        "typeName": "GregorianWithPersian",
+        "name": "Gregorian with Persian Calendar",
+        "primaryCalendarType": 0,
+        "secondaryCalendarType": 3,
+        "id": 4
+      }
+    ],
+    "DateDisplayType": [
+      {
+        "type": 1,
+        "typeName": "Gregorian",
+        "name": "Gregorian",
+        "calendarType": 0,
+        "id": 1
+      },
+      {
+        "type": 2,
+        "typeName": "Buddhist",
+        "name": "Buddhist",
+        "calendarType": 1,
+        "id": 2
+      },
+      {
+        "type": 3,
+        "typeName": "Persian",
+        "name": "Persian",
+        "calendarType": 3,
+        "id": 3
+      }
+    ],
+    "Month": [
+      {
+        "month": 1,
+        "name": "January"
+      },
+      {
+        "month": 2,
+        "name": "February"
+      },
+      {
+        "month": 3,
+        "name": "March"
+      },
+      {
+        "month": 4,
+        "name": "April"
+      },
+      {
+        "month": 5,
+        "name": "May"
+      },
+      {
+        "month": 6,
+        "name": "June"
+      },
+      {
+        "month": 7,
+        "name": "July"
+      },
+      {
+        "month": 8,
+        "name": "August"
+      },
+      {
+        "month": 9,
+        "name": "September"
+      },
+      {
+        "month": 10,
+        "name": "October"
+      },
+      {
+        "month": 11,
+        "name": "November"
+      },
+      {
+        "month": 12,
+        "name": "December"
+      }
+    ],
+    "WeekDay": [
+      {
+        "type": 0,
+        "name": "Sunday",
+        "id": 0
+      },
+      {
+        "type": 1,
+        "name": "Monday",
+        "id": 1
+      },
+      {
+        "type": 2,
+        "name": "Tuesday",
+        "id": 2
+      },
+      {
+        "type": 3,
+        "name": "Wednesday",
+        "id": 3
+      },
+      {
+        "type": 4,
+        "name": "Thursday",
+        "id": 4
+      },
+      {
+        "type": 5,
+        "name": "Friday",
+        "id": 5
+      },
+      {
+        "type": 6,
+        "name": "Saturday",
+        "id": 6
+      }
+    ],
+    "MeridiemIndicator": [
+      {
+        "type": 0,
+        "name": "AM",
+        "id": 0
+      },
+      {
+        "type": 1,
+        "name": "PM",
+        "id": 1
+      }
+    ],
+    "LongDateFormat": [
+      {
+        "type": 1,
+        "typeName": "YearMonthDay",
+        "order": 1,
+        "id": 1,
+        "name": "YearMonthDay"
+      },
+      {
+        "type": 2,
+        "typeName": "MonthDayYear",
+        "order": 2,
+        "id": 2,
+        "name": "MonthDayYear"
+      },
+      {
+        "type": 3,
+        "typeName": "DayMonthYear",
+        "order": 3,
+        "id": 3,
+        "name": "DayMonthYear"
+      }
+    ],
+    "ShortDateFormat": [
+      {
+        "type": 1,
+        "typeName": "YearMonthDay",
+        "order": 1,
+        "id": 1,
+        "name": "YearMonthDay"
+      },
+      {
+        "type": 2,
+        "typeName": "MonthDayYear",
+        "order": 2,
+        "id": 2,
+        "name": "MonthDayYear"
+      },
+      {
+        "type": 3,
+        "typeName": "DayMonthYear",
+        "order": 3,
+        "id": 3,
+        "name": "DayMonthYear"
+      }
+    ],
+    "LongTimeFormat": [
+      {
+        "type": 1,
+        "typeName": "HourMinuteSecond",
+        "is24HourFormat": true,
+        "isMeridiemIndicatorFirst": null,
+        "id": 1,
+        "name": "HourMinuteSecond"
+      },
+      {
+        "type": 2,
+        "typeName": "MeridiemIndicatorHourMinuteSecond",
+        "is24HourFormat": false,
+        "isMeridiemIndicatorFirst": true,
+        "id": 2,
+        "name": "MeridiemIndicatorHourMinuteSecond"
+      },
+      {
+        "type": 3,
+        "typeName": "HourMinuteSecondMeridiemIndicator",
+        "is24HourFormat": false,
+        "isMeridiemIndicatorFirst": false,
+        "id": 3,
+        "name": "HourMinuteSecondMeridiemIndicator"
+      }
+    ],
+    "ShortTimeFormat": [
+      {
+        "type": 1,
+        "typeName": "HourMinute",
+        "is24HourFormat": true,
+        "isMeridiemIndicatorFirst": null,
+        "id": 1,
+        "name": "HourMinute"
+      },
+      {
+        "type": 2,
+        "typeName": "MeridiemIndicatorHourMinute",
+        "is24HourFormat": false,
+        "isMeridiemIndicatorFirst": true,
+        "id": 2,
+        "name": "MeridiemIndicatorHourMinute"
+      },
+      {
+        "type": 3,
+        "typeName": "HourMinuteMeridiemIndicator",
+        "is24HourFormat": false,
+        "isMeridiemIndicatorFirst": false,
+        "id": 3,
+        "name": "HourMinuteMeridiemIndicator"
+      }
+    ],
+    "KnownDateTimeFormat": [
+      {
+        "format": "YYYY-MM-DD HH:mm:ss",
+        "type": 1,
+        "regex": {},
+        "id": 1,
+        "name": "1"
+      },
+      {
+        "format": "YYYY-MM-DD HH:mm:ssZ",
+        "type": 1,
+        "regex": {},
+        "id": 1,
+        "name": "1"
+      },
+      {
+        "format": "YYYY-MM-DD HH:mm",
+        "type": 1,
+        "regex": {},
+        "id": 1,
+        "name": "1"
+      },
+      {
+        "format": "YYYY-MM-DD",
+        "type": 1,
+        "regex": {},
+        "id": 1,
+        "name": "1"
+      },
+      {
+        "format": "YYYY-MM-DDTHH:mm:ssZ",
+        "type": 1,
+        "regex": {},
+        "id": 1,
+        "name": "1"
+      },
+      {
+        "format": "YYYY/MM/DD HH:mm:ss",
+        "type": 1,
+        "regex": {},
+        "id": 1,
+        "name": "1"
+      },
+      {
+        "format": "MM/DD/YYYY HH:mm:ss",
+        "type": 2,
+        "regex": {},
+        "id": 2,
+        "name": "2"
+      },
+      {
+        "format": "DD/MM/YYYY HH:mm:ss",
+        "type": 3,
+        "regex": {},
+        "id": 3,
+        "name": "3"
+      },
+      {
+        "format": "YYYY.MM.DD HH:mm:ss",
+        "type": 1,
+        "regex": {},
+        "id": 1,
+        "name": "1"
+      },
+      {
+        "format": "MM.DD.YYYY HH:mm:ss",
+        "type": 2,
+        "regex": {},
+        "id": 2,
+        "name": "2"
+      },
+      {
+        "format": "DD.MM.YYYY HH:mm:ss",
+        "type": 3,
+        "regex": {},
+        "id": 3,
+        "name": "3"
+      },
+      {
+        "format": "MM-DD-YYYY",
+        "type": 2,
+        "regex": {},
+        "id": 2,
+        "name": "2"
+      },
+      {
+        "format": "DD-MM-YYYY",
+        "type": 3,
+        "regex": {},
+        "id": 3,
+        "name": "3"
+      },
+      {
+        "format": "YYYY/MM/DD",
+        "type": 1,
+        "regex": {},
+        "id": 1,
+        "name": "1"
+      },
+      {
+        "format": "MM/DD/YYYY",
+        "type": 2,
+        "regex": {},
+        "id": 2,
+        "name": "2"
+      },
+      {
+        "format": "DD/MM/YYYY",
+        "type": 3,
+        "regex": {},
+        "id": 3,
+        "name": "3"
+      },
+      {
+        "format": "YYYY/M/D",
+        "type": 1,
+        "regex": {},
+        "id": 1,
+        "name": "1"
+      },
+      {
+        "format": "M/D/YYYY",
+        "type": 2,
+        "regex": {},
+        "id": 2,
+        "name": "2"
+      },
+      {
+        "format": "D/M/YYYY",
+        "type": 3,
+        "regex": {},
+        "id": 3,
+        "name": "3"
+      },
+      {
+        "format": "YYYY.MM.DD",
+        "type": 1,
+        "regex": {},
+        "id": 1,
+        "name": "1"
+      },
+      {
+        "format": "MM.DD.YYYY",
+        "type": 2,
+        "regex": {},
+        "id": 2,
+        "name": "2"
+      },
+      {
+        "format": "DD.MM.YYYY",
+        "type": 3,
+        "regex": {},
+        "id": 3,
+        "name": "3"
+      },
+      {
+        "format": "YYYY.M.D",
+        "type": 1,
+        "regex": {},
+        "id": 1,
+        "name": "1"
+      },
+      {
+        "format": "M.D.YYYY",
+        "type": 2,
+        "regex": {},
+        "id": 2,
+        "name": "2"
+      },
+      {
+        "format": "D.M.YYYY",
+        "type": 3,
+        "regex": {},
+        "id": 3,
+        "name": "3"
+      },
+      {
+        "format": "YYYYMMDD",
+        "type": 1,
+        "regex": {},
+        "id": 1,
+        "name": "1"
+      },
+      {
+        "format": "MM-DD-YY",
+        "type": 2,
+        "regex": {},
+        "id": 2,
+        "name": "2"
+      },
+      {
+        "format": "MM/DD/YY",
+        "type": 2,
+        "regex": {},
+        "id": 2,
+        "name": "2"
+      }
+    ],
+    "DateRange": [
+      {
+        "type": 0,
+        "name": "All",
+        "isBillingCycle": false,
+        "isLastReconciledTimeRange": false,
+        "isUserCustomRange": false,
+        "availableScenes": {
+          "0": true,
+          "1": true,
+          "2": true,
+          "3": true
+        },
+        "id": 0
+      },
+      {
+        "type": 1,
+        "name": "Today",
+        "isBillingCycle": false,
+        "isLastReconciledTimeRange": false,
+        "isUserCustomRange": false,
+        "availableScenes": {
+          "0": true,
+          "3": true
+        },
+        "id": 1
+      },
+      {
+        "type": 2,
+        "name": "Yesterday",
+        "isBillingCycle": false,
+        "isLastReconciledTimeRange": false,
+        "isUserCustomRange": false,
+        "availableScenes": {
+          "0": true,
+          "3": true
+        },
+        "id": 2
+      },
+      {
+        "type": 3,
+        "name": "Recent 7 days",
+        "isBillingCycle": false,
+        "isLastReconciledTimeRange": false,
+        "isUserCustomRange": false,
+        "availableScenes": {
+          "0": true,
+          "2": true,
+          "3": true
+        },
+        "id": 3
+      },
+      {
+        "type": 4,
+        "name": "Recent 30 days",
+        "isBillingCycle": false,
+        "isLastReconciledTimeRange": false,
+        "isUserCustomRange": false,
+        "availableScenes": {
+          "0": true,
+          "2": true,
+          "3": true
+        },
+        "id": 4
+      },
+      {
+        "type": 5,
+        "name": "This week",
+        "isBillingCycle": false,
+        "isLastReconciledTimeRange": false,
+        "isUserCustomRange": false,
+        "availableScenes": {
+          "0": true,
+          "2": true,
+          "3": true
+        },
+        "id": 5
+      },
+      {
+        "type": 6,
+        "name": "Last week",
+        "isBillingCycle": false,
+        "isLastReconciledTimeRange": false,
+        "isUserCustomRange": false,
+        "availableScenes": {
+          "0": true,
+          "2": true,
+          "3": true
+        },
+        "id": 6
+      },
+      {
+        "type": 7,
+        "name": "This month",
+        "isBillingCycle": false,
+        "isLastReconciledTimeRange": false,
+        "isUserCustomRange": false,
+        "availableScenes": {
+          "0": true,
+          "2": true,
+          "3": true
+        },
+        "id": 7
+      },
+      {
+        "type": 8,
+        "name": "Last month",
+        "isBillingCycle": false,
+        "isLastReconciledTimeRange": false,
+        "isUserCustomRange": false,
+        "availableScenes": {
+          "0": true,
+          "2": true,
+          "3": true
+        },
+        "id": 8
+      },
+      {
+        "type": 9,
+        "name": "This year",
+        "isBillingCycle": false,
+        "isLastReconciledTimeRange": false,
+        "isUserCustomRange": false,
+        "availableScenes": {
+          "0": true,
+          "1": true,
+          "2": true,
+          "3": true
+        },
+        "id": 9
+      },
+      {
+        "type": 10,
+        "name": "Last year",
+        "isBillingCycle": false,
+        "isLastReconciledTimeRange": false,
+        "isUserCustomRange": false,
+        "availableScenes": {
+          "0": true,
+          "1": true,
+          "2": true,
+          "3": true
+        },
+        "id": 10
+      },
+      {
+        "type": 11,
+        "name": "This fiscal year",
+        "isBillingCycle": false,
+        "isLastReconciledTimeRange": false,
+        "isUserCustomRange": true,
+        "availableScenes": {
+          "0": true,
+          "1": true,
+          "2": true,
+          "3": true
+        },
+        "id": 11
+      },
+      {
+        "type": 12,
+        "name": "Last fiscal year",
+        "isBillingCycle": false,
+        "isLastReconciledTimeRange": false,
+        "isUserCustomRange": true,
+        "availableScenes": {
+          "0": true,
+          "1": true,
+          "2": true,
+          "3": true
+        },
+        "id": 12
+      },
+      {
+        "type": 51,
+        "name": "Current Billing Cycle",
+        "isBillingCycle": true,
+        "isLastReconciledTimeRange": false,
+        "isUserCustomRange": true,
+        "availableScenes": {
+          "0": true
+        },
+        "id": 51
+      },
+      {
+        "type": 52,
+        "name": "Previous Billing Cycle",
+        "isBillingCycle": true,
+        "isLastReconciledTimeRange": false,
+        "isUserCustomRange": true,
+        "availableScenes": {
+          "0": true
+        },
+        "id": 52
+      },
+      {
+        "type": 71,
+        "name": "Since Last Reconciled Time",
+        "isBillingCycle": false,
+        "isLastReconciledTimeRange": true,
+        "isUserCustomRange": true,
+        "availableScenes": {
+          "0": true
+        },
+        "id": 71
+      },
+      {
+        "type": 101,
+        "name": "Recent 12 months",
+        "isBillingCycle": false,
+        "isLastReconciledTimeRange": false,
+        "isUserCustomRange": false,
+        "availableScenes": {
+          "1": true,
+          "2": true,
+          "3": true
+        },
+        "id": 101
+      },
+      {
+        "type": 102,
+        "name": "Recent 24 months",
+        "isBillingCycle": false,
+        "isLastReconciledTimeRange": false,
+        "isUserCustomRange": false,
+        "availableScenes": {
+          "1": true,
+          "2": true,
+          "3": true
+        },
+        "id": 102
+      },
+      {
+        "type": 103,
+        "name": "Recent 36 months",
+        "isBillingCycle": false,
+        "isLastReconciledTimeRange": false,
+        "isUserCustomRange": false,
+        "availableScenes": {
+          "1": true,
+          "2": true,
+          "3": true
+        },
+        "id": 103
+      },
+      {
+        "type": 104,
+        "name": "Recent 2 years",
+        "isBillingCycle": false,
+        "isLastReconciledTimeRange": false,
+        "isUserCustomRange": false,
+        "availableScenes": {
+          "1": true,
+          "2": true,
+          "3": true
+        },
+        "id": 104
+      },
+      {
+        "type": 105,
+        "name": "Recent 3 years",
+        "isBillingCycle": false,
+        "isLastReconciledTimeRange": false,
+        "isUserCustomRange": false,
+        "availableScenes": {
+          "1": true,
+          "2": true,
+          "3": true
+        },
+        "id": 105
+      },
+      {
+        "type": 106,
+        "name": "Recent 5 years",
+        "isBillingCycle": false,
+        "isLastReconciledTimeRange": false,
+        "isUserCustomRange": false,
+        "availableScenes": {
+          "1": true,
+          "2": true,
+          "3": true
+        },
+        "id": 106
+      },
+      {
+        "type": 255,
+        "name": "Custom Date",
+        "isBillingCycle": false,
+        "isLastReconciledTimeRange": false,
+        "isUserCustomRange": true,
+        "availableScenes": {
+          "0": true,
+          "1": true,
+          "2": true,
+          "3": true
+        },
+        "id": 255
+      }
+    ],
+    "FiscalYearFormat": [
+      {
+        "type": 1,
+        "typeName": "StartYYYY_EndYYYY",
+        "id": 1,
+        "name": "StartYYYY_EndYYYY"
+      },
+      {
+        "type": 2,
+        "typeName": "StartYYYY_EndYY",
+        "id": 2,
+        "name": "StartYYYY_EndYY"
+      },
+      {
+        "type": 3,
+        "typeName": "StartYY_EndYY",
+        "id": 3,
+        "name": "StartYY_EndYY"
+      },
+      {
+        "type": 4,
+        "typeName": "EndYYYY",
+        "id": 4,
+        "name": "EndYYYY"
+      },
+      {
+        "type": 5,
+        "typeName": "EndYY",
+        "id": 5,
+        "name": "EndYY"
+      }
+    ],
+    "NumeralSystem": [
+      {
+        "type": 1,
+        "typeName": "WesternArabicNumerals",
+        "name": "Western Arabic Numerals",
+        "digitZero": "0",
+        "doubleDigitZero": "00",
+        "textualAllDigits": "0123456789",
+        "allDigits": [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9"
+        ],
+        "digitsToWesternArabic": {
+          "0": 0,
+          "1": 1,
+          "2": 2,
+          "3": 3,
+          "4": 4,
+          "5": 5,
+          "6": 6,
+          "7": 7,
+          "8": 8,
+          "9": 9
+        },
+        "id": 1
+      },
+      {
+        "type": 2,
+        "typeName": "EasternArabicNumerals",
+        "name": "Eastern Arabic Numerals",
+        "digitZero": "٠",
+        "doubleDigitZero": "٠٠",
+        "textualAllDigits": "٠١٢٣٤٥٦٧٨٩",
+        "allDigits": [
+          "٠",
+          "١",
+          "٢",
+          "٣",
+          "٤",
+          "٥",
+          "٦",
+          "٧",
+          "٨",
+          "٩"
+        ],
+        "digitsToWesternArabic": {
+          "٠": 0,
+          "١": 1,
+          "٢": 2,
+          "٣": 3,
+          "٤": 4,
+          "٥": 5,
+          "٦": 6,
+          "٧": 7,
+          "٨": 8,
+          "٩": 9
+        },
+        "id": 2
+      },
+      {
+        "type": 3,
+        "typeName": "PersianDigits",
+        "name": "Persian Digits",
+        "digitZero": "۰",
+        "doubleDigitZero": "۰۰",
+        "textualAllDigits": "۰۱۲۳۴۵۶۷۸۹",
+        "allDigits": [
+          "۰",
+          "۱",
+          "۲",
+          "۳",
+          "۴",
+          "۵",
+          "۶",
+          "۷",
+          "۸",
+          "۹"
+        ],
+        "digitsToWesternArabic": {
+          "۰": 0,
+          "۱": 1,
+          "۲": 2,
+          "۳": 3,
+          "۴": 4,
+          "۵": 5,
+          "۶": 6,
+          "۷": 7,
+          "۸": 8,
+          "۹": 9
+        },
+        "id": 3
+      },
+      {
+        "type": 4,
+        "typeName": "BurmeseNumerals",
+        "name": "Burmese Numerals",
+        "digitZero": "၀",
+        "doubleDigitZero": "၀၀",
+        "textualAllDigits": "၀၁၂၃၄၅၆၇၈၉",
+        "allDigits": [
+          "၀",
+          "၁",
+          "၂",
+          "၃",
+          "၄",
+          "၅",
+          "၆",
+          "၇",
+          "၈",
+          "၉"
+        ],
+        "digitsToWesternArabic": {
+          "၀": 0,
+          "၁": 1,
+          "၂": 2,
+          "၃": 3,
+          "၄": 4,
+          "၅": 5,
+          "၆": 6,
+          "၇": 7,
+          "၈": 8,
+          "၉": 9
+        },
+        "id": 4
+      },
+      {
+        "type": 5,
+        "typeName": "DevanagariNumerals",
+        "name": "Devanagari Numerals",
+        "digitZero": "०",
+        "doubleDigitZero": "००",
+        "textualAllDigits": "०१२३४५६७८९",
+        "allDigits": [
+          "०",
+          "१",
+          "२",
+          "३",
+          "४",
+          "५",
+          "६",
+          "७",
+          "८",
+          "९"
+        ],
+        "digitsToWesternArabic": {
+          "०": 0,
+          "१": 1,
+          "२": 2,
+          "३": 3,
+          "४": 4,
+          "५": 5,
+          "६": 6,
+          "७": 7,
+          "८": 8,
+          "९": 9
+        },
+        "id": 5
+      }
+    ],
+    "DecimalSeparator": [
+      {
+        "type": 1,
+        "name": "Dot",
+        "symbol": ".",
+        "id": 1
+      },
+      {
+        "type": 2,
+        "name": "Comma",
+        "symbol": ",",
+        "id": 2
+      }
+    ],
+    "DigitGroupingSymbol": [
+      {
+        "type": 1,
+        "name": "Dot",
+        "symbol": ".",
+        "id": 1
+      },
+      {
+        "type": 2,
+        "name": "Comma",
+        "symbol": ",",
+        "id": 2
+      },
+      {
+        "type": 3,
+        "name": "Space",
+        "symbol": " ",
+        "id": 3
+      },
+      {
+        "type": 4,
+        "name": "Apostrophe",
+        "symbol": "'",
+        "id": 4
+      }
+    ],
+    "DigitGroupingType": [
+      {
+        "type": 1,
+        "typeName": "None",
+        "name": "None",
+        "enabled": false,
+        "id": 1
+      },
+      {
+        "type": 2,
+        "typeName": "ThousandsSeparator",
+        "name": "Thousands Separator",
+        "enabled": true,
+        "id": 2
+      },
+      {
+        "type": 3,
+        "typeName": "IndianNumberGrouping",
+        "name": "Indian Number Grouping",
+        "enabled": true,
+        "id": 3
+      }
+    ],
+    "KnownAmountFormat": [
+      {
+        "format": "1234.56",
+        "decimalSeparator": {
+          "type": 1,
+          "name": "Dot",
+          "symbol": "."
+        },
+        "type": "1-0",
+        "regex": {},
+        "id": "1-0",
+        "name": "1-0"
+      },
+      {
+        "format": "1234,56",
+        "decimalSeparator": {
+          "type": 2,
+          "name": "Comma",
+          "symbol": ","
+        },
+        "type": "2-0",
+        "regex": {},
+        "id": "2-0",
+        "name": "2-0"
+      },
+      {
+        "format": "1,234.56",
+        "decimalSeparator": {
+          "type": 1,
+          "name": "Dot",
+          "symbol": "."
+        },
+        "digitGroupingSymbol": {
+          "type": 2,
+          "name": "Comma",
+          "symbol": ","
+        },
+        "type": "1-2",
+        "regex": {},
+        "id": "1-2",
+        "name": "1-2"
+      },
+      {
+        "format": "1.234,56",
+        "decimalSeparator": {
+          "type": 2,
+          "name": "Comma",
+          "symbol": ","
+        },
+        "digitGroupingSymbol": {
+          "type": 1,
+          "name": "Dot",
+          "symbol": "."
+        },
+        "type": "2-1",
+        "regex": {},
+        "id": "2-1",
+        "name": "2-1"
+      },
+      {
+        "format": "1 234.56",
+        "decimalSeparator": {
+          "type": 1,
+          "name": "Dot",
+          "symbol": "."
+        },
+        "digitGroupingSymbol": {
+          "type": 3,
+          "name": "Space",
+          "symbol": " "
+        },
+        "type": "1-3",
+        "regex": {},
+        "id": "1-3",
+        "name": "1-3"
+      },
+      {
+        "format": "1 234,56",
+        "decimalSeparator": {
+          "type": 2,
+          "name": "Comma",
+          "symbol": ","
+        },
+        "digitGroupingSymbol": {
+          "type": 3,
+          "name": "Space",
+          "symbol": " "
+        },
+        "type": "2-3",
+        "regex": {},
+        "id": "2-3",
+        "name": "2-3"
+      },
+      {
+        "format": "1'234.56",
+        "decimalSeparator": {
+          "type": 1,
+          "name": "Dot",
+          "symbol": "."
+        },
+        "digitGroupingSymbol": {
+          "type": 4,
+          "name": "Apostrophe",
+          "symbol": "'"
+        },
+        "type": "1-4",
+        "regex": {},
+        "id": "1-4",
+        "name": "1-4"
+      },
+      {
+        "format": "1'234,56",
+        "decimalSeparator": {
+          "type": 2,
+          "name": "Comma",
+          "symbol": ","
+        },
+        "digitGroupingSymbol": {
+          "type": 4,
+          "name": "Apostrophe",
+          "symbol": "'"
+        },
+        "type": "2-4",
+        "regex": {},
+        "id": "2-4",
+        "name": "2-4"
+      }
+    ],
+    "AmountFilterType": [
+      {
+        "type": "gt",
+        "name": "Greater than",
+        "paramCount": 1,
+        "id": "gt"
+      },
+      {
+        "type": "lt",
+        "name": "Less than",
+        "paramCount": 1,
+        "id": "lt"
+      },
+      {
+        "type": "eq",
+        "name": "Equal to",
+        "paramCount": 1,
+        "id": "eq"
+      },
+      {
+        "type": "ne",
+        "name": "Not equal to",
+        "paramCount": 1,
+        "id": "ne"
+      },
+      {
+        "type": "bt",
+        "name": "Between",
+        "paramCount": 2,
+        "id": "bt"
+      },
+      {
+        "type": "nb",
+        "name": "Not between",
+        "paramCount": 2,
+        "id": "nb"
+      }
+    ],
+    "CurrencyDisplayType": [
+      {
+        "type": 1,
+        "typeName": "None",
+        "name": "None",
+        "fraction": 2,
+        "symbol": 0,
+        "separator": "",
+        "id": 1
+      },
+      {
+        "type": 2,
+        "typeName": "SymbolBeforeAmount",
+        "name": "Currency Symbol",
+        "fraction": 2,
+        "symbol": 1,
+        "location": 0,
+        "separator": " ",
+        "id": 2
+      },
+      {
+        "type": 3,
+        "typeName": "SymbolAfterAmount",
+        "name": "Currency Symbol",
+        "fraction": 2,
+        "symbol": 1,
+        "location": 1,
+        "separator": " ",
+        "id": 3
+      },
+      {
+        "type": 4,
+        "typeName": "SymbolBeforeAmountWithoutSpace",
+        "name": "Currency Symbol",
+        "fraction": 2,
+        "symbol": 1,
+        "location": 0,
+        "separator": "",
+        "id": 4
+      },
+      {
+        "type": 5,
+        "typeName": "SymbolAfterAmountWithoutSpace",
+        "name": "Currency Symbol",
+        "fraction": 2,
+        "symbol": 1,
+        "location": 1,
+        "separator": "",
+        "id": 5
+      },
+      {
+        "type": 6,
+        "typeName": "CodeBeforeAmount",
+        "name": "Currency Code",
+        "fraction": 2,
+        "symbol": 2,
+        "location": 0,
+        "separator": " ",
+        "id": 6
+      },
+      {
+        "type": 7,
+        "typeName": "CodeAfterAmount",
+        "name": "Currency Code",
+        "fraction": 2,
+        "symbol": 2,
+        "location": 1,
+        "separator": " ",
+        "id": 7
+      },
+      {
+        "type": 8,
+        "typeName": "UnitBeforeAmount",
+        "name": "Currency Unit",
+        "fraction": 2,
+        "symbol": 3,
+        "location": 0,
+        "separator": " ",
+        "id": 8
+      },
+      {
+        "type": 9,
+        "typeName": "UnitAfterAmount",
+        "name": "Currency Unit",
+        "fraction": 2,
+        "symbol": 3,
+        "location": 1,
+        "separator": " ",
+        "id": 9
+      },
+      {
+        "type": 10,
+        "typeName": "NameBeforeAmount",
+        "name": "Currency Name",
+        "fraction": 2,
+        "symbol": 4,
+        "location": 0,
+        "separator": " ",
+        "id": 10
+      },
+      {
+        "type": 11,
+        "typeName": "NameAfterAmount",
+        "name": "Currency Name",
+        "fraction": 2,
+        "symbol": 4,
+        "location": 1,
+        "separator": " ",
+        "id": 11
+      }
+    ],
+    "CurrencySortingType": [
+      {
+        "type": 0,
+        "name": "Currency Name",
+        "id": 0
+      },
+      {
+        "type": 1,
+        "name": "Currency Code",
+        "id": 1
+      },
+      {
+        "type": 2,
+        "name": "Exchange Rate",
+        "id": 2
+      }
+    ],
+    "CoordinateDisplayType": [
+      {
+        "type": 1,
+        "name": "Latitude Longitude D.D°",
+        "displayOrder": 0,
+        "displayFormat": 0,
+        "directionFormat": 0,
+        "id": 1
+      },
+      {
+        "type": 2,
+        "name": "Longitude Latitude D.D°",
+        "displayOrder": 1,
+        "displayFormat": 0,
+        "directionFormat": 0,
+        "id": 2
+      },
+      {
+        "type": 3,
+        "name": "Latitude Longitude D°M.M'",
+        "displayOrder": 0,
+        "displayFormat": 1,
+        "directionFormat": 1,
+        "id": 3
+      },
+      {
+        "type": 4,
+        "name": "Longitude Latitude D°M.M'",
+        "displayOrder": 1,
+        "displayFormat": 1,
+        "directionFormat": 1,
+        "id": 4
+      },
+      {
+        "type": 5,
+        "name": "Latitude Longitude D°M'S\"",
+        "displayOrder": 0,
+        "displayFormat": 2,
+        "directionFormat": 1,
+        "id": 5
+      },
+      {
+        "type": 6,
+        "name": "Longitude Latitude D°M'S\"",
+        "displayOrder": 1,
+        "displayFormat": 2,
+        "directionFormat": 1,
+        "id": 6
+      }
+    ],
+    "AccountType": [
+      {
+        "type": 1,
+        "name": "Single Account",
+        "id": 1
+      },
+      {
+        "type": 2,
+        "name": "Multiple Sub-accounts",
+        "id": 2
+      }
+    ],
+    "AccountCategory": [
+      {
+        "type": 1,
+        "defaultDisplayOrder": 1,
+        "name": "Cash",
+        "isAsset": true,
+        "isLiability": false,
+        "defaultAccountIconId": "1",
+        "id": 1
+      },
+      {
+        "type": 2,
+        "defaultDisplayOrder": 2,
+        "name": "Checking Account",
+        "isAsset": true,
+        "isLiability": false,
+        "defaultAccountIconId": "100",
+        "id": 2
+      },
+      {
+        "type": 8,
+        "defaultDisplayOrder": 3,
+        "name": "Savings Account",
+        "isAsset": true,
+        "isLiability": false,
+        "defaultAccountIconId": "100",
+        "id": 8
+      },
+      {
+        "type": 3,
+        "defaultDisplayOrder": 4,
+        "name": "Credit Card",
+        "isAsset": false,
+        "isLiability": true,
+        "defaultAccountIconId": "100",
+        "id": 3
+      },
+      {
+        "type": 4,
+        "defaultDisplayOrder": 5,
+        "name": "Virtual Account",
+        "isAsset": true,
+        "isLiability": false,
+        "defaultAccountIconId": "500",
+        "id": 4
+      },
+      {
+        "type": 5,
+        "defaultDisplayOrder": 6,
+        "name": "Debt Account",
+        "isAsset": false,
+        "isLiability": true,
+        "defaultAccountIconId": "600",
+        "id": 5
+      },
+      {
+        "type": 6,
+        "defaultDisplayOrder": 7,
+        "name": "Receivables",
+        "isAsset": true,
+        "isLiability": false,
+        "defaultAccountIconId": "700",
+        "id": 6
+      },
+      {
+        "type": 9,
+        "defaultDisplayOrder": 8,
+        "name": "Certificate of Deposit",
+        "isAsset": true,
+        "isLiability": false,
+        "defaultAccountIconId": "110",
+        "id": 9
+      },
+      {
+        "type": 7,
+        "defaultDisplayOrder": 9,
+        "name": "Investment Account",
+        "isAsset": true,
+        "isLiability": false,
+        "defaultAccountIconId": "800",
+        "id": 7
+      }
+    ],
+    "CreditCardAmountDisplayType": [
+      {
+        "type": 0,
+        "name": "Outstanding Balance",
+        "id": 0
+      },
+      {
+        "type": 1,
+        "name": "Available Credit",
+        "id": 1
+      }
+    ],
+    "TransactionEditScopeType": [
+      {
+        "type": 0,
+        "name": "None",
+        "needLastReconciledTime": false,
+        "id": 0
+      },
+      {
+        "type": 1,
+        "name": "All",
+        "needLastReconciledTime": false,
+        "id": 1
+      },
+      {
+        "type": 2,
+        "name": "Today or later",
+        "needLastReconciledTime": false,
+        "id": 2
+      },
+      {
+        "type": 3,
+        "name": "Recent 24 hours or later",
+        "needLastReconciledTime": false,
+        "id": 3
+      },
+      {
+        "type": 4,
+        "name": "This week or later",
+        "needLastReconciledTime": false,
+        "id": 4
+      },
+      {
+        "type": 5,
+        "name": "This month or later",
+        "needLastReconciledTime": false,
+        "id": 5
+      },
+      {
+        "type": 6,
+        "name": "This year or later",
+        "needLastReconciledTime": false,
+        "id": 6
+      },
+      {
+        "type": 7,
+        "name": "Last reconciled time or later",
+        "needLastReconciledTime": true,
+        "id": 7
+      }
+    ],
+    "TransactionTagFilterType": [
+      {
+        "type": 0,
+        "name": "Include Any Selected Tags",
+        "id": 0
+      },
+      {
+        "type": 1,
+        "name": "Include All Selected Tags",
+        "id": 1
+      },
+      {
+        "type": 2,
+        "name": "Exclude Any Selected Tags",
+        "id": 2
+      },
+      {
+        "type": 3,
+        "name": "Exclude All Selected Tags",
+        "id": 3
+      }
+    ],
+    "TransactionQuickSaveButtonStyle": [
+      {
+        "type": 0,
+        "name": "Disabled",
+        "id": 0
+      },
+      {
+        "type": 1,
+        "name": "Bottom Fixed",
+        "id": 1
+      },
+      {
+        "type": 2,
+        "name": "Bottom Left Floating",
+        "id": 2
+      },
+      {
+        "type": 3,
+        "name": "Bottom Center Floating",
+        "id": 3
+      },
+      {
+        "type": 4,
+        "name": "Bottom Right Floating",
+        "id": 4
+      }
+    ],
+    "TransactionQuickAddButtonActionType": [
+      {
+        "type": 0,
+        "name": "Save",
+        "id": 0
+      },
+      {
+        "type": 1,
+        "name": "Open Menu",
+        "id": 1
+      },
+      {
+        "type": 2,
+        "name": "Save & New",
+        "id": 2
+      },
+      {
+        "type": 3,
+        "name": "Save & Duplicate",
+        "id": 3
+      }
+    ],
+    "ImageUploadQualityType": [
+      {
+        "type": 0,
+        "name": "Original",
+        "maxLongSidePixels": null,
+        "quality": 1,
+        "estimatedKiB": null,
+        "id": 0
+      },
+      {
+        "type": 1,
+        "name": "4K",
+        "maxLongSidePixels": 3840,
+        "quality": 0.93,
+        "estimatedKiB": 1500,
+        "id": 1
+      },
+      {
+        "type": 2,
+        "name": "2K",
+        "maxLongSidePixels": 2560,
+        "quality": 0.9,
+        "estimatedKiB": 700,
+        "id": 2
+      },
+      {
+        "type": 3,
+        "name": "1080p",
+        "maxLongSidePixels": 1920,
+        "quality": 0.85,
+        "estimatedKiB": 500,
+        "id": 3
+      },
+      {
+        "type": 4,
+        "name": "720p",
+        "maxLongSidePixels": 1280,
+        "quality": 0.8,
+        "estimatedKiB": 300,
+        "id": 4
+      }
+    ],
+    "KeywordMatchMode": [
+      {
+        "type": 0,
+        "name": "Database Default Setting",
+        "id": 0
+      },
+      {
+        "type": 1,
+        "name": "Ignore Case",
+        "id": 1
+      }
+    ],
+    "KnownDateTimezoneFormat": [
+      {
+        "name": "±HH:mm",
+        "nameSupportedI18n": false,
+        "value": "Z",
+        "regex": {},
+        "id": "Z"
+      },
+      {
+        "name": "±HHmm",
+        "nameSupportedI18n": false,
+        "value": "ZZ",
+        "regex": {},
+        "id": "ZZ"
+      },
+      {
+        "name": "IANA Time Zone Name",
+        "nameSupportedI18n": true,
+        "value": "zzz",
+        "regex": {},
+        "id": "zzz"
+      }
+    ],
+    "TimezoneTypeForStatistics": [
+      {
+        "type": 0,
+        "name": "Application Timezone",
+        "id": 0
+      },
+      {
+        "type": 1,
+        "name": "Transaction Timezone",
+        "id": 1
+      }
+    ]
+  },
+  "defaults": {
+    "debug": false,
+    "theme": "auto",
+    "fontSize": 1,
+    "timeZone": "",
+    "autoUpdateExchangeRatesData": true,
+    "showAccountBalance": true,
+    "accountCategoryOrders": "",
+    "chartColors": "",
+    "swipeBack": true,
+    "animate": true,
+    "applicationLock": false,
+    "applicationLockWebAuthn": false,
+    "showAddTransactionButtonInDesktopNavbar": true,
+    "desktopOverviewPageLayout": "",
+    "mobileOverviewPageLayout": "",
+    "showAmountInHomePage": true,
+    "timezoneUsedForStatisticsInHomePage": 0,
+    "overviewAccountFilterInHomePage": {},
+    "overviewTransactionCategoryFilterInHomePage": {},
+    "itemsCountInTransactionListPage": 15,
+    "showTotalAmountInTransactionListPage": true,
+    "showTagInTransactionListPage": true,
+    "defaultKeywordMatchModeInTransactionListPage": 0,
+    "quickSaveButtonStyleInMobileTransactionListPage": 4,
+    "quickAddButtonActionInMobileTransactionEditPage": 0,
+    "autoSaveTransactionDraft": "disabled",
+    "autoGetCurrentGeoLocation": true,
+    "alwaysShowTransactionPicturesInMobileTransactionEditPage": false,
+    "transactionPictureQuality": 0,
+    "alwaysRequireConfirmationOfClipboardContentBeforeSubmission": true,
+    "autoUploadTransactionPictureForAIRecognition": false,
+    "rememberLastSelectedFileTypeInImportTransactionDialog": true,
+    "lastSelectedFileTypeInImportTransactionDialog": "",
+    "insightsExplorerDefaultDateRangeType": 7,
+    "showTagInInsightsExplorerPage": true,
+    "totalAmountExcludeAccountIds": {},
+    "hideCategoriesWithoutAccounts": false,
+    "defaultCreditCardAmountDisplayTypeInMobile": 0,
+    "reconciliationStatementButtonDefaultDateRangeTypeInDesktop": 255,
+    "reconciliationStatementPageDefaultDateRangeTypeInMobile": 7,
+    "currencySortByInExchangeRatesPage": 0,
+    "mapCacheExpiration": -1,
+    "exchangeRatesDataCacheExpiration": 0,
+    "statistics": {
+      "defaultChartDataType": 1,
+      "defaultTimezoneType": 0,
+      "defaultAccountFilter": {},
+      "defaultTransactionCategoryFilter": {},
+      "defaultKeywordMatchMode": 0,
+      "defaultSortingType": 0,
+      "defaultCategoricalChartType": 0,
+      "defaultCategoricalChartDataRangeType": 7,
+      "defaultTrendChartType": 1,
+      "defaultTrendChartDataRangeType": 9,
+      "defaultAssetTrendsChartType": 1,
+      "defaultAssetTrendsChartDataRangeType": 9
+    }
+  },
+  "cloudTypes": {
+    "showAccountBalance": "boolean",
+    "accountCategoryOrders": "string",
+    "autoUpdateExchangeRatesData": "boolean",
+    "chartColors": "string",
+    "showAddTransactionButtonInDesktopNavbar": "boolean",
+    "desktopOverviewPageLayout": "string",
+    "mobileOverviewPageLayout": "string",
+    "showAmountInHomePage": "boolean",
+    "timezoneUsedForStatisticsInHomePage": "number",
+    "overviewAccountFilterInHomePage": "string_boolean_map",
+    "overviewTransactionCategoryFilterInHomePage": "string_boolean_map",
+    "itemsCountInTransactionListPage": "number",
+    "showTotalAmountInTransactionListPage": "boolean",
+    "showTagInTransactionListPage": "boolean",
+    "defaultKeywordMatchModeInTransactionListPage": "number",
+    "quickSaveButtonStyleInMobileTransactionListPage": "number",
+    "quickAddButtonActionInMobileTransactionEditPage": "number",
+    "autoSaveTransactionDraft": "string",
+    "autoGetCurrentGeoLocation": "boolean",
+    "alwaysShowTransactionPicturesInMobileTransactionEditPage": "boolean",
+    "transactionPictureQuality": "number",
+    "alwaysRequireConfirmationOfClipboardContentBeforeSubmission": "boolean",
+    "autoUploadTransactionPictureForAIRecognition": "boolean",
+    "rememberLastSelectedFileTypeInImportTransactionDialog": "boolean",
+    "lastSelectedFileTypeInImportTransactionDialog": "string",
+    "insightsExplorerDefaultDateRangeType": "number",
+    "showTagInInsightsExplorerPage": "boolean",
+    "totalAmountExcludeAccountIds": "string_boolean_map",
+    "hideCategoriesWithoutAccounts": "boolean",
+    "defaultCreditCardAmountDisplayTypeInMobile": "number",
+    "reconciliationStatementButtonDefaultDateRangeTypeInDesktop": "number",
+    "reconciliationStatementPageDefaultDateRangeTypeInMobile": "number",
+    "currencySortByInExchangeRatesPage": "number",
+    "mapCacheExpiration": "number",
+    "exchangeRatesDataCacheExpiration": "number",
+    "statistics.defaultChartDataType": "number",
+    "statistics.defaultTimezoneType": "number",
+    "statistics.defaultAccountFilter": "string_boolean_map",
+    "statistics.defaultTransactionCategoryFilter": "string_boolean_map",
+    "statistics.defaultKeywordMatchMode": "number",
+    "statistics.defaultSortingType": "number",
+    "statistics.defaultCategoricalChartType": "number",
+    "statistics.defaultCategoricalChartDataRangeType": "number",
+    "statistics.defaultTrendChartType": "number",
+    "statistics.defaultTrendChartDataRangeType": "number",
+    "statistics.defaultAssetTrendsChartType": "number",
+    "statistics.defaultAssetTrendsChartDataRangeType": "number"
+  },
+  "cloudGroups": [
+    {
+      "categoryName": "General Settings",
+      "items": [
+        {
+          "settingKey": "showAccountBalance",
+          "settingName": "Show Account Balance",
+          "mobile": true,
+          "desktop": true
+        },
+        {
+          "settingKey": "accountCategoryOrders",
+          "settingName": "Account Category Order",
+          "mobile": true,
+          "desktop": true
+        },
+        {
+          "settingKey": "chartColors",
+          "settingName": "Chart Color Scheme",
+          "mobile": true,
+          "desktop": true
+        },
+        {
+          "settingKey": "autoUpdateExchangeRatesData",
+          "settingName": "Auto-update Exchange Rates Data",
+          "mobile": true,
+          "desktop": true
+        }
+      ]
+    },
+    {
+      "categoryName": "Navigation Bar",
+      "items": [
+        {
+          "settingKey": "showAddTransactionButtonInDesktopNavbar",
+          "settingName": "Show Add Transaction Button",
+          "mobile": false,
+          "desktop": true
+        }
+      ]
+    },
+    {
+      "categoryName": "Overview Page",
+      "items": [
+        {
+          "settingKey": "desktopOverviewPageLayout",
+          "settingName": "Desktop Home Page Layout",
+          "mobile": false,
+          "desktop": true
+        },
+        {
+          "settingKey": "mobileOverviewPageLayout",
+          "settingName": "Mobile Home Page Layout",
+          "mobile": true,
+          "desktop": false
+        },
+        {
+          "settingKey": "showAmountInHomePage",
+          "settingName": "Show Amount",
+          "mobile": true,
+          "desktop": true
+        },
+        {
+          "settingKey": "timezoneUsedForStatisticsInHomePage",
+          "settingName": "Timezone Used for Statistics",
+          "mobile": true,
+          "desktop": true
+        },
+        {
+          "settingKey": "overviewAccountFilterInHomePage",
+          "settingName": "Accounts Included in Overview Statistics",
+          "mobile": true,
+          "desktop": true
+        },
+        {
+          "settingKey": "overviewTransactionCategoryFilterInHomePage",
+          "settingName": "Transaction Categories Included in Overview Statistics",
+          "mobile": true,
+          "desktop": true
+        }
+      ]
+    },
+    {
+      "categoryName": "Transaction List Page",
+      "items": [
+        {
+          "settingKey": "itemsCountInTransactionListPage",
+          "settingName": "Transactions Per Page",
+          "mobile": false,
+          "desktop": true
+        },
+        {
+          "settingKey": "showTotalAmountInTransactionListPage",
+          "settingName": "Show Monthly Total Amount",
+          "mobile": true,
+          "desktop": true
+        },
+        {
+          "settingKey": "showTagInTransactionListPage",
+          "settingName": "Show Transaction Tags",
+          "mobile": true,
+          "desktop": true
+        },
+        {
+          "settingKey": "defaultKeywordMatchModeInTransactionListPage",
+          "settingName": "Default Keyword Search Matching Mode",
+          "mobile": true,
+          "desktop": true
+        }
+      ]
+    },
+    {
+      "categoryName": "Transaction Edit Page",
+      "items": [
+        {
+          "settingKey": "quickSaveButtonStyleInMobileTransactionListPage",
+          "settingName": "Quick Save Button Style",
+          "mobile": true,
+          "desktop": false
+        },
+        {
+          "settingKey": "quickAddButtonActionInMobileTransactionEditPage",
+          "settingName": "Quick Add Button Action",
+          "mobile": true,
+          "desktop": false
+        },
+        {
+          "settingKey": "autoSaveTransactionDraft",
+          "settingName": "Automatically Save Draft",
+          "mobile": true,
+          "desktop": true
+        },
+        {
+          "settingKey": "autoGetCurrentGeoLocation",
+          "settingName": "Automatically Add Geolocation",
+          "mobile": true,
+          "desktop": true
+        },
+        {
+          "settingKey": "alwaysShowTransactionPicturesInMobileTransactionEditPage",
+          "settingName": "Always Show Transaction Pictures",
+          "mobile": true,
+          "desktop": false
+        },
+        {
+          "settingKey": "transactionPictureQuality",
+          "settingName": "Transaction Picture Upload Quality",
+          "mobile": true,
+          "desktop": false
+        }
+      ]
+    },
+    {
+      "categoryName": "AI Clipboard Text Recognition",
+      "items": [
+        {
+          "settingKey": "alwaysRequireConfirmationOfClipboardContentBeforeSubmission",
+          "settingName": "Always Require Confirmation of Clipboard Content Before Submission",
+          "mobile": true,
+          "desktop": true
+        }
+      ]
+    },
+    {
+      "categoryName": "AI Image Recognition",
+      "items": [
+        {
+          "settingKey": "autoUploadTransactionPictureForAIRecognition",
+          "settingName": "Auto Upload AI Recognition Image as Transaction Picture",
+          "mobile": true,
+          "desktop": true
+        }
+      ]
+    },
+    {
+      "categoryName": "Import Transaction Dialog",
+      "items": [
+        {
+          "settingKey": "rememberLastSelectedFileTypeInImportTransactionDialog",
+          "relatedSettingKeys": [
+            "lastSelectedFileTypeInImportTransactionDialog"
+          ],
+          "settingName": "Remember Last Selected File Type",
+          "mobile": false,
+          "desktop": true
+        }
+      ]
+    },
+    {
+      "categoryName": "Insights Explorer Page",
+      "items": [
+        {
+          "settingKey": "insightsExplorerDefaultDateRangeType",
+          "settingName": "Default Date Range",
+          "mobile": false,
+          "desktop": true
+        },
+        {
+          "settingKey": "showTagInInsightsExplorerPage",
+          "settingName": "Show Transaction Tags",
+          "mobile": false,
+          "desktop": true
+        }
+      ]
+    },
+    {
+      "categoryName": "Account List Page",
+      "items": [
+        {
+          "settingKey": "totalAmountExcludeAccountIds",
+          "settingName": "Accounts Included in Total",
+          "mobile": true,
+          "desktop": true
+        },
+        {
+          "settingKey": "hideCategoriesWithoutAccounts",
+          "settingName": "Hide Categories Without Accounts",
+          "mobile": false,
+          "desktop": true
+        },
+        {
+          "settingKey": "defaultCreditCardAmountDisplayTypeInMobile",
+          "settingName": "Default Credit Card Amount",
+          "mobile": true,
+          "desktop": false
+        },
+        {
+          "settingKey": "reconciliationStatementButtonDefaultDateRangeTypeInDesktop",
+          "settingName": "Default Date Range for Reconciliation Statement Button",
+          "mobile": false,
+          "desktop": true
+        },
+        {
+          "settingKey": "reconciliationStatementPageDefaultDateRangeTypeInMobile",
+          "settingName": "Default Date Range for Reconciliation Statement Page",
+          "mobile": true,
+          "desktop": false
+        }
+      ]
+    },
+    {
+      "categoryName": "Exchange Rates Data Page",
+      "items": [
+        {
+          "settingKey": "currencySortByInExchangeRatesPage",
+          "settingName": "Sort by",
+          "mobile": true,
+          "desktop": true
+        }
+      ]
+    },
+    {
+      "categoryName": "Browser Cache Management",
+      "items": [
+        {
+          "settingKey": "mapCacheExpiration",
+          "settingName": "Cache Expiration for Map Data",
+          "mobile": true,
+          "desktop": true
+        },
+        {
+          "settingKey": "exchangeRatesDataCacheExpiration",
+          "settingName": "Cache Expiration for Exchange Rates Data",
+          "mobile": true,
+          "desktop": true
+        }
+      ]
+    },
+    {
+      "categoryName": "Statistics Settings",
+      "categorySubName": "Common Settings",
+      "items": [
+        {
+          "settingKey": "statistics.defaultChartDataType",
+          "settingName": "Default Chart Data Type",
+          "mobile": true,
+          "desktop": true
+        },
+        {
+          "settingKey": "statistics.defaultTimezoneType",
+          "settingName": "Timezone Used for Date Range",
+          "mobile": true,
+          "desktop": true
+        },
+        {
+          "settingKey": "statistics.defaultAccountFilter",
+          "settingName": "Default Account Filter",
+          "mobile": true,
+          "desktop": true
+        },
+        {
+          "settingKey": "statistics.defaultTransactionCategoryFilter",
+          "settingName": "Default Transaction Category Filter",
+          "mobile": true,
+          "desktop": true
+        },
+        {
+          "settingKey": "statistics.defaultKeywordMatchMode",
+          "settingName": "Default Keyword Search Matching Mode",
+          "mobile": true,
+          "desktop": true
+        },
+        {
+          "settingKey": "statistics.defaultSortingType",
+          "settingName": "Default Sort Order",
+          "mobile": true,
+          "desktop": true
+        }
+      ]
+    },
+    {
+      "categoryName": "Statistics Settings",
+      "categorySubName": "Categorical Analysis Settings",
+      "items": [
+        {
+          "settingKey": "statistics.defaultCategoricalChartType",
+          "settingName": "Default Chart Type",
+          "mobile": true,
+          "desktop": true
+        },
+        {
+          "settingKey": "statistics.defaultCategoricalChartDataRangeType",
+          "settingName": "Default Date Range",
+          "mobile": true,
+          "desktop": true
+        }
+      ]
+    },
+    {
+      "categoryName": "Statistics Settings",
+      "categorySubName": "Trend Analysis Settings",
+      "items": [
+        {
+          "settingKey": "statistics.defaultTrendChartType",
+          "settingName": "Default Chart Type",
+          "mobile": false,
+          "desktop": true
+        },
+        {
+          "settingKey": "statistics.defaultTrendChartDataRangeType",
+          "settingName": "Default Date Range",
+          "mobile": true,
+          "desktop": true
+        }
+      ]
+    },
+    {
+      "categoryName": "Statistics Settings",
+      "categorySubName": "Asset Trends Settings",
+      "items": [
+        {
+          "settingKey": "statistics.defaultAssetTrendsChartType",
+          "settingName": "Default Chart Type",
+          "mobile": false,
+          "desktop": true
+        },
+        {
+          "settingKey": "statistics.defaultAssetTrendsChartDataRangeType",
+          "settingName": "Default Date Range",
+          "mobile": true,
+          "desktop": true
+        }
+      ]
+    }
+  ],
+  "timezones": [
+    {
+      "displayName": "International Date Line West",
+      "timezoneName": "Etc/GMT+12"
+    },
+    {
+      "displayName": "Coordinated Universal Time-11",
+      "timezoneName": "Etc/GMT+11"
+    },
+    {
+      "displayName": "Aleutian Islands",
+      "timezoneName": "America/Adak"
+    },
+    {
+      "displayName": "Hawaii",
+      "timezoneName": "Pacific/Honolulu"
+    },
+    {
+      "displayName": "Marquesas Islands",
+      "timezoneName": "Pacific/Marquesas"
+    },
+    {
+      "displayName": "Alaska",
+      "timezoneName": "America/Anchorage"
+    },
+    {
+      "displayName": "Coordinated Universal Time-09",
+      "timezoneName": "Etc/GMT+9"
+    },
+    {
+      "displayName": "Baja California",
+      "timezoneName": "America/Tijuana"
+    },
+    {
+      "displayName": "Coordinated Universal Time-08",
+      "timezoneName": "Etc/GMT+8"
+    },
+    {
+      "displayName": "Pacific Time (US & Canada)",
+      "timezoneName": "America/Los_Angeles"
+    },
+    {
+      "displayName": "Arizona",
+      "timezoneName": "America/Phoenix"
+    },
+    {
+      "displayName": "La Paz, Mazatlan",
+      "timezoneName": "America/Chihuahua"
+    },
+    {
+      "displayName": "Mountain Time (US & Canada)",
+      "timezoneName": "America/Denver"
+    },
+    {
+      "displayName": "Yukon",
+      "timezoneName": "America/Whitehorse"
+    },
+    {
+      "displayName": "Central America",
+      "timezoneName": "America/Guatemala"
+    },
+    {
+      "displayName": "Central Time (US & Canada)",
+      "timezoneName": "America/Chicago"
+    },
+    {
+      "displayName": "Easter Island",
+      "timezoneName": "Pacific/Easter"
+    },
+    {
+      "displayName": "Guadalajara, Mexico City, Monterrey",
+      "timezoneName": "America/Mexico_City"
+    },
+    {
+      "displayName": "Saskatchewan",
+      "timezoneName": "America/Regina"
+    },
+    {
+      "displayName": "Bogota, Lima, Quito, Rio Branco",
+      "timezoneName": "America/Bogota"
+    },
+    {
+      "displayName": "Chetumal",
+      "timezoneName": "America/Cancun"
+    },
+    {
+      "displayName": "Eastern Time (US & Canada)",
+      "timezoneName": "America/New_York"
+    },
+    {
+      "displayName": "Haiti",
+      "timezoneName": "America/Port-au-Prince"
+    },
+    {
+      "displayName": "Havana",
+      "timezoneName": "America/Havana"
+    },
+    {
+      "displayName": "Indiana (East)",
+      "timezoneName": "America/Indianapolis"
+    },
+    {
+      "displayName": "Turks and Caicos",
+      "timezoneName": "America/Grand_Turk"
+    },
+    {
+      "displayName": "Asuncion",
+      "timezoneName": "America/Asuncion"
+    },
+    {
+      "displayName": "Atlantic Time (Canada)",
+      "timezoneName": "America/Halifax"
+    },
+    {
+      "displayName": "Caracas",
+      "timezoneName": "America/Caracas"
+    },
+    {
+      "displayName": "Cuiaba",
+      "timezoneName": "America/Cuiaba"
+    },
+    {
+      "displayName": "Georgetown, La Paz, Manaus, San Juan",
+      "timezoneName": "America/La_Paz"
+    },
+    {
+      "displayName": "Santiago",
+      "timezoneName": "America/Santiago"
+    },
+    {
+      "displayName": "Newfoundland",
+      "timezoneName": "America/St_Johns"
+    },
+    {
+      "displayName": "Araguaina",
+      "timezoneName": "America/Araguaina"
+    },
+    {
+      "displayName": "Brasilia",
+      "timezoneName": "America/Sao_Paulo"
+    },
+    {
+      "displayName": "Cayenne, Fortaleza",
+      "timezoneName": "America/Cayenne"
+    },
+    {
+      "displayName": "City of Buenos Aires",
+      "timezoneName": "America/Buenos_Aires"
+    },
+    {
+      "displayName": "Montevideo",
+      "timezoneName": "America/Montevideo"
+    },
+    {
+      "displayName": "Punta Arenas",
+      "timezoneName": "America/Punta_Arenas"
+    },
+    {
+      "displayName": "Saint Pierre and Miquelon",
+      "timezoneName": "America/Miquelon"
+    },
+    {
+      "displayName": "Salvador",
+      "timezoneName": "America/Bahia"
+    },
+    {
+      "displayName": "Coordinated Universal Time-02",
+      "timezoneName": "Etc/GMT+2"
+    },
+    {
+      "displayName": "Greenland",
+      "timezoneName": "America/Godthab"
+    },
+    {
+      "displayName": "Azores",
+      "timezoneName": "Atlantic/Azores"
+    },
+    {
+      "displayName": "Cabo Verde Is",
+      "timezoneName": "Atlantic/Cape_Verde"
+    },
+    {
+      "displayName": "Coordinated Universal Time",
+      "timezoneName": "Etc/GMT"
+    },
+    {
+      "displayName": "Dublin, Edinburgh, Lisbon, London",
+      "timezoneName": "Europe/London"
+    },
+    {
+      "displayName": "Monrovia, Reykjavik",
+      "timezoneName": "Atlantic/Reykjavik"
+    },
+    {
+      "displayName": "Sao Tome",
+      "timezoneName": "Africa/Sao_Tome"
+    },
+    {
+      "displayName": "Casablanca",
+      "timezoneName": "Africa/Casablanca"
+    },
+    {
+      "displayName": "Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna",
+      "timezoneName": "Europe/Berlin"
+    },
+    {
+      "displayName": "Belgrade, Bratislava, Budapest, Ljubljana, Prague",
+      "timezoneName": "Europe/Budapest"
+    },
+    {
+      "displayName": "Brussels, Copenhagen, Madrid, Paris",
+      "timezoneName": "Europe/Paris"
+    },
+    {
+      "displayName": "Sarajevo, Skopje, Warsaw, Zagreb",
+      "timezoneName": "Europe/Warsaw"
+    },
+    {
+      "displayName": "West Central Africa",
+      "timezoneName": "Africa/Lagos"
+    },
+    {
+      "displayName": "Athens, Bucharest",
+      "timezoneName": "Europe/Bucharest"
+    },
+    {
+      "displayName": "Beirut",
+      "timezoneName": "Asia/Beirut"
+    },
+    {
+      "displayName": "Cairo",
+      "timezoneName": "Africa/Cairo"
+    },
+    {
+      "displayName": "Chisinau",
+      "timezoneName": "Europe/Chisinau"
+    },
+    {
+      "displayName": "Gaza, Hebron",
+      "timezoneName": "Asia/Gaza"
+    },
+    {
+      "displayName": "Harare, Pretoria",
+      "timezoneName": "Africa/Johannesburg"
+    },
+    {
+      "displayName": "Helsinki, Kyiv, Riga, Sofia, Tallinn, Vilnius",
+      "timezoneName": "Europe/Kiev"
+    },
+    {
+      "displayName": "Jerusalem",
+      "timezoneName": "Asia/Jerusalem"
+    },
+    {
+      "displayName": "Juba",
+      "timezoneName": "Africa/Juba"
+    },
+    {
+      "displayName": "Kaliningrad",
+      "timezoneName": "Europe/Kaliningrad"
+    },
+    {
+      "displayName": "Khartoum",
+      "timezoneName": "Africa/Khartoum"
+    },
+    {
+      "displayName": "Tripoli",
+      "timezoneName": "Africa/Tripoli"
+    },
+    {
+      "displayName": "Windhoek",
+      "timezoneName": "Africa/Windhoek"
+    },
+    {
+      "displayName": "Amman",
+      "timezoneName": "Asia/Amman"
+    },
+    {
+      "displayName": "Baghdad",
+      "timezoneName": "Asia/Baghdad"
+    },
+    {
+      "displayName": "Damascus",
+      "timezoneName": "Asia/Damascus"
+    },
+    {
+      "displayName": "Istanbul",
+      "timezoneName": "Europe/Istanbul"
+    },
+    {
+      "displayName": "Kuwait, Riyadh",
+      "timezoneName": "Asia/Riyadh"
+    },
+    {
+      "displayName": "Minsk",
+      "timezoneName": "Europe/Minsk"
+    },
+    {
+      "displayName": "Moscow, St Petersburg",
+      "timezoneName": "Europe/Moscow"
+    },
+    {
+      "displayName": "Nairobi",
+      "timezoneName": "Africa/Nairobi"
+    },
+    {
+      "displayName": "Volgograd",
+      "timezoneName": "Europe/Volgograd"
+    },
+    {
+      "displayName": "Tehran",
+      "timezoneName": "Asia/Tehran"
+    },
+    {
+      "displayName": "Abu Dhabi, Muscat",
+      "timezoneName": "Asia/Dubai"
+    },
+    {
+      "displayName": "Astrakhan, Ulyanovsk",
+      "timezoneName": "Europe/Astrakhan"
+    },
+    {
+      "displayName": "Baku",
+      "timezoneName": "Asia/Baku"
+    },
+    {
+      "displayName": "Izhevsk, Samara",
+      "timezoneName": "Europe/Samara"
+    },
+    {
+      "displayName": "Port Louis",
+      "timezoneName": "Indian/Mauritius"
+    },
+    {
+      "displayName": "Saratov",
+      "timezoneName": "Europe/Saratov"
+    },
+    {
+      "displayName": "Tbilisi",
+      "timezoneName": "Asia/Tbilisi"
+    },
+    {
+      "displayName": "Yerevan",
+      "timezoneName": "Asia/Yerevan"
+    },
+    {
+      "displayName": "Kabul",
+      "timezoneName": "Asia/Kabul"
+    },
+    {
+      "displayName": "Ashgabat, Tashkent",
+      "timezoneName": "Asia/Tashkent"
+    },
+    {
+      "displayName": "Astana",
+      "timezoneName": "Asia/Qyzylorda"
+    },
+    {
+      "displayName": "Ekaterinburg",
+      "timezoneName": "Asia/Yekaterinburg"
+    },
+    {
+      "displayName": "Islamabad, Karachi",
+      "timezoneName": "Asia/Karachi"
+    },
+    {
+      "displayName": "Chennai, Kolkata, Mumbai, New Delhi",
+      "timezoneName": "Asia/Calcutta"
+    },
+    {
+      "displayName": "Sri Jayawardenepura",
+      "timezoneName": "Asia/Colombo"
+    },
+    {
+      "displayName": "Kathmandu",
+      "timezoneName": "Asia/Kathmandu"
+    },
+    {
+      "displayName": "Bishkek",
+      "timezoneName": "Asia/Bishkek"
+    },
+    {
+      "displayName": "Dhaka",
+      "timezoneName": "Asia/Dhaka"
+    },
+    {
+      "displayName": "Omsk",
+      "timezoneName": "Asia/Omsk"
+    },
+    {
+      "displayName": "Yangon (Rangoon)",
+      "timezoneName": "Asia/Rangoon"
+    },
+    {
+      "displayName": "Bangkok, Hanoi, Jakarta",
+      "timezoneName": "Asia/Bangkok"
+    },
+    {
+      "displayName": "Barnaul, Gorno-Altaysk",
+      "timezoneName": "Asia/Barnaul"
+    },
+    {
+      "displayName": "Hovd",
+      "timezoneName": "Asia/Hovd"
+    },
+    {
+      "displayName": "Krasnoyarsk",
+      "timezoneName": "Asia/Krasnoyarsk"
+    },
+    {
+      "displayName": "Novosibirsk",
+      "timezoneName": "Asia/Novosibirsk"
+    },
+    {
+      "displayName": "Tomsk",
+      "timezoneName": "Asia/Tomsk"
+    },
+    {
+      "displayName": "Beijing, Chongqing, Hong Kong SAR, Urumqi",
+      "timezoneName": "Asia/Shanghai"
+    },
+    {
+      "displayName": "Irkutsk",
+      "timezoneName": "Asia/Irkutsk"
+    },
+    {
+      "displayName": "Kuala Lumpur, Singapore",
+      "timezoneName": "Asia/Singapore"
+    },
+    {
+      "displayName": "Perth",
+      "timezoneName": "Australia/Perth"
+    },
+    {
+      "displayName": "Taipei",
+      "timezoneName": "Asia/Taipei"
+    },
+    {
+      "displayName": "Ulaanbaatar",
+      "timezoneName": "Asia/Ulaanbaatar"
+    },
+    {
+      "displayName": "Eucla",
+      "timezoneName": "Australia/Eucla"
+    },
+    {
+      "displayName": "Chita",
+      "timezoneName": "Asia/Chita"
+    },
+    {
+      "displayName": "Osaka, Sapporo, Tokyo",
+      "timezoneName": "Asia/Tokyo"
+    },
+    {
+      "displayName": "Pyongyang",
+      "timezoneName": "Asia/Pyongyang"
+    },
+    {
+      "displayName": "Seoul",
+      "timezoneName": "Asia/Seoul"
+    },
+    {
+      "displayName": "Yakutsk",
+      "timezoneName": "Asia/Yakutsk"
+    },
+    {
+      "displayName": "Adelaide",
+      "timezoneName": "Australia/Adelaide"
+    },
+    {
+      "displayName": "Darwin",
+      "timezoneName": "Australia/Darwin"
+    },
+    {
+      "displayName": "Brisbane",
+      "timezoneName": "Australia/Brisbane"
+    },
+    {
+      "displayName": "Canberra, Melbourne, Sydney",
+      "timezoneName": "Australia/Sydney"
+    },
+    {
+      "displayName": "Guam, Port Moresby",
+      "timezoneName": "Pacific/Port_Moresby"
+    },
+    {
+      "displayName": "Hobart",
+      "timezoneName": "Australia/Hobart"
+    },
+    {
+      "displayName": "Vladivostok",
+      "timezoneName": "Asia/Vladivostok"
+    },
+    {
+      "displayName": "Lord Howe Island",
+      "timezoneName": "Australia/Lord_Howe"
+    },
+    {
+      "displayName": "Bougainville Island",
+      "timezoneName": "Pacific/Bougainville"
+    },
+    {
+      "displayName": "Chokurdakh",
+      "timezoneName": "Asia/Srednekolymsk"
+    },
+    {
+      "displayName": "Magadan",
+      "timezoneName": "Asia/Magadan"
+    },
+    {
+      "displayName": "Norfolk Island",
+      "timezoneName": "Pacific/Norfolk"
+    },
+    {
+      "displayName": "Sakhalin",
+      "timezoneName": "Asia/Sakhalin"
+    },
+    {
+      "displayName": "Solomon Is, New Caledonia",
+      "timezoneName": "Pacific/Guadalcanal"
+    },
+    {
+      "displayName": "Anadyr, Petropavlovsk-Kamchatsky",
+      "timezoneName": "Asia/Kamchatka"
+    },
+    {
+      "displayName": "Auckland, Wellington",
+      "timezoneName": "Pacific/Auckland"
+    },
+    {
+      "displayName": "Coordinated Universal Time+12",
+      "timezoneName": "Etc/GMT-12"
+    },
+    {
+      "displayName": "Fiji",
+      "timezoneName": "Pacific/Fiji"
+    },
+    {
+      "displayName": "Chatham Islands",
+      "timezoneName": "Pacific/Chatham"
+    },
+    {
+      "displayName": "Coordinated Universal Time+13",
+      "timezoneName": "Etc/GMT-13"
+    },
+    {
+      "displayName": "Nukualofa",
+      "timezoneName": "Pacific/Tongatapu"
+    },
+    {
+      "displayName": "Samoa",
+      "timezoneName": "Pacific/Apia"
+    },
+    {
+      "displayName": "Kiritimati Island",
+      "timezoneName": "Pacific/Kiritimati"
+    }
+  ],
+  "languages": [
+    {
+      "id": "de",
+      "name": "Deutsch"
+    },
+    {
+      "id": "el",
+      "name": "Ελληνικά"
+    },
+    {
+      "id": "en",
+      "name": "English"
+    },
+    {
+      "id": "es",
+      "name": "Español"
+    },
+    {
+      "id": "fr",
+      "name": "Français"
+    },
+    {
+      "id": "it",
+      "name": "Italiano"
+    },
+    {
+      "id": "ja",
+      "name": "日本語"
+    },
+    {
+      "id": "kn",
+      "name": "ಕನ್ನಡ"
+    },
+    {
+      "id": "ko",
+      "name": "한국어"
+    },
+    {
+      "id": "nl",
+      "name": "Nederlands"
+    },
+    {
+      "id": "pt-BR",
+      "name": "Português (Brasil)"
+    },
+    {
+      "id": "ro",
+      "name": "Română"
+    },
+    {
+      "id": "ru",
+      "name": "Русский"
+    },
+    {
+      "id": "sl",
+      "name": "Slovenščina"
+    },
+    {
+      "id": "ta",
+      "name": "தமிழ்"
+    },
+    {
+      "id": "th",
+      "name": "ภาษาไทย"
+    },
+    {
+      "id": "tr",
+      "name": "Türkçe"
+    },
+    {
+      "id": "uk",
+      "name": "Українська"
+    },
+    {
+      "id": "vi",
+      "name": "Tiếng Việt"
+    },
+    {
+      "id": "zh-Hans",
+      "name": "中文 (简体)"
+    },
+    {
+      "id": "zh-Hant",
+      "name": "中文 (繁體)"
+    }
+  ],
+  "chartColors": [
+    "cc4a66",
+    "e3564a",
+    "fc892c",
+    "ffc349",
+    "4dd291",
+    "24ceb3",
+    "2ab4d0",
+    "065786",
+    "713670",
+    "8e1d51"
+  ]
+}

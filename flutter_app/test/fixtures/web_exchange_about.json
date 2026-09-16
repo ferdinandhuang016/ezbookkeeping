@@ -1,0 +1,112 @@
+{
+  "display": [
+    {
+      "cents": 100,
+      "expected": "12",
+      "from": "1",
+      "to": "12"
+    },
+    {
+      "cents": 0,
+      "expected": "0",
+      "from": "1",
+      "to": "12"
+    },
+    {
+      "cents": 100,
+      "expected": "0.00000001234",
+      "from": "1",
+      "to": "0.00000001234567"
+    },
+    {
+      "cents": -100,
+      "expected": "-0.000",
+      "from": "1",
+      "to": "0.00000001234567"
+    },
+    {
+      "cents": 123400,
+      "expected": "1234",
+      "from": "1",
+      "to": "1"
+    },
+    {
+      "cents": 100,
+      "expected": "0.6666",
+      "from": "3",
+      "to": "2"
+    },
+    {
+      "cents": 999999999999999,
+      "expected": "428571428571.4",
+      "from": "7",
+      "to": "0.3"
+    },
+    {
+      "cents": 1,
+      "expected": "0.001428",
+      "from": "7",
+      "to": "1"
+    }
+  ],
+  "updateRates": [
+    {
+      "base": "3",
+      "serverStored": {
+        "100000000": 33333333,
+        "731234567": 243744855
+      },
+      "target": "1",
+      "wireRate": "0.3333333333333333"
+    },
+    {
+      "base": "3",
+      "serverStored": {
+        "100000000": 66666666,
+        "731234567": 487489711
+      },
+      "target": "2",
+      "wireRate": "0.6666666666666666"
+    },
+    {
+      "base": "7",
+      "serverStored": {
+        "100000000": 14285714,
+        "731234567": 104462081
+      },
+      "target": "1",
+      "wireRate": "0.14285714285714285"
+    },
+    {
+      "base": "1",
+      "serverStored": {
+        "100000000": 710000000,
+        "731234567": 5191765425
+      },
+      "target": "7.1000",
+      "wireRate": "7.1"
+    },
+    {
+      "base": "999999999.9999",
+      "serverStored": {
+        "100000000": 0,
+        "731234567": 0
+      },
+      "target": "0.0001",
+      "wireRate": "1.0000000000001001e-13"
+    }
+  ],
+  "websites": {
+    "amap": "https://www.amap.com",
+    "baidumap": "https://map.baidu.com",
+    "cartodb": "https://carto.com",
+    "cyclosm": "https://github.com/cyclosm/cyclosm-cartocss-style",
+    "googlemap": "https://maps.google.com",
+    "openstreetmap": "https://www.openstreetmap.org",
+    "openstreetmap-humanitarian": "https://www.hotosm.org",
+    "opentopomap": "https://opentopomap.org",
+    "opnvkarte": "https://memomaps.de",
+    "tianditu": "https://www.tianditu.gov.cn",
+    "tomtom": "https://tomtom.com"
+  }
+}

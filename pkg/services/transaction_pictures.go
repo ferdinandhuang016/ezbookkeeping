@@ -221,7 +221,7 @@ func (s *TransactionPictureService) UploadPicture(c core.Context, pictureInfo *m
 		return err
 	}
 
-	return s.UserDataDB(pictureInfo.Uid).DoTransaction(c, func(sess *xorm.Session) error {
+	return s.UserDataDB(pictureInfo.Uid).DoLedgerTransaction(c, pictureInfo.Uid, []int64{}, func(sess *xorm.Session) error {
 		_, err := sess.Insert(pictureInfo)
 		return err
 	})

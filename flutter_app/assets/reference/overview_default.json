@@ -1,0 +1,23 @@
+{
+  "widgets": [
+    {
+      "id": "default-current-month-overview",
+      "type": "current-month-overview",
+      "settings": {
+        "height": 3
+      }
+    },
+    {
+      "id": "default-period-income-expense",
+      "type": "period-income-expense",
+      "settings": {
+        "dateRanges": [
+          1,
+          5,
+          7,
+          9
+        ]
+      }
+    }
+  ]
+}

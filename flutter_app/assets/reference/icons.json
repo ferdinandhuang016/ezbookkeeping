@@ -1,0 +1,2015 @@
+{
+  "account": [
+    {
+      "id": "1",
+      "name": "wallet",
+      "css": "las la-wallet",
+      "codePoint": 62805,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "10",
+      "name": "coins",
+      "css": "las la-coins",
+      "codePoint": 62750,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "20",
+      "name": "money bill alt",
+      "css": "las la-money-bill-alt",
+      "codePoint": 62417,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "30",
+      "name": "piggy bank",
+      "css": "las la-piggy-bank",
+      "codePoint": 62675,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "100",
+      "name": "credit card",
+      "css": "las la-credit-card",
+      "codePoint": 61597,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "110",
+      "name": "money check alt",
+      "css": "las la-money-check-alt",
+      "codePoint": 62781,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "500",
+      "name": "digital tachograph",
+      "css": "las la-digital-tachograph",
+      "codePoint": 62822,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "510",
+      "name": "ticket alt",
+      "css": "las la-ticket-alt",
+      "codePoint": 62463,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "520",
+      "name": "envelope",
+      "css": "las la-envelope",
+      "codePoint": 61664,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "530",
+      "name": "box",
+      "css": "las la-box",
+      "codePoint": 62566,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "540",
+      "name": "donate",
+      "css": "las la-donate",
+      "codePoint": 62649,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "560",
+      "name": "shield alt",
+      "css": "las la-shield-alt",
+      "codePoint": 62445,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "600",
+      "name": "calendar minus",
+      "css": "las la-calendar-minus",
+      "codePoint": 62066,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "601",
+      "name": "calendar plus",
+      "css": "las la-calendar-plus",
+      "codePoint": 62065,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "700",
+      "name": "file invoice dollar",
+      "css": "las la-file-invoice-dollar",
+      "codePoint": 62833,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "701",
+      "name": "receipt",
+      "css": "las la-receipt",
+      "codePoint": 62787,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "800",
+      "name": "chart area",
+      "css": "las la-chart-area",
+      "codePoint": 61950,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "801",
+      "name": "chart line",
+      "css": "las la-chart-line",
+      "codePoint": 61953,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "900",
+      "name": "user friends",
+      "css": "las la-user-friends",
+      "codePoint": 62720,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "901",
+      "name": "users",
+      "css": "las la-users",
+      "codePoint": 61632,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "910",
+      "name": "home",
+      "css": "las la-home",
+      "codePoint": 61461,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "911",
+      "name": "building",
+      "css": "las la-building",
+      "codePoint": 61869,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "912",
+      "name": "industry",
+      "css": "las la-industry",
+      "codePoint": 62069,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "990",
+      "name": "globe",
+      "css": "las la-globe",
+      "codePoint": 61612,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "1000",
+      "name": "dollar sign",
+      "css": "las la-dollar-sign",
+      "codePoint": 61781,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "1001",
+      "name": "euro sign",
+      "css": "las la-euro-sign",
+      "codePoint": 61779,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "1002",
+      "name": "pound sign",
+      "css": "las la-pound-sign",
+      "codePoint": 61780,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "1003",
+      "name": "yen sign",
+      "css": "las la-yen-sign",
+      "codePoint": 61783,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "1004",
+      "name": "ruble sign",
+      "css": "las la-ruble-sign",
+      "codePoint": 61784,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "1005",
+      "name": "rupee sign",
+      "css": "las la-rupee-sign",
+      "codePoint": 61782,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "1006",
+      "name": "won sign",
+      "css": "las la-won-sign",
+      "codePoint": 61785,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "1007",
+      "name": "shekel sign",
+      "css": "las la-shekel-sign",
+      "codePoint": 61963,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "1008",
+      "name": "hryvnia",
+      "css": "las la-hryvnia",
+      "codePoint": 63218,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "1009",
+      "name": "tenge",
+      "css": "las la-tenge",
+      "codePoint": 63447,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "1500",
+      "name": "bitcoin",
+      "css": "lab la-bitcoin",
+      "codePoint": 61786,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "1501",
+      "name": "ethereum",
+      "css": "lab la-ethereum",
+      "codePoint": 62510,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "5000",
+      "name": "cc visa",
+      "css": "lab la-cc-visa",
+      "codePoint": 61936,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "5001",
+      "name": "cc mastercard",
+      "css": "lab la-cc-mastercard",
+      "codePoint": 61937,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "5002",
+      "name": "cc amex",
+      "css": "lab la-cc-amex",
+      "codePoint": 61939,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "5100",
+      "name": "cc discover",
+      "css": "lab la-cc-discover",
+      "codePoint": 61938,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "5200",
+      "name": "cc jcb",
+      "css": "lab la-cc-jcb",
+      "codePoint": 62027,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "5300",
+      "name": "cc diners club",
+      "css": "lab la-cc-diners-club",
+      "codePoint": 62028,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "8000",
+      "name": "paypal",
+      "css": "lab la-paypal",
+      "codePoint": 61933,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "8100",
+      "name": "apple pay",
+      "css": "lab la-apple-pay",
+      "codePoint": 62485,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "8101",
+      "name": "google wallet",
+      "css": "lab la-google-wallet",
+      "codePoint": 61934,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "8200",
+      "name": "amazon pay",
+      "css": "lab la-amazon-pay",
+      "codePoint": 62508,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "8201",
+      "name": "stripe",
+      "css": "lab la-stripe",
+      "codePoint": 62505,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "8300",
+      "name": "alipay",
+      "css": "lab la-alipay",
+      "codePoint": 63042,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "8301",
+      "name": "qq",
+      "css": "lab la-qq",
+      "codePoint": 61910,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "8302",
+      "name": "weixin",
+      "css": "lab la-weixin",
+      "codePoint": 61911,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "8303",
+      "name": "line",
+      "css": "lab la-line",
+      "codePoint": 62400,
+      "fontFamily": "LineAwesomeBrands"
+    }
+  ],
+  "category": [
+    {
+      "id": "1",
+      "name": "utensils",
+      "css": "las la-utensils",
+      "codePoint": 62183,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "2",
+      "name": "concierge bell",
+      "css": "las la-concierge-bell",
+      "codePoint": 62818,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "10",
+      "name": "hamburger",
+      "css": "las la-hamburger",
+      "codePoint": 63493,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "11",
+      "name": "pizza slice",
+      "css": "las la-pizza-slice",
+      "codePoint": 63512,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "12",
+      "name": "hotdog",
+      "css": "las la-hotdog",
+      "codePoint": 63503,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "13",
+      "name": "bread slice",
+      "css": "las la-bread-slice",
+      "codePoint": 63468,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "30",
+      "name": "mug hot",
+      "css": "las la-mug-hot",
+      "codePoint": 63414,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "31",
+      "name": "coffee",
+      "css": "las la-coffee",
+      "codePoint": 61684,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "32",
+      "name": "cocktail",
+      "css": "las la-cocktail",
+      "codePoint": 62817,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "40",
+      "name": "beer",
+      "css": "las la-beer",
+      "codePoint": 61692,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "41",
+      "name": "wine bottle",
+      "css": "las la-wine-bottle",
+      "codePoint": 63279,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "42",
+      "name": "wine glass alt",
+      "css": "las la-wine-glass-alt",
+      "codePoint": 62926,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "43",
+      "name": "glass martini",
+      "css": "las la-glass-martini",
+      "codePoint": 61440,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "44",
+      "name": "glass whiskey",
+      "css": "las la-glass-whiskey",
+      "codePoint": 63392,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "60",
+      "name": "apple alt",
+      "css": "las la-apple-alt",
+      "codePoint": 62929,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "61",
+      "name": "lemon",
+      "css": "las la-lemon",
+      "codePoint": 61588,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "70",
+      "name": "ice cream",
+      "css": "las la-ice-cream",
+      "codePoint": 63504,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "71",
+      "name": "cookie",
+      "css": "las la-cookie",
+      "codePoint": 62819,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "72",
+      "name": "candy cane",
+      "css": "las la-candy-cane",
+      "codePoint": 63366,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "100",
+      "name": "user tie",
+      "css": "las la-user-tie",
+      "codePoint": 62728,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "110",
+      "name": "tshirt",
+      "css": "las la-tshirt",
+      "codePoint": 62803,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "130",
+      "name": "hat cowboy",
+      "css": "las la-hat-cowboy",
+      "codePoint": 63680,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "140",
+      "name": "mitten",
+      "css": "las la-mitten",
+      "codePoint": 63413,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "150",
+      "name": "socks",
+      "css": "las la-socks",
+      "codePoint": 63126,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "170",
+      "name": "gem",
+      "css": "las la-gem",
+      "codePoint": 62373,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "171",
+      "name": "ring",
+      "css": "las la-ring",
+      "codePoint": 63243,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "180",
+      "name": "spray can",
+      "css": "las la-spray-can",
+      "codePoint": 62909,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "190",
+      "name": "cut",
+      "css": "las la-cut",
+      "codePoint": 61636,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "200",
+      "name": "home",
+      "css": "las la-home",
+      "codePoint": 61461,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "201",
+      "name": "store",
+      "css": "las la-store",
+      "codePoint": 62798,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "202",
+      "name": "store alt",
+      "css": "las la-store-alt",
+      "codePoint": 62799,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "210",
+      "name": "toilet paper",
+      "css": "las la-toilet-paper",
+      "codePoint": 63262,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "211",
+      "name": "umbrella",
+      "css": "las la-umbrella",
+      "codePoint": 61673,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "212",
+      "name": "baby carriage",
+      "css": "las la-baby-carriage",
+      "codePoint": 63357,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "220",
+      "name": "couch",
+      "css": "las la-couch",
+      "codePoint": 62648,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "221",
+      "name": "bed",
+      "css": "las la-bed",
+      "codePoint": 62006,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "222",
+      "name": "chair",
+      "css": "las la-chair",
+      "codePoint": 63168,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "223",
+      "name": "bath",
+      "css": "las la-bath",
+      "codePoint": 62157,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "224",
+      "name": "toilet",
+      "css": "las la-toilet",
+      "codePoint": 63448,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "230",
+      "name": "plug",
+      "css": "las la-plug",
+      "codePoint": 61926,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "231",
+      "name": "lightbulb",
+      "css": "las la-lightbulb",
+      "codePoint": 61675,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "232",
+      "name": "fan",
+      "css": "las la-fan",
+      "codePoint": 63587,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "240",
+      "name": "camera",
+      "css": "las la-camera",
+      "codePoint": 61488,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "241",
+      "name": "print",
+      "css": "las la-print",
+      "codePoint": 61487,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "250",
+      "name": "tools",
+      "css": "las la-tools",
+      "codePoint": 63449,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "251",
+      "name": "wrench",
+      "css": "las la-wrench",
+      "codePoint": 61613,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "252",
+      "name": "toolbox",
+      "css": "las la-toolbox",
+      "codePoint": 62802,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "253",
+      "name": "paint roller",
+      "css": "las la-paint-roller",
+      "codePoint": 62890,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "260",
+      "name": "broom",
+      "css": "las la-broom",
+      "codePoint": 62746,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "270",
+      "name": "tint",
+      "css": "las la-tint",
+      "codePoint": 61507,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "271",
+      "name": "fire",
+      "css": "las la-fire",
+      "codePoint": 61549,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "290",
+      "name": "file invoice",
+      "css": "las la-file-invoice",
+      "codePoint": 62832,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "300",
+      "name": "traffic light",
+      "css": "las la-traffic-light",
+      "codePoint": 63031,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "310",
+      "name": "bus",
+      "css": "las la-bus",
+      "codePoint": 61959,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "311",
+      "name": "tram",
+      "css": "las la-tram",
+      "codePoint": 63450,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "320",
+      "name": "taxi",
+      "css": "las la-taxi",
+      "codePoint": 61882,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "330",
+      "name": "car",
+      "css": "las la-car",
+      "codePoint": 61881,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "331",
+      "name": "shuttle van",
+      "css": "las la-shuttle-van",
+      "codePoint": 62902,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "332",
+      "name": "truck",
+      "css": "las la-truck",
+      "codePoint": 61649,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "333",
+      "name": "tractor",
+      "css": "las la-tractor",
+      "codePoint": 63266,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "340",
+      "name": "charging station",
+      "css": "las la-charging-station",
+      "codePoint": 62951,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "341",
+      "name": "gas pump",
+      "css": "las la-gas-pump",
+      "codePoint": 62767,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "342",
+      "name": "oil can",
+      "css": "las la-oil-can",
+      "codePoint": 62995,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "343",
+      "name": "car battery",
+      "css": "las la-car-battery",
+      "codePoint": 62943,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "350",
+      "name": "bicycle",
+      "css": "las la-bicycle",
+      "codePoint": 61958,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "351",
+      "name": "motorcycle",
+      "css": "las la-motorcycle",
+      "codePoint": 61980,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "370",
+      "name": "train",
+      "css": "las la-train",
+      "codePoint": 62008,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "380",
+      "name": "ship",
+      "css": "las la-ship",
+      "codePoint": 61978,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "390",
+      "name": "plane",
+      "css": "las la-plane",
+      "codePoint": 61554,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "391",
+      "name": "helicopter",
+      "css": "las la-helicopter",
+      "codePoint": 62771,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "400",
+      "name": "phone volume",
+      "css": "las la-phone-volume",
+      "codePoint": 62112,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "410",
+      "name": "fax",
+      "css": "las la-fax",
+      "codePoint": 61868,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "420",
+      "name": "mobile",
+      "css": "las la-mobile",
+      "codePoint": 62413,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "421",
+      "name": "tablet",
+      "css": "las la-tablet",
+      "codePoint": 62458,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "430",
+      "name": "desktop",
+      "css": "las la-desktop",
+      "codePoint": 61704,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "431",
+      "name": "laptop",
+      "css": "las la-laptop",
+      "codePoint": 61705,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "440",
+      "name": "wifi",
+      "css": "las la-wifi",
+      "codePoint": 61931,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "441",
+      "name": "satellite dish",
+      "css": "las la-satellite-dish",
+      "codePoint": 63424,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "442",
+      "name": "satellite",
+      "css": "las la-satellite",
+      "codePoint": 63423,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "443",
+      "name": "ethernet",
+      "css": "las la-ethernet",
+      "codePoint": 63382,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "450",
+      "name": "tv",
+      "css": "las la-tv",
+      "codePoint": 62060,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "451",
+      "name": "broadcast tower",
+      "css": "las la-broadcast-tower",
+      "codePoint": 62745,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "460",
+      "name": "envelope",
+      "css": "las la-envelope",
+      "codePoint": 61664,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "470",
+      "name": "dolly",
+      "css": "las la-dolly",
+      "codePoint": 62578,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "471",
+      "name": "dolly flatbed",
+      "css": "las la-dolly-flatbed",
+      "codePoint": 62580,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "480",
+      "name": "shipping fast",
+      "css": "las la-shipping-fast",
+      "codePoint": 62603,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "490",
+      "name": "language",
+      "css": "las la-language",
+      "codePoint": 61867,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "500",
+      "name": "heart",
+      "css": "las la-heart",
+      "codePoint": 61444,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "510",
+      "name": "dumbbell",
+      "css": "las la-dumbbell",
+      "codePoint": 62539,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "511",
+      "name": "walking",
+      "css": "las la-walking",
+      "codePoint": 62804,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "512",
+      "name": "running",
+      "css": "las la-running",
+      "codePoint": 63244,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "513",
+      "name": "swimmer",
+      "css": "las la-swimmer",
+      "codePoint": 62916,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "514",
+      "name": "biking",
+      "css": "las la-biking",
+      "codePoint": 63562,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "515",
+      "name": "skating",
+      "css": "las la-skating",
+      "codePoint": 63429,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "516",
+      "name": "skiing",
+      "css": "las la-skiing",
+      "codePoint": 63433,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "517",
+      "name": "snowboarding",
+      "css": "las la-snowboarding",
+      "codePoint": 63438,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "518",
+      "name": "hiking",
+      "css": "las la-hiking",
+      "codePoint": 63212,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "519",
+      "name": "compass",
+      "css": "las la-compass",
+      "codePoint": 61774,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "520",
+      "name": "futbol",
+      "css": "las la-futbol",
+      "codePoint": 61923,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "521",
+      "name": "basketball ball",
+      "css": "las la-basketball-ball",
+      "codePoint": 62516,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "522",
+      "name": "football ball",
+      "css": "las la-football-ball",
+      "codePoint": 62542,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "523",
+      "name": "volleyball ball",
+      "css": "las la-volleyball-ball",
+      "codePoint": 62559,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "524",
+      "name": "baseball ball",
+      "css": "las la-baseball-ball",
+      "codePoint": 62515,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "530",
+      "name": "table tennis",
+      "css": "las la-table-tennis",
+      "codePoint": 62557,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "531",
+      "name": "bowling ball",
+      "css": "las la-bowling-ball",
+      "codePoint": 62518,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "532",
+      "name": "golf ball",
+      "css": "las la-golf-ball",
+      "codePoint": 62544,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "540",
+      "name": "microphone alt",
+      "css": "las la-microphone-alt",
+      "codePoint": 62409,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "541",
+      "name": "guitar",
+      "css": "las la-guitar",
+      "codePoint": 63398,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "542",
+      "name": "drum",
+      "css": "las la-drum",
+      "codePoint": 62825,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "550",
+      "name": "film",
+      "css": "las la-film",
+      "codePoint": 61448,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "551",
+      "name": "record vinyl",
+      "css": "las la-record-vinyl",
+      "codePoint": 63705,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "552",
+      "name": "video",
+      "css": "las la-video",
+      "codePoint": 61501,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "553",
+      "name": "music",
+      "css": "las la-music",
+      "codePoint": 61441,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "554",
+      "name": "headphones",
+      "css": "las la-headphones",
+      "codePoint": 61477,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "555",
+      "name": "vr cardboard",
+      "css": "las la-vr-cardboard",
+      "codePoint": 63273,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "560",
+      "name": "gamepad",
+      "css": "las la-gamepad",
+      "codePoint": 61723,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "561",
+      "name": "shapes",
+      "css": "las la-shapes",
+      "codePoint": 63007,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "562",
+      "name": "puzzle piece",
+      "css": "las la-puzzle-piece",
+      "codePoint": 61742,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "563",
+      "name": "dice d6",
+      "css": "las la-dice-d6",
+      "codePoint": 63185,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "564",
+      "name": "dice",
+      "css": "las la-dice",
+      "codePoint": 62754,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "565",
+      "name": "chess",
+      "css": "las la-chess",
+      "codePoint": 62521,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "570",
+      "name": "id card alt",
+      "css": "las la-id-card-alt",
+      "codePoint": 62591,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "571",
+      "name": "podcast",
+      "css": "las la-podcast",
+      "codePoint": 62158,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "580",
+      "name": "dog",
+      "css": "las la-dog",
+      "codePoint": 63187,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "581",
+      "name": "fish",
+      "css": "las la-fish",
+      "codePoint": 62840,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "582",
+      "name": "crow",
+      "css": "las la-crow",
+      "codePoint": 62752,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "583",
+      "name": "cat",
+      "css": "las la-cat",
+      "codePoint": 63166,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "589",
+      "name": "bone",
+      "css": "las la-bone",
+      "codePoint": 62935,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "590",
+      "name": "umbrella beach",
+      "css": "las la-umbrella-beach",
+      "codePoint": 62922,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "591",
+      "name": "swimming pool",
+      "css": "las la-swimming-pool",
+      "codePoint": 62917,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "592",
+      "name": "parachute box",
+      "css": "las la-parachute-box",
+      "codePoint": 62669,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "593",
+      "name": "hot tub",
+      "css": "las la-hot-tub",
+      "codePoint": 62867,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "594",
+      "name": "monument",
+      "css": "las la-monument",
+      "codePoint": 62886,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "595",
+      "name": "mountain",
+      "css": "las la-mountain",
+      "codePoint": 63228,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "596",
+      "name": "campground",
+      "css": "las la-campground",
+      "codePoint": 63163,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "597",
+      "name": "hotel",
+      "css": "las la-hotel",
+      "codePoint": 62006,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "599",
+      "name": "passport",
+      "css": "las la-passport",
+      "codePoint": 62891,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "600",
+      "name": "book reader",
+      "css": "las la-book-reader",
+      "codePoint": 62938,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "610",
+      "name": "book open",
+      "css": "las la-book-open",
+      "codePoint": 62744,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "611",
+      "name": "book",
+      "css": "las la-book",
+      "codePoint": 61485,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "620",
+      "name": "newspaper",
+      "css": "las la-newspaper",
+      "codePoint": 61930,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "640",
+      "name": "graduation cap",
+      "css": "las la-graduation-cap",
+      "codePoint": 61853,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "660",
+      "name": "chalkboard teacher",
+      "css": "las la-chalkboard-teacher",
+      "codePoint": 62748,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "680",
+      "name": "award",
+      "css": "las la-award",
+      "codePoint": 62809,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "700",
+      "name": "glass cheers",
+      "css": "las la-glass-cheers",
+      "codePoint": 63391,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "710",
+      "name": "gift",
+      "css": "las la-gift",
+      "codePoint": 61547,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "711",
+      "name": "gifts",
+      "css": "las la-gifts",
+      "codePoint": 63388,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "720",
+      "name": "birthday cake",
+      "css": "las la-birthday-cake",
+      "codePoint": 61949,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "760",
+      "name": "ribbon",
+      "css": "las la-ribbon",
+      "codePoint": 62678,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "780",
+      "name": "donate",
+      "css": "las la-donate",
+      "codePoint": 62649,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "800",
+      "name": "briefcase medical",
+      "css": "las la-briefcase-medical",
+      "codePoint": 62569,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "810",
+      "name": "hospital",
+      "css": "las la-hospital",
+      "codePoint": 61688,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "811",
+      "name": "ambulance",
+      "css": "las la-ambulance",
+      "codePoint": 61689,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "820",
+      "name": "user nurse",
+      "css": "las la-user-nurse",
+      "codePoint": 63535,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "821",
+      "name": "user md",
+      "css": "las la-user-md",
+      "codePoint": 61680,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "840",
+      "name": "stethoscope",
+      "css": "las la-stethoscope",
+      "codePoint": 61681,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "850",
+      "name": "syringe",
+      "css": "las la-syringe",
+      "codePoint": 62606,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "860",
+      "name": "capsules",
+      "css": "las la-capsules",
+      "codePoint": 62571,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "861",
+      "name": "tablets",
+      "css": "las la-tablets",
+      "codePoint": 62608,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "862",
+      "name": "pills",
+      "css": "las la-pills",
+      "codePoint": 62596,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "863",
+      "name": "band aid",
+      "css": "las la-band-aid",
+      "codePoint": 62562,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "870",
+      "name": "x ray",
+      "css": "las la-x-ray",
+      "codePoint": 62615,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "880",
+      "name": "glasses",
+      "css": "las la-glasses",
+      "codePoint": 62768,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "881",
+      "name": "wheelchair",
+      "css": "las la-wheelchair",
+      "codePoint": 61843,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "890",
+      "name": "thermometer",
+      "css": "las la-thermometer",
+      "codePoint": 62151,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "891",
+      "name": "microscope",
+      "css": "las la-microscope",
+      "codePoint": 62992,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "892",
+      "name": "pager",
+      "css": "las la-pager",
+      "codePoint": 63509,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "893",
+      "name": "vial",
+      "css": "las la-vial",
+      "codePoint": 62610,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "900",
+      "name": "landmark",
+      "css": "las la-landmark",
+      "codePoint": 63087,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "910",
+      "name": "coins",
+      "css": "las la-coins",
+      "codePoint": 62750,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "920",
+      "name": "receipt",
+      "css": "las la-receipt",
+      "codePoint": 62787,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "930",
+      "name": "hand holding usd",
+      "css": "las la-hand-holding-usd",
+      "codePoint": 62656,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "950",
+      "name": "file invoice dollar",
+      "css": "las la-file-invoice-dollar",
+      "codePoint": 62833,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "960",
+      "name": "clipboard check",
+      "css": "las la-clipboard-check",
+      "codePoint": 62572,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "970",
+      "name": "percentage",
+      "css": "las la-percentage",
+      "codePoint": 62785,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "980",
+      "name": "credit card",
+      "css": "las la-credit-card",
+      "codePoint": 61597,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "981",
+      "name": "piggy bank",
+      "css": "las la-piggy-bank",
+      "codePoint": 62675,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "990",
+      "name": "gavel",
+      "css": "las la-gavel",
+      "codePoint": 61667,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "1000",
+      "name": "pen",
+      "css": "las la-pen",
+      "codePoint": 62212,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "1010",
+      "name": "minus circle",
+      "css": "las la-minus-circle",
+      "codePoint": 61526,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "1020",
+      "name": "dev",
+      "css": "lab la-dev",
+      "codePoint": 63180,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "1021",
+      "name": "laptop code",
+      "css": "las la-laptop-code",
+      "codePoint": 62972,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "1022",
+      "name": "server",
+      "css": "las la-server",
+      "codePoint": 62003,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "1023",
+      "name": "hdd",
+      "css": "las la-hdd",
+      "codePoint": 61600,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "1024",
+      "name": "memory",
+      "css": "las la-memory",
+      "codePoint": 62776,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "1025",
+      "name": "microchip",
+      "css": "las la-microchip",
+      "codePoint": 62171,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "1026",
+      "name": "robot",
+      "css": "las la-robot",
+      "codePoint": 62788,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "1027",
+      "name": "link",
+      "css": "las la-link",
+      "codePoint": 61633,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "1100",
+      "name": "seedling",
+      "css": "las la-seedling",
+      "codePoint": 62680,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "2000",
+      "name": "suitcase",
+      "css": "las la-suitcase",
+      "codePoint": 61682,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "2010",
+      "name": "wallet",
+      "css": "las la-wallet",
+      "codePoint": 62805,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "2020",
+      "name": "trophy",
+      "css": "las la-trophy",
+      "codePoint": 61585,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "2021",
+      "name": "medal",
+      "css": "las la-medal",
+      "codePoint": 62882,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "2080",
+      "name": "user clock",
+      "css": "las la-user-clock",
+      "codePoint": 62717,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "2100",
+      "name": "chart area",
+      "css": "las la-chart-area",
+      "codePoint": 61950,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "2101",
+      "name": "chart line",
+      "css": "las la-chart-line",
+      "codePoint": 61953,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "3010",
+      "name": "plus circle",
+      "css": "las la-plus-circle",
+      "codePoint": 61525,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "3100",
+      "name": "recycle",
+      "css": "las la-recycle",
+      "codePoint": 61880,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "4000",
+      "name": "exchange alt",
+      "css": "las la-exchange-alt",
+      "codePoint": 62306,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "4900",
+      "name": "arrow circle right",
+      "css": "las la-arrow-circle-right",
+      "codePoint": 61609,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "5000",
+      "name": "star",
+      "css": "las la-star",
+      "codePoint": 61445,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "5010",
+      "name": "magic",
+      "css": "las la-magic",
+      "codePoint": 61648,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "5020",
+      "name": "infinity",
+      "css": "las la-infinity",
+      "codePoint": 62772,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "5030",
+      "name": "clipboard list",
+      "css": "las la-clipboard-list",
+      "codePoint": 62573,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "5040",
+      "name": "trash alt",
+      "css": "las la-trash-alt",
+      "codePoint": 62189,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "5050",
+      "name": "weight hanging",
+      "css": "las la-weight-hanging",
+      "codePoint": 62925,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "5100",
+      "name": "shopping bag",
+      "css": "las la-shopping-bag",
+      "codePoint": 62096,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "5101",
+      "name": "shopping basket",
+      "css": "las la-shopping-basket",
+      "codePoint": 62097,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "5102",
+      "name": "shopping cart",
+      "css": "las la-shopping-cart",
+      "codePoint": 61562,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "5200",
+      "name": "money bill wave alt",
+      "css": "las la-money-bill-wave-alt",
+      "codePoint": 62779,
+      "fontFamily": "LineAwesomeSolid"
+    },
+    {
+      "id": "6000",
+      "name": "amazon",
+      "css": "lab la-amazon",
+      "codePoint": 62064,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "6001",
+      "name": "ebay",
+      "css": "lab la-ebay",
+      "codePoint": 62708,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "6010",
+      "name": "line",
+      "css": "lab la-line",
+      "codePoint": 62400,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "6100",
+      "name": "app store",
+      "css": "lab la-app-store",
+      "codePoint": 62319,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "6101",
+      "name": "google play",
+      "css": "lab la-google-play",
+      "codePoint": 62379,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "6200",
+      "name": "windows",
+      "css": "lab la-windows",
+      "codePoint": 61818,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "6300",
+      "name": "kickstarter",
+      "css": "lab la-kickstarter",
+      "codePoint": 62395,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "6400",
+      "name": "uber",
+      "css": "lab la-uber",
+      "codePoint": 62466,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "6410",
+      "name": "airbnb",
+      "css": "lab la-airbnb",
+      "codePoint": 63540,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "6500",
+      "name": "fedex",
+      "css": "lab la-fedex",
+      "codePoint": 63383,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "6501",
+      "name": "ups",
+      "css": "lab la-ups",
+      "codePoint": 63456,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "6502",
+      "name": "usps",
+      "css": "lab la-usps",
+      "codePoint": 63457,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "6503",
+      "name": "dhl",
+      "css": "lab la-dhl",
+      "codePoint": 63376,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "7000",
+      "name": "playstation",
+      "css": "lab la-playstation",
+      "codePoint": 62431,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "7001",
+      "name": "xbox",
+      "css": "lab la-xbox",
+      "codePoint": 62482,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "7100",
+      "name": "steam",
+      "css": "lab la-steam",
+      "codePoint": 61878,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "7200",
+      "name": "youtube",
+      "css": "lab la-youtube",
+      "codePoint": 61799,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "7300",
+      "name": "spotify",
+      "css": "lab la-spotify",
+      "codePoint": 61884,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "7301",
+      "name": "itunes",
+      "css": "lab la-itunes",
+      "codePoint": 62388,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "8000",
+      "name": "evernote",
+      "css": "lab la-evernote",
+      "codePoint": 63545,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "8100",
+      "name": "adobe",
+      "css": "lab la-adobe",
+      "codePoint": 63352,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "9000",
+      "name": "aws",
+      "css": "lab la-aws",
+      "codePoint": 62325,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "9001",
+      "name": "linode",
+      "css": "lab la-linode",
+      "codePoint": 62136,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "9002",
+      "name": "digital ocean",
+      "css": "lab la-digital-ocean",
+      "codePoint": 62353,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "9100",
+      "name": "github",
+      "css": "lab la-github",
+      "codePoint": 61595,
+      "fontFamily": "LineAwesomeBrands"
+    },
+    {
+      "id": "9101",
+      "name": "bitbucket",
+      "css": "lab la-bitbucket",
+      "codePoint": 61809,
+      "fontFamily": "LineAwesomeBrands"
+    }
+  ]
+}

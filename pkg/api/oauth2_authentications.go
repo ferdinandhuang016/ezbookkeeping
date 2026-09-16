@@ -62,11 +62,21 @@ func (a *OAuth2AuthenticationApi) LoginHandler(c *core.WebContext) (string, *err
 		return a.redirectToFailedCallbackPage(c, errs.NewIncompleteOrIncorrectSubmissionError(err))
 	}
 
-	if oauth2LoginReq.Platform != "mobile" && oauth2LoginReq.Platform != "desktop" {
+	if oauth2LoginReq.Platform != "mobile" && oauth2LoginReq.Platform != "desktop" && oauth2LoginReq.Platform != "native" {
 		return a.redirectToFailedCallbackPage(c, errs.ErrInvalidOAuth2LoginRequest)
+	}
+	if oauth2LoginReq.Platform == "native" {
+		sessionId, _ := c.Get(nativeOAuthContextKey)
+		if sessionId != oauth2LoginReq.ClientSessionId {
+			return "", errs.ErrInvalidOAuth2LoginRequest
+		}
 	}
 
 	found, remark := a.GetSubmissionRemark(duplicatechecker.DUPLICATE_CHECKER_TYPE_OAUTH2_REDIRECT, 0, oauth2LoginReq.ClientSessionId)
+	if oauth2LoginReq.Platform == "native" {
+		_, remark = a.nativeRemark(c, oauth2LoginReq.ClientSessionId)
+		found = remark != ""
+	}
 
 	if found {
 		log.Errorf(c, "[oauth2_authentications.LoginHandler] another oauth 2.0 state \"%s\" has been processing for client session id \"%s\"", remark, oauth2LoginReq.ClientSessionId)
@@ -113,7 +123,13 @@ func (a *OAuth2AuthenticationApi) LoginHandler(c *core.WebContext) (string, *err
 		return a.redirectToFailedCallbackPage(c, errs.Or(err, errs.ErrSystemError))
 	}
 
-	a.SetSubmissionRemarkWithCustomExpiration(duplicatechecker.DUPLICATE_CHECKER_TYPE_OAUTH2_REDIRECT, 0, oauth2LoginReq.ClientSessionId, remark, a.CurrentConfig().OAuth2StateExpiredTimeDuration)
+	if oauth2LoginReq.Platform == "native" {
+		if err := a.saveNativeRemark(c, oauth2LoginReq.ClientSessionId, remark); err != nil {
+			return a.redirectToFailedCallbackPage(c, errs.Or(err, errs.ErrOperationFailed))
+		}
+	} else {
+		a.SetSubmissionRemarkWithCustomExpiration(duplicatechecker.DUPLICATE_CHECKER_TYPE_OAUTH2_REDIRECT, 0, oauth2LoginReq.ClientSessionId, remark, a.CurrentConfig().OAuth2StateExpiredTimeDuration)
+	}
 
 	return redirectUrl, nil
 }
@@ -131,13 +147,10 @@ func (a *OAuth2AuthenticationApi) CallbackHandler(c *core.WebContext) (string, *
 	if oauth2CallbackReq.State == "" {
 		return a.redirectToFailedCallbackPage(c, errs.ErrMissingOAuth2State)
 	}
-
-	if oauth2CallbackReq.Code == "" {
+	if !strings.HasPrefix(oauth2CallbackReq.State, "native|") && oauth2CallbackReq.Code == "" {
 		if oauth2CallbackReq.ErrorDescription != "" {
-			log.Errorf(c, "[oauth2_authentications.CallbackHandler] oauth 2.0 provider returned error: %s, description: %s", oauth2CallbackReq.Error, oauth2CallbackReq.ErrorDescription)
 			return a.redirectToErrorMessageCallbackPage(c, oauth2CallbackReq.ErrorDescription)
 		}
-
 		return a.redirectToFailedCallbackPage(c, errs.ErrMissingOAuth2Code)
 	}
 
@@ -153,11 +166,14 @@ func (a *OAuth2AuthenticationApi) CallbackHandler(c *core.WebContext) (string, *
 		return a.redirectToFailedCallbackPage(c, errs.ErrInvalidOAuth2State)
 	}
 
-	if platform != "mobile" && platform != "desktop" {
+	if platform != "mobile" && platform != "desktop" && platform != "native" {
 		return a.redirectToFailedCallbackPage(c, errs.ErrInvalidOAuth2LoginRequest)
 	}
 
 	found, remark := a.GetSubmissionRemark(duplicatechecker.DUPLICATE_CHECKER_TYPE_OAUTH2_REDIRECT, 0, clientSessionId)
+	if platform == "native" {
+		found, remark = a.nativeRemark(c, clientSessionId)
+	}
 
 	if !found {
 		log.Errorf(c, "[oauth2_authentications.CallbackHandler] cannot find oauth 2.0 state in duplicate checker for client session id \"%s\"", clientSessionId)
@@ -187,7 +203,20 @@ func (a *OAuth2AuthenticationApi) CallbackHandler(c *core.WebContext) (string, *
 		return a.redirectToFailedCallbackPage(c, errs.ErrInvalidOAuth2State)
 	}
 
-	a.RemoveSubmissionRemark(duplicatechecker.DUPLICATE_CHECKER_TYPE_OAUTH2_REDIRECT, 0, clientSessionId)
+	if platform == "native" {
+		c.Set(nativeOAuthContextKey, clientSessionId)
+		if err := a.consumeNativeRemark(c, clientSessionId, remark); err != nil {
+			return a.redirectToFailedCallbackPage(c, errs.Or(err, errs.ErrInvalidOAuth2State))
+		}
+	} else {
+		a.RemoveSubmissionRemark(duplicatechecker.DUPLICATE_CHECKER_TYPE_OAUTH2_REDIRECT, 0, clientSessionId)
+	}
+	if oauth2CallbackReq.Code == "" {
+		if oauth2CallbackReq.ErrorDescription != "" {
+			return a.redirectToErrorMessageCallbackPage(c, oauth2CallbackReq.ErrorDescription)
+		}
+		return a.redirectToFailedCallbackPage(c, errs.ErrMissingOAuth2Code)
+	}
 
 	oauth2Token, err := oauth2.GetOAuth2Token(c, oauth2CallbackReq.Code, verifier)
 
@@ -407,17 +436,29 @@ func (a *OAuth2AuthenticationApi) CallbackHandler(c *core.WebContext) (string, *
 }
 
 func (a *OAuth2AuthenticationApi) redirectToSuccessCallbackPage(c *core.WebContext, platform string, externalAuthType core.UserExternalAuthType, token string) (string, *errs.Error) {
+	if platform == "native" {
+		return a.redirectToNativeCallback(c, map[string]any{"provider": externalAuthType, "token": token})
+	}
 	return fmt.Sprintf(oauth2CallbackPageUrlSuccessFormat, a.CurrentConfig().RootUrl, platform, externalAuthType, url.QueryEscape(token)), nil
 }
 
 func (a *OAuth2AuthenticationApi) redirectToVerifyCallbackPage(c *core.WebContext, platform string, externalAuthType core.UserExternalAuthType, userName string, token string) (string, *errs.Error) {
+	if platform == "native" {
+		return a.redirectToNativeCallback(c, map[string]any{"provider": externalAuthType, "userName": userName, "token": token})
+	}
 	return fmt.Sprintf(oauth2CallbackPageUrlNeedVerifyFormat, a.CurrentConfig().RootUrl, platform, externalAuthType, userName, url.QueryEscape(token)), nil
 }
 
 func (a *OAuth2AuthenticationApi) redirectToFailedCallbackPage(c *core.WebContext, err *errs.Error) (string, *errs.Error) {
+	if sessionId, _ := c.Get(nativeOAuthContextKey); sessionId != nil {
+		return a.redirectToNativeCallback(c, nativeOAuthError(err))
+	}
 	return fmt.Sprintf(oauth2CallbackPageUrlFailedFormat, a.CurrentConfig().RootUrl, err.Code(), url.QueryEscape(utils.GetDisplayErrorMessage(err))), nil
 }
 
 func (a *OAuth2AuthenticationApi) redirectToErrorMessageCallbackPage(c *core.WebContext, message string) (string, *errs.Error) {
+	if sessionId, _ := c.Get(nativeOAuthContextKey); sessionId != nil {
+		return a.redirectToNativeCallback(c, map[string]any{"error": map[string]any{"code": errs.ErrInvalidOAuth2Callback.Code(), "message": message}})
+	}
 	return fmt.Sprintf(oauth2CallbackPageUrlErrorMessageFormat, a.CurrentConfig().RootUrl, url.QueryEscape(message)), nil
 }

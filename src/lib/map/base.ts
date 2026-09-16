@@ -1,5 +1,9 @@
 import type { Coordinate } from '@/core/coordinate.ts';
 
+export interface MapLocation extends Coordinate {
+    readonly name?: string;
+}
+
 export interface MapProvider {
     getWebsite(): string;
     isSupportGetGeoLocationByClick(): boolean;
@@ -17,6 +21,7 @@ export interface MapInstance {
     getZoomLevel(): number;
     setMapCenterTo(center: Coordinate, zoomLevel: number): void;
     setMapCenterMarker(position: Coordinate): void;
+    setMapCenterMarkerDraggable?(draggable: boolean): void;
     removeMapCenterMarker(): void;
     zoomIn(): void;
     zoomOut(): void;
@@ -35,5 +40,7 @@ export interface MapInstanceInitOptions {
         readonly zoomOut: string;
     };
     readonly onClick?: (position: Coordinate) => void;
+    readonly markerDraggable?: boolean;
+    readonly onMarkerMove?: (position: MapLocation) => void;
     readonly onZoomChange?: (level: number) => void;
 }

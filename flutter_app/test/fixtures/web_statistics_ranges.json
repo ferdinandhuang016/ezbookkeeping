@@ -1,0 +1,102 @@
+[
+  {
+    "zone": "UTC",
+    "minTime": 1704067200,
+    "maxTime": 1706745599,
+    "scale": 1,
+    "expected": {
+      "minTime": 1706745600,
+      "maxTime": 1709251199
+    }
+  },
+  {
+    "zone": "UTC",
+    "minTime": 1706745600,
+    "maxTime": 1709251199,
+    "scale": -1,
+    "expected": {
+      "minTime": 1704067200,
+      "maxTime": 1706745599
+    }
+  },
+  {
+    "zone": "UTC",
+    "minTime": 1696118400,
+    "maxTime": 1711929599,
+    "scale": 1,
+    "expected": {
+      "minTime": 1711929600,
+      "maxTime": 1727740799
+    }
+  },
+  {
+    "zone": "UTC",
+    "minTime": 1689379200,
+    "maxTime": 1721001599,
+    "scale": 1,
+    "expected": {
+      "minTime": 1721001600,
+      "maxTime": 1752537599
+    }
+  },
+  {
+    "zone": "UTC",
+    "minTime": 1709164800,
+    "maxTime": 1740700799,
+    "scale": -1,
+    "expected": {
+      "minTime": 1677542400,
+      "maxTime": 1709078399
+    }
+  },
+  {
+    "zone": "UTC",
+    "minTime": 1706659200,
+    "maxTime": 1709164799,
+    "scale": 1,
+    "expected": {
+      "minTime": 1709164800,
+      "maxTime": 1711670399
+    }
+  },
+  {
+    "zone": "America/New_York",
+    "minTime": 1709528400,
+    "maxTime": 1710129599,
+    "scale": 1,
+    "expected": {
+      "minTime": 1710129600,
+      "maxTime": 1710730799
+    }
+  },
+  {
+    "zone": "America/New_York",
+    "minTime": 1730088000,
+    "maxTime": 1730696399,
+    "scale": -1,
+    "expected": {
+      "minTime": 1729479600,
+      "maxTime": 1730087999
+    }
+  },
+  {
+    "zone": "Asia/Hong_Kong",
+    "minTime": 1789401600,
+    "maxTime": 1789487999,
+    "scale": -1,
+    "expected": {
+      "minTime": 1789315200,
+      "maxTime": 1789401599
+    }
+  },
+  {
+    "zone": "Asia/Hong_Kong",
+    "minTime": 1789401600,
+    "maxTime": 1789833599,
+    "scale": 1,
+    "expected": {
+      "minTime": 1789833600,
+      "maxTime": 1790265599
+    }
+  }
+]

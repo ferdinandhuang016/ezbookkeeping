@@ -1424,6 +1424,7 @@ func (a *TransactionsApi) TransactionModifyHandler(c *core.WebContext) (any, *er
 	if transactionModifyReq.GeoLocation != nil {
 		newTransaction.GeoLongitude = transactionModifyReq.GeoLocation.Longitude
 		newTransaction.GeoLatitude = transactionModifyReq.GeoLocation.Latitude
+		newTransaction.GeoLocationName = transactionModifyReq.GeoLocationName
 	}
 
 	if newTransaction.Type == transaction.Type &&
@@ -1438,6 +1439,7 @@ func (a *TransactionsApi) TransactionModifyHandler(c *core.WebContext) (any, *er
 		newTransaction.Comment == transaction.Comment &&
 		newTransaction.GeoLongitude == transaction.GeoLongitude &&
 		newTransaction.GeoLatitude == transaction.GeoLatitude &&
+		newTransaction.GeoLocationName == transaction.GeoLocationName &&
 		utils.Int64SliceEquals(tagIds, transactionTagIds) &&
 		utils.Int64SliceEquals(pictureIds, transactionPictureIds) {
 		return nil, errs.ErrNothingWillBeUpdated
@@ -3161,6 +3163,7 @@ func (a *TransactionsApi) createNewTransactionModel(uid int64, transactionCreate
 	if transactionCreateReq.GeoLocation != nil {
 		transaction.GeoLongitude = transactionCreateReq.GeoLocation.Longitude
 		transaction.GeoLatitude = transactionCreateReq.GeoLocation.Latitude
+		transaction.GeoLocationName = transactionCreateReq.GeoLocationName
 	}
 
 	return transaction

@@ -328,7 +328,7 @@
                                         v-model:menu="geoMenuState"
                                     >
                                         <template #selection>
-                                            <span class="cursor-pointer" v-if="transaction.geoLocation">{{ `(${formatCoordinate(transaction.geoLocation, coordinateDisplayType)})` }}</span>
+                                            <span class="cursor-pointer" v-if="transaction.geoLocation">{{ `${transaction.geoLocationName ? `${transaction.geoLocationName} · ` : ''}(${formatCoordinate(transaction.geoLocation, coordinateDisplayType)})` }}</span>
                                             <span class="cursor-pointer" v-else-if="!transaction.geoLocation">{{ geoLocationStatusInfo }}</span>
                                         </template>
 
@@ -367,8 +367,8 @@
                     </v-window-item>
                     <v-window-item value="map">
                         <map-view ref="map" map-class="transaction-edit-map-view mb-3 mb-sm-0"
-                                  :enable-zoom-control="true" :geo-location="transaction.geoLocation"
-                                  @click="updateSpecifiedGeoLocation">
+                                  :enable-zoom-control="true" :editable="mode !== TransactionEditPageMode.View" :geo-location="transaction.geoLocation"
+                                  @click="updateSpecifiedGeoLocation" @change="updateDraggedGeoLocation">
                             <template #error-title="{ mapSupported, mapDependencyLoaded }">
                                 <span class="text-body-large" v-if="!mapSupported"><b>{{ tt('Unsupported Map Provider') }}</b></span>
                                 <span class="text-body-large" v-else-if="!mapDependencyLoaded"><b>{{ tt('Cannot Initialize Map') }}</b></span>
@@ -527,6 +527,7 @@ import { useTransactionsStore } from '@/stores/transaction.ts';
 import { useTransactionTemplatesStore } from '@/stores/transactionTemplate.ts';
 
 import type { Coordinate } from '@/core/coordinate.ts';
+import type { MapLocation } from '@/lib/map/base.ts';
 import { CategoryType } from '@/core/category.ts';
 import { TransactionType, TransactionEditScopeType, TransactionQuickAddButtonActionType } from '@/core/transaction.ts';
 import { TemplateType, ScheduledTemplateFrequencyType } from '@/core/template.ts';
@@ -545,6 +546,7 @@ import {
     getCurrentUnixTime
 } from '@/lib/datetime.ts';
 import { formatCoordinate } from '@/lib/coordinate.ts';
+import { getCurrentGeoLocation, isCurrentGeoLocationSupported } from '@/lib/geolocation.ts';
 import { generateRandomUUID } from '@/lib/misc.ts';
 import {
     getTransactionPrimaryCategoryName,
@@ -606,7 +608,6 @@ const { tt } = useI18n();
 
 const {
     mode,
-    isSupportGeoLocation,
     editId,
     addByTemplateId,
     duplicateFromId,
@@ -1149,7 +1150,7 @@ function cancel(): void {
 function updateGeoLocation(forceUpdate: boolean): void {
     geoMenuState.value = false;
 
-    if (!isSupportGeoLocation) {
+    if (!isCurrentGeoLocationSupported()) {
         logger.warn('this browser does not support geo location');
 
         if (forceUpdate) {
@@ -1158,31 +1159,27 @@ function updateGeoLocation(forceUpdate: boolean): void {
         return;
     }
 
-    navigator.geolocation.getCurrentPosition(function (position) {
-        if (!position || !position.coords) {
-            logger.error('current position is null');
-            geoLocationStatus.value = GeoLocationStatus.Error;
+    geoLocationStatus.value = GeoLocationStatus.Getting;
 
-            if (forceUpdate) {
-                snackbar.value?.showMessage('Unable to retrieve current position');
-            }
-
-            return;
-        }
-
+    getCurrentGeoLocation().then(position => {
         geoLocationStatus.value = GeoLocationStatus.Success;
-
-        transaction.value.setLatitudeAndLongitude(position.coords.latitude, position.coords.longitude);
-    }, function (err) {
-        logger.error('cannot retrieve current position', err);
+        transaction.value.setLatitudeAndLongitude(position.latitude, position.longitude, position.name);
+    }).catch(error => {
+        logger.error('cannot retrieve current position', error);
         geoLocationStatus.value = GeoLocationStatus.Error;
 
         if (forceUpdate) {
             snackbar.value?.showMessage('Unable to retrieve current position');
         }
     });
+}
 
-    geoLocationStatus.value = GeoLocationStatus.Getting;
+function updateDraggedGeoLocation(location: MapLocation): void {
+    if (mode.value === TransactionEditPageMode.View) {
+        return;
+    }
+
+    transaction.value.setLatitudeAndLongitude(location.latitude, location.longitude, location.name);
 }
 
 function updateSpecifiedGeoLocation(coordinate: Coordinate): void {
