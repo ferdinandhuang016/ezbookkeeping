@@ -2706,7 +2706,10 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
     });
   }
 
-  void closeEmbeddedAmountPad([int? value]) {
+  void closeEmbeddedAmountPad([
+    int? value,
+    bool scheduleAutoLocateAfterClose = true,
+  ]) {
     if (!mounted || !amountPadOpen || !embeddedAmountPadEnabled) return;
     setState(() {
       data['sourceAmount'] = value ?? number(data['sourceAmount']);
@@ -2717,7 +2720,18 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
         app.settings['autoSaveTransactionDraft'] == 'enabled') {
       app.setPreference(draftKey, jsonEncode(data));
     }
-    schedulePendingAutoLocate();
+    if (scheduleAutoLocateAfterClose) schedulePendingAutoLocate();
+  }
+
+  Future<void> completeEmbeddedAmount(int value) async {
+    closeEmbeddedAmountPad(value, false);
+    try {
+      if (mounted && type != 1) {
+        await selectCategory(openAccountAfter: true);
+      }
+    } finally {
+      if (mounted) schedulePendingAutoLocate();
+    }
   }
 
   void schedulePendingAutoLocate() {
@@ -2842,7 +2856,7 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
     }
   }
 
-  Future<void> selectCategory() async {
+  Future<void> selectCategory({bool openAccountAfter = false}) async {
     final chosen = await openSelector(
       (nonBlocking) => chooseGroupedRecord(
         context,
@@ -2854,7 +2868,11 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
         nonBlocking: nonBlocking,
       ),
     );
-    if (chosen != null && mounted) change('categoryId', chosen);
+    if (chosen == null || !mounted) return;
+    change('categoryId', chosen);
+    if (openAccountAfter && mounted) {
+      await selectAccount('sourceAccountId', 'Account', leafAccounts(app));
+    }
   }
 
   Future<void> selectAccount(
@@ -3307,7 +3325,7 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
             ? embeddedAmountPad(
                 number(data['sourceAmount']),
                 onChanged: updateEmbeddedAmount,
-                onDone: closeEmbeddedAmountPad,
+                onDone: completeEmbeddedAmount,
               )
             : !readOnly && quickStyle == 1
             ? SizedBox(
@@ -3319,7 +3337,7 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
             ? embeddedAmountPad(
                 number(data['sourceAmount']),
                 onChanged: updateEmbeddedAmount,
-                onDone: closeEmbeddedAmountPad,
+                onDone: completeEmbeddedAmount,
                 compact: true,
               )
             : null,
@@ -3450,7 +3468,7 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
                     t('Category'),
                     value: categoryPath(string(data['categoryId'])),
                     leading: recordIcon(lookup(categories, data['categoryId'])),
-                    onTap: readOnly ? null : selectCategory,
+                    onTap: readOnly ? null : () => selectCategory(),
                   ),
                 ItemRow(
                   t('Account'),
