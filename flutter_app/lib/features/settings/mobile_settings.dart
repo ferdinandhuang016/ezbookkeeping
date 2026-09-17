@@ -170,26 +170,10 @@ class _AboutState extends NativeState<AboutPage> {
   }
 
   Future<void> more() async {
-    final action = await showCupertinoModalPopup<String>(
-      context: context,
-      builder: (sheet) => CupertinoActionSheet(
-        actions: [
-          CupertinoActionSheetAction(
-            onPressed: () => Navigator.pop(sheet, 'cache'),
-            child: Text(t('App Cache Management')),
-          ),
-          CupertinoActionSheetAction(
-            onPressed: () => Navigator.pop(sheet, 'diagnosis'),
-            child: Text(t('Show Diagnosis Information')),
-          ),
-        ],
-        cancelButton: CupertinoActionSheetAction(
-          onPressed: () => Navigator.pop(sheet),
-          isDefaultAction: true,
-          child: Text(t('Cancel')),
-        ),
-      ),
-    );
+    final action = await choose(context, '', {
+      'cache': t('App Cache Management'),
+      'diagnosis': t('Show Diagnosis Information'),
+    });
     if (!mounted) return;
     if (action == 'cache') {
       await context.push('/settings/browser_caches');

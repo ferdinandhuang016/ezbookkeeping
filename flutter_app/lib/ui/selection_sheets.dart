@@ -69,6 +69,7 @@ class _IconSelectionState extends NativeState<_IconSelection> {
     return NativePage(
       title: t('Icon'),
       back: false,
+      compact: true,
       busy: busy,
       trailing: iconButton(
         CupertinoIcons.xmark,
@@ -78,7 +79,7 @@ class _IconSelectionState extends NativeState<_IconSelection> {
       children: [
         if (app.config['enableUserCustomIcon'] == true)
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.fromLTRB(12, 4, 12, 8),
             child: CupertinoSlidingSegmentedControl<int>(
               groupValue: tab,
               children: {
@@ -93,13 +94,13 @@ class _IconSelectionState extends NativeState<_IconSelection> {
         if (app.config['enableUserCustomIcon'] != true && tab == 1)
           actionButton(t('System Icons'), () => setState(() => tab = 0)),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 12),
           child: GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 58,
-              mainAxisSpacing: 8,
+              maxCrossAxisExtent: 52,
+              mainAxisSpacing: 4,
               crossAxisSpacing: 4,
             ),
             itemCount: choices.length,
@@ -173,6 +174,7 @@ class _ColorSelectionState extends NativeState<_ColorSelection> {
   Widget buildPage(BuildContext context) => NativePage(
     title: t('Color'),
     back: false,
+    compact: true,
     trailing: iconButton(
       CupertinoIcons.xmark,
       t('Close'),
@@ -180,13 +182,13 @@ class _ColorSelectionState extends NativeState<_ColorSelection> {
     ),
     children: [
       Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(12, 4, 12, 8),
         child: GridView.count(
           crossAxisCount: 6,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
           children: [
             for (final color in widget.colors)
               Semantics(

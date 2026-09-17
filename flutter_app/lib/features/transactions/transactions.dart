@@ -337,10 +337,12 @@ class TransactionListPage extends ConsumerStatefulWidget {
     this.query = const {},
     this.initialFilter,
     this.originalTimezone = true,
+    this.showAddAction = true,
   });
   final Map<String, String> query;
   final TransactionFilter? initialFilter;
   final bool originalTimezone;
+  final bool showAddAction;
   @override
   ConsumerState<TransactionListPage> createState() => _TransactionListState();
 }
@@ -1185,15 +1187,16 @@ class _TransactionListState extends NativeState<TransactionListPage> {
               }
             }),
           ),
-          iconButton(
-            CupertinoIcons.add,
-            t('Add Transaction'),
-            canAdd
-                ? () => context.push(
-                    '/transaction/add?${Uri(queryParameters: transactionListAddQuery(filter, app, DateTime.now())).query}',
-                  )
-                : null,
-          ),
+          if (widget.showAddAction)
+            iconButton(
+              CupertinoIcons.add,
+              t('Add Transaction'),
+              canAdd
+                  ? () => context.push(
+                      '/transaction/add?${Uri(queryParameters: transactionListAddQuery(filter, app, DateTime.now())).query}',
+                    )
+                  : null,
+            ),
         ],
       ),
       bottom: Container(

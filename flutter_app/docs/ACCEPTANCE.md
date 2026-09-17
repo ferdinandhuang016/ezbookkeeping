@@ -1,6 +1,6 @@
 # Flutter Android 验收记录
 
-记录日期：2026-09-15。范围以 [MIGRATION.md](MIGRATION.md) 的 R01–R46、D01–D18 和条件功能矩阵为准。
+记录日期：2026-09-17。范围以 [MIGRATION.md](MIGRATION.md) 的 R01–R46、D01–D18 和条件功能矩阵为准。
 
 **当前结论：部分业务链路通过，完整迁移验收未通过。** 下表仅记录有日志、结果 JSON 或设备操作证据的场景。源码覆盖、路由数量、单次构建和一次记账成功，都不能替代其余功能验收。
 
@@ -53,6 +53,7 @@
 | E35 / R07 | 金额键盘整格命中；“记一笔”直接打开且无二次切换动画；分类／账户半屏左右栏 | [device-input-shortcut-selector-result.json](evidence/device-input-shortcut-selector-result.json)：API24 数字 7 命中高度由 60px 增至 139px，点击旧命中区外 `(30,620)` 成功输入；选择器由 82% 改为 50%，左右栏及图标通过；[最终选择器](evidence/device-input-shortcut-selector.png)。冷启动首个 Flutter 界面即金额键盘，采样仅 3 帧；热启动 WaitTime 12ms，页面／金额面板零时长切换；后台弹层会先关闭。API36 安装并确认应用锁优先 | 冷启动等待值与旧包首个 loading 帧不是同一完成点，不能直接比较总耗时；实体厂商 Launcher 和真实低端机帧时间待验 |
 | E36 / R07、D05 | “记一笔”首帧可输入且初始化无加载圈；概要组件改为 4×1、无品牌文字、主体进入首页 | [device-quick-start-widget-4x1-result.json](evidence/device-quick-start-widget-4x1-result.json)：初始化期间输入 7.00 并保留至正式编辑器；AOT 包 API24 冷启动 578/722ms、API36 重复冷启动 1851ms、热启动 7ms。API24 Provider 为 290×40dp，选择器显示 4×1；[桌面组件](evidence/widget-summary-4x1-api24.png)无品牌文字，[主体点击](evidence/widget-summary-open-home-api24.png)进入首页，Tab 仍在桌面原地切换 | 首次安装后的 ART 优化及设备性能会影响冷启动；debug JIT 时长不作为发布包结论。实体厂商 Launcher 和低端实体机待验 |
 | E37 / D05 | 4×1 概要同比截至今日；收入／支出涨跌箭头与颜色；总计三等分 | [device-widget-yoy-total-result.json](evidence/device-widget-yoy-total-result.json)：同比只使用本月 1 日至今天与去年同月同期数据，当月展示金额继续使用整月口径；收入上涨红色▲／下跌绿色▼，支出上涨绿色▲／下跌红色▼均在 API24 验证。总计 Tab 显示收入、支出、总额三个等宽区域；[API24 浅色](evidence/widget-total-three-columns-api24.png)与[API36 深色中文](evidence/widget-total-three-columns-dark-api36.png)通过 | 涨跌截图使用确定性组件快照，区间计算由业务测试覆盖；实体厂商 Launcher 仍待验。旧 4×2 实例需移除后重加才能取得 4×1 高度 |
+| E38 / R01、R05、R10、R15、R27、D02、D05 | 五个一级页面共用常驻底栏；中心首页高亮；各页右下角新增；底部选择弹窗紧凑化 | API36／`CC7B6ADA` debug 包依次切换详情、账户、首页、统计、设置，选中语义与页面原状态保留；系统返回从账户回首页，二级新增／选择页隐藏底栏；统计期间栏与公共底栏不重叠；详情仅保留一个新增入口。Theme、分类两栏和交易时间三类代表弹层显示 15–16px 可见字和至少 48dp 点击行；长按浮动新增仍进入模板／AI。原始证据：`ezb-nav-home.png`、`ezb-sheet-theme.png`、`ezb-sheet-category.png`、`ezb-sheet-time.png`、`ezb-nav-dark-large-stable.png`、`ezb-nav-landscape.png` | 已覆盖 API36 1080×2400、横屏、深浅色、系统字号 1.3、关闭动画和返回键；API24、平板、实体设备及所有语言长文案仍待验。图标／颜色和设置专用操作菜单已复用相同紧凑尺寸但未逐个设备操作，不能推广为全部弹层业务分支通过 |
 
 E19 明确关闭先前 AI 文字页混入拍照、英文 Dio 诊断和键盘抢焦点三个设备缺陷；保留各迭代构建的原始证据。
 
@@ -62,7 +63,7 @@ E29／E30 同样保留迭代 JSON 的旧待验说明，并以其中带构建 SHA
 
 隔离邮件测试还确认了原后端已有两项限制：[同一 Unix 秒内新建的重置密码 token 可再次使用](evidence/auth-reset-replay-result.json)，以及重置密码会把周起始从 1 改为 0（[前后接口复现](evidence/auth-reset-profile-boundary-result.json)）。`forget_passwords.go` 本次未修改；这些不是 Flutter 新增行为。邮件接口正常人工时序的验收不能覆盖或隐藏该边界。
 
-迭代证据继续保留原构建边界。E31 记录 9394604B 基线包的版本、SHA-256、构建日志和两平台复验；E34 记录 27BADBBB 包新增桌面入口；E35 记录 2F12D6A9 包的输入、快捷入口与两栏选择器复验；E36 记录 17EB8431 debug 包和 89EB009E AOT 包的快捷首帧及 4×1 组件；E37 记录 0EB5D0BC debug 包和 44EE52A4 AOT 包的同比及总计布局。较早 APK 的其它结果仍不能自动推广到新构建未操作的场景。
+迭代证据继续保留原构建边界。E31 记录 9394604B 基线包的版本、SHA-256、构建日志和两平台复验；E34 记录 27BADBBB 包新增桌面入口；E35 记录 2F12D6A9 包的输入、快捷入口与两栏选择器复验；E36 记录 17EB8431 debug 包和 89EB009E AOT 包的快捷首帧及 4×1 组件；E37 记录 0EB5D0BC debug 包和 44EE52A4 AOT 包的同比及总计布局；E38 记录 CC7B6ADA debug 包的常驻导航、浮动新增和紧凑弹层复验。较早 APK 的其它结果仍不能自动推广到新构建未操作的场景。
 
 ## 自动化与构建
 

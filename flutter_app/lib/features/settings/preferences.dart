@@ -636,14 +636,14 @@ class _FilterSettingsState extends SettingsState<FilterSettingsPage> {
                       child: IgnorePointer(
                         ignoring: !available,
                         child: CupertinoButton(
-                          minimumSize: const Size(double.infinity, 57),
+                          minimumSize: const Size(double.infinity, 48),
                           onPressed: available
                               ? () => Navigator.pop(sheet, index)
                               : null,
                           child: Text(
                             t(labels[index]),
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 15,
                               color: available
                                   ? null
                                   : CupertinoColors.inactiveGray.resolveFrom(
@@ -658,22 +658,22 @@ class _FilterSettingsState extends SettingsState<FilterSettingsPage> {
                 if (allowHidden)
                   group([
                     CupertinoButton(
-                      minimumSize: const Size(double.infinity, 57),
+                      minimumSize: const Size(double.infinity, 48),
                       onPressed: () => Navigator.pop(sheet, 3),
                       child: Text(
                         t(hiddenLabel),
-                        style: const TextStyle(fontSize: 20),
+                        style: const TextStyle(fontSize: 15),
                       ),
                     ),
                   ]),
                 group([
                   CupertinoButton(
-                    minimumSize: const Size(double.infinity, 57),
+                    minimumSize: const Size(double.infinity, 48),
                     onPressed: () => Navigator.pop(sheet),
                     child: Text(
                       t('Cancel'),
                       style: const TextStyle(
-                        fontSize: 20,
+                        fontSize: 15,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -1217,7 +1217,7 @@ class _CloudSettingsState extends SettingsState<CloudSettingsPage> {
             color: CupertinoColors.secondarySystemGroupedBackground.resolveFrom(
               sheet,
             ),
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(16),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1230,14 +1230,14 @@ class _CloudSettingsState extends SettingsState<CloudSettingsPage> {
           bool enabled = true,
           bool cancel = false,
         }) => CupertinoButton(
-          minimumSize: const Size(double.infinity, 57),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          minimumSize: const Size(double.infinity, 48),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           onPressed: enabled ? () => Navigator.pop(sheet, value) : null,
           child: Text(
             t(label),
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 20,
+              fontSize: 15,
               fontWeight: cancel ? FontWeight.w600 : FontWeight.w400,
             ),
           ),

@@ -225,6 +225,7 @@ class NativePage extends StatelessWidget {
     this.titleKey,
     this.busy = false,
     this.back = true,
+    this.compact = false,
   });
   final String title;
   final List<Widget> children;
@@ -239,6 +240,7 @@ class NativePage extends StatelessWidget {
   final Key? titleKey;
   final bool busy;
   final bool back;
+  final bool compact;
   @override
   Widget build(BuildContext context) => CupertinoPageScaffold(
     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -257,7 +259,7 @@ class NativePage extends StatelessWidget {
                 primaryColor: CupertinoColors.label.resolveFrom(context),
               ),
               child: SizedBox(
-                height: 60,
+                height: compact ? 52 : 60,
                 width: double.infinity,
                 child: Stack(
                   alignment: Alignment.center,
@@ -281,8 +283,8 @@ class NativePage extends StatelessWidget {
                                 textAlign: TextAlign.center,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontSize: 17,
+                                style: TextStyle(
+                                  fontSize: compact ? 16 : 17,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -358,7 +360,9 @@ class NativePage extends StatelessWidget {
                                 ),
                               SliverPadding(
                                 padding: EdgeInsets.only(
-                                  bottom: floating == null ? 24 : 88,
+                                  bottom: floating == null
+                                      ? (compact ? 12 : 24)
+                                      : 88,
                                 ),
                                 sliver: SliverList(
                                   delegate: SliverChildListDelegate(children),
@@ -433,6 +437,7 @@ class ItemRow extends StatelessWidget {
     this.color,
     this.padding = const EdgeInsetsDirectional.fromSTEB(14, 6, 12, 6),
     this.titleWeight,
+    this.compact = false,
   });
   final String title;
   final String? value;
@@ -445,6 +450,7 @@ class ItemRow extends StatelessWidget {
   final Color? color;
   final EdgeInsetsGeometry? padding;
   final FontWeight? titleWeight;
+  final bool compact;
   @override
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (context, constraints) {
@@ -464,6 +470,7 @@ class ItemRow extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.end,
+                style: compact ? const TextStyle(fontSize: 15) : null,
               ),
             );
       final actionWidget =
@@ -483,7 +490,6 @@ class ItemRow extends StatelessWidget {
               ),
             );
       return CupertinoListTile.notched(
-        padding: padding,
         title: stacked
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -497,6 +503,7 @@ class ItemRow extends StatelessWidget {
                           ? CupertinoColors.destructiveRed
                           : color,
                       fontWeight: titleWeight,
+                      fontSize: compact ? 15 : null,
                     ),
                   ),
                   Text(
@@ -504,6 +511,7 @@ class ItemRow extends StatelessWidget {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
+                      fontSize: compact ? 15 : null,
                       color: CupertinoColors.secondaryLabel.resolveFrom(
                         context,
                       ),
@@ -518,6 +526,7 @@ class ItemRow extends StatelessWidget {
                 style: TextStyle(
                   color: destructive ? CupertinoColors.destructiveRed : color,
                   fontWeight: titleWeight,
+                  fontSize: compact ? 15 : null,
                 ),
               ),
         subtitle: subtitle == null || subtitle!.isEmpty
@@ -526,13 +535,16 @@ class ItemRow extends StatelessWidget {
                 subtitle!,
                 maxLines: subtitleMaxLines,
                 style: TextStyle(
-                  fontSize: 13,
+                  fontSize: compact ? 12 : 13,
                   color: CupertinoColors.secondaryLabel.resolveFrom(context),
                 ),
               ),
         leading: leading,
         trailing: trailingWidget,
         onTap: onTap,
+        padding: compact
+            ? const EdgeInsetsDirectional.fromSTEB(14, 2, 12, 2)
+            : padding,
       );
     },
   );
@@ -618,15 +630,20 @@ class _InputRowState extends State<InputRow> {
   );
 }
 
-Widget toggleRow(String title, bool value, ValueChanged<bool>? onChanged) =>
-    ItemRow(
-      title,
-      trailing: CupertinoSwitch(
-        value: value,
-        onChanged: onChanged,
-        activeTrackColor: brand,
-      ),
-    );
+Widget toggleRow(
+  String title,
+  bool value,
+  ValueChanged<bool>? onChanged, {
+  bool compact = false,
+}) => ItemRow(
+  title,
+  compact: compact,
+  trailing: CupertinoSwitch(
+    value: value,
+    onChanged: onChanged,
+    activeTrackColor: brand,
+  ),
+);
 Widget actionButton(
   String title,
   VoidCallback action, {
@@ -865,45 +882,16 @@ Future<T?> choose<T>(
   Map<T, String> choices, {
   T? selected,
   bool nonBlocking = false,
+  Set<T> destructive = const {},
 }) => _showCupertinoPopup<T>(
   context: context,
   nonBlocking: nonBlocking,
   builder: (sheetContext) => choices.length <= 12
-      ? CupertinoActionSheet(
-          title: Text(title),
-          actions: [
-            for (final entry in choices.entries)
-              CupertinoActionSheetAction(
-                isDefaultAction: entry.key == selected,
-                onPressed: () => Navigator.pop(sheetContext, entry.key),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      if (entry.key == selected)
-                        const PositionedDirectional(
-                          start: 0,
-                          child: Icon(CupertinoIcons.check_mark, size: 18),
-                        ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 28),
-                        child: Text(
-                          entry.value,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-          ],
-          cancelButton: CupertinoActionSheetAction(
-            onPressed: () => Navigator.pop(sheetContext),
-            child: Text(tr(context, 'Cancel')),
-          ),
+      ? _CompactChoiceSheet<T>(
+          title: title,
+          choices: choices,
+          selected: selected,
+          destructive: destructive,
         )
       : SizedBox(
           height: MediaQuery.sizeOf(context).height * .82,
@@ -917,6 +905,151 @@ Future<T?> choose<T>(
           ),
         ),
 );
+
+class _CompactChoiceSheet<T> extends StatelessWidget {
+  const _CompactChoiceSheet({
+    required this.title,
+    required this.choices,
+    required this.selected,
+    required this.destructive,
+  });
+
+  final String title;
+  final Map<T, String> choices;
+  final T? selected;
+  final Set<T> destructive;
+
+  @override
+  Widget build(BuildContext context) {
+    const rowHeight = 48.0;
+    final listHeight = math.min(
+      choices.length * rowHeight,
+      MediaQuery.sizeOf(context).height * .62,
+    );
+    final surface = CupertinoColors.secondarySystemGroupedBackground
+        .resolveFrom(context);
+    final separator = CupertinoColors.separator.resolveFrom(context);
+    Widget button({
+      required String label,
+      required VoidCallback onPressed,
+      bool selected = false,
+      bool destructive = false,
+    }) => Semantics(
+      button: true,
+      selected: selected,
+      child: CupertinoButton(
+        minimumSize: const Size.fromHeight(rowHeight),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        borderRadius: BorderRadius.zero,
+        onPressed: onPressed,
+        child: SizedBox(
+          height: rowHeight,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              if (selected)
+                const PositionedDirectional(
+                  start: 0,
+                  child: Icon(CupertinoIcons.check_mark, size: 17),
+                ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
+                    color: destructive
+                        ? CupertinoColors.destructiveRed.resolveFrom(context)
+                        : null,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                color: surface,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (title.isNotEmpty) ...[
+                    SizedBox(
+                      height: 44,
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(
+                            title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: CupertinoColors.secondaryLabel.resolveFrom(
+                                context,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(height: .5, color: separator),
+                  ],
+                  SizedBox(
+                    height: listHeight,
+                    child: ListView.separated(
+                      padding: EdgeInsets.zero,
+                      itemCount: choices.length,
+                      separatorBuilder: (_, _) =>
+                          Container(height: .5, color: separator),
+                      itemBuilder: (context, index) {
+                        final entry = choices.entries.elementAt(index);
+                        return button(
+                          label: entry.value,
+                          selected: entry.key == selected,
+                          destructive: destructive.contains(entry.key),
+                          onPressed: () => Navigator.pop(context, entry.key),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            Container(
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                color: surface,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: button(
+                label: tr(context, 'Cancel'),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 Future<T?> _showCupertinoPopup<T>({
   required BuildContext context,
@@ -1043,9 +1176,10 @@ class _SelectionPageState<T> extends State<SelectionPage<T>> {
   @override
   Widget build(BuildContext context) => NativePage(
     title: widget.title,
+    compact: true,
     children: [
       Padding(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+        padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
         child: CupertinoSearchTextField(
           onChanged: (value) => setState(() => filter = value),
         ),
@@ -1057,6 +1191,7 @@ class _SelectionPageState<T> extends State<SelectionPage<T>> {
           ))
             ItemRow(
               entry.value,
+              compact: true,
               trailing: entry.key == widget.selected
                   ? const Icon(CupertinoIcons.check_mark, color: brand)
                   : null,
@@ -1160,6 +1295,7 @@ class _GroupedRecordSelectionPageState
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
+                  fontSize: 15,
                   color: selected
                       ? brand
                       : CupertinoColors.label.resolveFrom(context),
@@ -1228,7 +1364,7 @@ class _GroupedRecordSelectionPageState
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                        fontSize: 17,
+                        fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -1245,7 +1381,7 @@ class _GroupedRecordSelectionPageState
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 4),
               child: CupertinoSearchTextField(
                 onChanged: (value) => setState(() => filter = value),
               ),
@@ -1404,6 +1540,7 @@ class _MultiSelectionPageState extends State<MultiSelectionPage> {
   @override
   Widget build(BuildContext context) => NativePage(
     title: widget.title,
+    compact: true,
     trailing: iconButton(
       CupertinoIcons.check_mark,
       tr(context, 'Save'),
@@ -1413,7 +1550,7 @@ class _MultiSelectionPageState extends State<MultiSelectionPage> {
     ),
     children: [
       Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
         child: CupertinoSearchTextField(
           onChanged: (value) => setState(() => filter = value),
         ),
@@ -1440,6 +1577,7 @@ class _MultiSelectionPageState extends State<MultiSelectionPage> {
                         checked,
                       );
                     }),
+              compact: true,
             ),
         ],
       ),
@@ -1482,25 +1620,49 @@ Future<DateTime?> pickDate(
       nonBlocking: nonBlocking,
       builder: (context) => StatefulBuilder(
         builder: (context, setSheetState) => Container(
-          height: 340,
+          height: 320,
           color: CupertinoColors.systemBackground.resolveFrom(context),
           child: SafeArea(
             top: false,
             child: Column(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CupertinoButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text(tr(context, 'Cancel')),
-                    ),
-                    Expanded(child: Text(title, textAlign: TextAlign.center)),
-                    CupertinoButton(
-                      onPressed: () => Navigator.pop(context, chosen),
-                      child: Text(tr(context, 'Done')),
-                    ),
-                  ],
+                SizedBox(
+                  height: 48,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CupertinoButton(
+                        minimumSize: const Size(48, 48),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        onPressed: () => Navigator.pop(context),
+                        child: Text(
+                          tr(context, 'Cancel'),
+                          style: const TextStyle(fontSize: 15),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      CupertinoButton(
+                        minimumSize: const Size(48, 48),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        onPressed: () => Navigator.pop(context, chosen),
+                        child: Text(
+                          tr(context, 'Done'),
+                          style: const TextStyle(fontSize: 15),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 if (time)
                   CupertinoSlidingSegmentedControl<int>(
@@ -1533,7 +1695,7 @@ Future<DateTime?> pickDate(
                               Expanded(
                                 child: CupertinoPicker(
                                   scrollController: controllers[i],
-                                  itemExtent: 40,
+                                  itemExtent: 36,
                                   onSelectedItemChanged: (value) {
                                     chosen = switch (tokens[i][0]) {
                                       'H' => chosen.copyWith(hour: value),

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart'
-    show Theme, ReorderableListView, ReorderableDelayedDragStartListener;
+    show ReorderableListView, ReorderableDelayedDragStartListener;
 import 'package:image_picker/image_picker.dart';
 
 import '../../core/formatting.dart';
@@ -24,6 +24,57 @@ const periodNames = {
   7: 'This month',
   9: 'This year',
 };
+
+Future<void> openTransactionTemplates(BuildContext context) async {
+  final app = ProviderScope.containerOf(
+    context,
+    listen: false,
+  ).read(appControllerProvider);
+  final value = await choose(context, app.t('Transaction Templates'), {
+    if (app.config['transactionFromAITextRecognition'] == true)
+      'ai-text': app.t('Create Transaction from Text'),
+    if (app.config['transactionFromAITextRecognition'] == true)
+      'ai-clipboard': app.t('Create Transaction from Clipboard'),
+    if (app.config['transactionFromAIImageRecognition'] == true)
+      'ai-image': app.t('Create Transaction from Receipt'),
+    for (final item in app.templates.where(
+      (item) => number(item['templateType']) == 1 && item['hidden'] != true,
+    ))
+      string(item['id']): string(item['name']),
+  });
+  if (value == null || !context.mounted) return;
+  if (value.startsWith('ai-')) {
+    String? path;
+    if (value == 'ai-image') {
+      final source = await choose(context, app.t('Picture'), {
+        ImageSource.camera: app.t('Take Photo'),
+        ImageSource.gallery: app.t('Choose Picture'),
+      });
+      if (source == null) return;
+      path = (await ImagePicker().pickImage(source: source))?.path;
+      if (path == null || !context.mounted) return;
+    }
+    final recognized = await recognizeTransaction(
+      context,
+      clipboard: value == 'ai-clipboard',
+      imageRecognition: value == 'ai-image',
+      imagePath: path,
+    );
+    if (recognized != null && context.mounted) {
+      Navigator.of(context).push(
+        nativeRoute(
+          context,
+          builder: (_) => TransactionEditPage(
+            route: '/transaction/add',
+            initialData: recognized,
+          ),
+        ),
+      );
+    }
+    return;
+  }
+  context.push('/transaction/add?templateId=$value');
+}
 
 Map<int, BigInt> overviewAssetTotals(AppController app) {
   final excluded = expandSelection(
@@ -208,54 +259,6 @@ class _HomeState extends NativeState<HomePage> {
     );
   }
 
-  Future<void> templates() async {
-    final value = await choose(context, t('Transaction Templates'), {
-      if (app.config['transactionFromAITextRecognition'] == true)
-        'ai-text': t('Create Transaction from Text'),
-      if (app.config['transactionFromAITextRecognition'] == true)
-        'ai-clipboard': t('Create Transaction from Clipboard'),
-      if (app.config['transactionFromAIImageRecognition'] == true)
-        'ai-image': t('Create Transaction from Receipt'),
-      for (final item in app.templates.where(
-        (item) => number(item['templateType']) == 1 && item['hidden'] != true,
-      ))
-        string(item['id']): string(item['name']),
-    });
-    if (value != null && mounted) {
-      if (value.startsWith('ai-')) {
-        String? path;
-        if (value == 'ai-image') {
-          final source = await choose(context, t('Picture'), {
-            ImageSource.camera: t('Take Photo'),
-            ImageSource.gallery: t('Choose Picture'),
-          });
-          if (source == null) return;
-          path = (await ImagePicker().pickImage(source: source))?.path;
-          if (path == null || !mounted) return;
-        }
-        final recognized = await recognizeTransaction(
-          context,
-          clipboard: value == 'ai-clipboard',
-          imageRecognition: value == 'ai-image',
-          imagePath: path,
-        );
-        if (recognized != null && mounted) {
-          Navigator.of(context).push(
-            nativeRoute(
-              context,
-              builder: (_) => TransactionEditPage(
-                route: '/transaction/add',
-                initialData: recognized,
-              ),
-            ),
-          );
-        }
-        return;
-      }
-      context.push('/transaction/add?templateId=$value');
-    }
-  }
-
   @override
   Widget buildPage(BuildContext _) => widget.previewWidget != null
       ? buildWidget(widget.previewWidget!)
@@ -268,45 +271,6 @@ class _HomeState extends NativeState<HomePage> {
             CupertinoIcons.slider_horizontal_3,
             t('Edit Overview Layout'),
             () => context.push('/settings/overview_layout'),
-          ),
-          bottom: Container(
-            height: 64,
-            decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              border: const Border(
-                top: BorderSide(color: CupertinoColors.separator, width: .5),
-              ),
-            ),
-            child: Row(
-              children: [
-                tab(CupertinoIcons.list_bullet, 'Details', '/transaction/list'),
-                tab(CupertinoIcons.creditcard, 'Accounts', '/account/list'),
-                Expanded(
-                  child: GestureDetector(
-                    onLongPress: templates,
-                    child: Semantics(
-                      label: t('Add Transaction'),
-                      button: true,
-                      child: CupertinoButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () => context.push('/transaction/add'),
-                        child: Icon(
-                          CupertinoIcons.plus_app,
-                          size: 32,
-                          color: CupertinoColors.label.resolveFrom(context),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                tab(
-                  CupertinoIcons.chart_pie,
-                  'Statistics',
-                  '/statistic/transaction',
-                ),
-                tab(CupertinoIcons.gear_alt, 'Settings', '/settings'),
-              ],
-            ),
           ),
           children: [
             if (!app.initialSyncComplete)
@@ -341,30 +305,6 @@ class _HomeState extends NativeState<HomePage> {
               buildWidget(widget),
           ],
         );
-  Widget tab(IconData icon, String title, String route) => Expanded(
-    child: CupertinoButton(
-      padding: EdgeInsets.zero,
-      onPressed: () => context.push(route),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            size: 24,
-            color: CupertinoColors.label.resolveFrom(context),
-          ),
-          const SizedBox(height: 3),
-          Text(
-            t(title),
-            style: TextStyle(
-              fontSize: 11,
-              color: CupertinoColors.label.resolveFrom(context),
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
   Widget buildWidget(RecordData widget) {
     final type = string(widget['type']);
     final definition = definitions[type] as Map? ?? {};

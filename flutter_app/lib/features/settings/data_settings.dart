@@ -101,7 +101,7 @@ class _CacheState extends SettingsState<CacheSettingsPage> {
             color: CupertinoColors.secondarySystemGroupedBackground.resolveFrom(
               sheet,
             ),
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(16),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -119,14 +119,14 @@ class _CacheState extends SettingsState<CacheSettingsPage> {
         );
         Widget button(String label, AppCache? value, {bool enabled = true}) =>
             CupertinoButton(
-              minimumSize: const Size(double.infinity, 57),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              minimumSize: const Size(double.infinity, 48),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               onPressed: enabled ? () => Navigator.pop(sheet, value) : null,
               child: Text(
                 t(label),
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 15,
                   fontWeight: value == null ? FontWeight.w600 : FontWeight.w400,
                 ),
               ),
@@ -191,8 +191,9 @@ class _CacheState extends SettingsState<CacheSettingsPage> {
                       ? 'Cache Expiration for Map Data'
                       : 'Cache Expiration for Exchange Rates Data',
                 ),
+                compact: true,
                 subnavbar: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                  padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
                   child: CupertinoSearchTextField(
                     placeholder: t('Expiration Time'),
                     onChanged: (value) => update(() => query = value),
@@ -545,27 +546,10 @@ class _ExchangeRatesState extends SettingsState<ExchangeRatesPage> {
   }
 
   Future<void> more() async {
-    final action = await showCupertinoModalPopup<String>(
-      context: context,
-      builder: (sheet) => CupertinoActionSheet(
-        actions: [
-          if (custom)
-            CupertinoActionSheetAction(
-              onPressed: () => Navigator.pop(sheet, 'update'),
-              child: Text(t('Update')),
-            ),
-          CupertinoActionSheetAction(
-            onPressed: () => Navigator.pop(sheet, 'refresh'),
-            child: Text(t('Refresh')),
-          ),
-        ],
-        cancelButton: CupertinoActionSheetAction(
-          onPressed: () => Navigator.pop(sheet),
-          isDefaultAction: true,
-          child: Text(t('Cancel')),
-        ),
-      ),
-    );
+    final action = await choose(context, '', {
+      if (custom) 'update': t('Update'),
+      'refresh': t('Refresh'),
+    });
     if (!mounted) return;
     if (action == 'update') {
       await context.push('/exchange_rates/update');
@@ -577,25 +561,11 @@ class _ExchangeRatesState extends SettingsState<ExchangeRatesPage> {
 
   Future<void> remove(RecordData row) async {
     if (!custom || row['currency'] == app.user['defaultCurrency']) return;
-    final accepted = await showCupertinoModalPopup<bool>(
-      context: context,
-      builder: (sheet) => CupertinoActionSheet(
-        title: Text(
-          t('Are you sure you want to delete this user custom exchange rate?'),
-        ),
-        actions: [
-          CupertinoActionSheetAction(
-            isDestructiveAction: true,
-            onPressed: () => Navigator.pop(sheet, true),
-            child: Text(t('Delete')),
-          ),
-        ],
-        cancelButton: CupertinoActionSheetAction(
-          onPressed: () => Navigator.pop(sheet, false),
-          isDefaultAction: true,
-          child: Text(t('Cancel')),
-        ),
-      ),
+    final accepted = await choose(
+      context,
+      t('Are you sure you want to delete this user custom exchange rate?'),
+      {true: t('Delete')},
+      destructive: {true},
     );
     if (accepted != true || !mounted) return;
     await run(() async {

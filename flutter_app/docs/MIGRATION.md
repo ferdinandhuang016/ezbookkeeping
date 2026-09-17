@@ -13,21 +13,21 @@
 
 | ID | 原路由／原页面 | Flutter 页面 | 接口／存储 | 必须操作的验收场景 | 状态 |
 |---|---|---|---|---|---|
-| R01 | `/` · HomePage | `overview/home.dart` · HomePage | S、L、汇率 latest | 默认两个组件、全部九组件、金额显隐、刷新、底部入口、长按模板／AI | 九组件编辑与最终包紧凑首页/聚合通过；完整设置分支待验 |
+| R01 | `/` · HomePage | `overview/home.dart` · HomePage | S、L、汇率 latest | 默认两个组件、全部九组件、金额显隐、刷新、底部入口、长按模板／AI | E38 五页常驻底栏、中心首页、浮动新增及长按模板／AI通过；九组件编辑与紧凑首页/聚合通过；完整设置分支待验 |
 | R02 | `/login` · LoginPage | `auth/auth_page.dart` · AuthPage | `authorize.json`、`2fa/*`、`oauth2/*`、`client/config.json` | 地址前缀、正常／错误登录、2FA／恢复码、忘记密码、验证邮件、OIDC、语言 | API24/36登录、SMTP邮件、2FA/恢复码/取消、条件入口与本地OIDC通过；其它故障组合待验 |
 | R03 | `/signup` · SignupPage | AuthPage(signup) | `register.json` | 关闭注册、字段校验、21语言、159币种、星期、分类预设、激活提示 | API24原生注册、预设预览语言/默认币种/星期、激活提示通过；其它语言/币种分支待验 |
 | R04 | `/unlock` · UnlockPage | UnlockPage | Android 安全存储／生物识别 | 错误／正确 PIN、进程重启、后台恢复、生物识别取消／失败 | API36 PIN 通过；API24 无生物硬件提示通过；其它生物识别待验 |
-| R05 | `/transaction/list` · transactions/ListPage | `transactions/transactions.dart` · TransactionListPage | S、L | 月份切换、分页、全文／日期／账户／分类／标签／金额过滤、滑动删除、复制、编辑 | E13/E14/E29–E31：三视图、月份下钻、独立菜单、类型联动/预填、搜索、账户选择/More及全行高滑动部分通过；其余筛选待验 |
+| R05 | `/transaction/list` · transactions/ListPage | `transactions/transactions.dart` · TransactionListPage | S、L | 月份切换、分页、全文／日期／账户／分类／标签／金额过滤、滑动删除、复制、编辑 | E38 一级详情常驻导航及单一浮动新增通过；E13/E14/E29–E31 三视图、筛选和滑动部分通过；其余筛选待验 |
 | R06 | `/transaction/filter/amount` · AmountFilterPage | TransactionFilterPage(amountOnly) | L | 六种金额关系、负数、整数上限、取消与清除 | E30：大于5.00应用返回3笔/59.34、反向范围拒绝、取消保留通过；其它关系/边界/清除待验 |
 | R07 | `/transaction/add` · transactions/EditPage | TransactionEditPage | S、`v1/transaction/pictures/upload.json` | 收／支／转账、跨币种双方金额、零金额提示、草稿、图片、位置、快速保存 | 离线支出/跨币种转账及重启通过；其余分支待验 |
 | R08 | `/transaction/edit` · transactions/EditPage | TransactionEditPage | S；余额调整用 `v1/transactions/modify.json` | 编辑时间范围、附件保留、离线连续修改、远端冲突、删除后编辑 | 离线转账连续编辑/删除、并发本地采用及返回详情通过；其余待验 |
 | R09 | `/transaction/detail` · transactions/EditPage | TransactionEditPage | S、`v1/transactions/get.json` | 只读状态、编辑／删除、四种复制、模板化、原始与默认时区、图像预览 | 保存后最新详情、相册进入和离线图片预览通过；其它操作待验 |
-| R10 | `/account/list` · accounts/ListPage | `catalogs/catalogs.dart` · AccountListPage | S、`v1/accounts/move.json`、hide/delete | 单／多子账户、资产与负债、隐藏、排序、信用卡两种余额、进入明细 | API24 双子账户/隐藏部分通过；API36 转账双方余额通过；完整待验 |
+| R10 | `/account/list` · accounts/ListPage | `catalogs/catalogs.dart` · AccountListPage | S、`v1/accounts/move.json`、hide/delete | 单／多子账户、资产与负债、隐藏、排序、信用卡两种余额、进入明细 | E38 一级账户常驻导航与返回首页通过；API24 双子账户/隐藏部分及 API36 转账双方余额通过；完整待验 |
 | R11 | `/account/add` · accounts/EditPage | AccountEditPage / SubAccountPage | `v1/accounts/add.json` | 分类、账户类型、图标／颜色／币种、初始余额与时间、子账户、信用卡属性 | API36 创建返回、API24 双子账户创建通过；信用卡等待验 |
 | R12 | `/account/edit` · accounts/EditPage | AccountEditPage / SubAccountPage | `v1/accounts/modify.json`、hide/delete、sub_account/delete | 更名不覆盖旧余额、已有余额只读、隐藏／删除、子账户排序、最后对账时间；余额修正进入对账 | API24 子账户隐藏/对账部分通过；完整排序/修改待验 |
 | R13 | `/account/reconciliation_statements` · ReconciliationStatementPage | ReconciliationPage | `v1/transactions/reconciliation_statements.json`、`v1/accounts/update/last_reconciled_time.json` | 日期预设／时区、收支与期初期末、走势聚合、更新期末余额、标记对账、记录操作 | API24 期末余额修正与返回自动刷新通过；其余待验 |
 | R14 | `/account/move_all_transactions` · MoveAllTransactionsPage | MoveTransactionsPage | `v1/transactions/move/all.json` | 同币种目标、目标名称复核、待同步阻止、原账户／目标账户余额和网页一致 | API36同币种/目标名称校验/确认迁移及余额通过；待同步与并发待验 |
-| R15 | `/statistic/transaction` · statistics/TransactionPage | `statistics/statistics.dart` · StatisticsPage | S、L、`v1/exchange_rates/latest.json` | 全部 mobile 数据类型、分类／趋势／资产、过滤、各图形、聚合、期间移动和点击明细 | E29：支出饼图/金额条下钻、账户资产/未来月份、图例隐藏/可见账户下钻与F921月份标签通过；其余模式/组合/暗色完整对照待验 |
+| R15 | `/statistic/transaction` · statistics/TransactionPage | `statistics/statistics.dart` · StatisticsPage | S、L、`v1/exchange_rates/latest.json` | 全部 mobile 数据类型、分类／趋势／资产、过滤、各图形、聚合、期间移动和点击明细 | E38 统计期间栏与常驻底栏叠放通过；E29 图表、下钻及月份标签部分通过；其余模式/组合/暗色完整对照待验 |
 | R16 | `/statistic/settings` · statistics/SettingsPage | StatisticsSettingsPage | L、C | 图表、时间范围、排序、时区、账户／分类排除、关键字匹配模式实际生效 | E33 默认排序改名后新页生效并恢复；其它设置效果待验 |
 | R17 | `/settings/textsize` · TextSizeSettingsPage | `settings/preferences.dart` · TextSizePage | L、C | 0–6字号枚举、预览／保存／返回、系统大字体叠加 | API24最大字号预览/保存/首页/重启保持/恢复默认通过；完整七档与系统字体组合待验 |
 | R18 | `/settings/filter/account` · AccountFilterSettingsPage | FilterSettingsPage(account) | L、C | 主／子账户、隐藏、搜索、全选／反选、首页／总额／统计上下文 | 分组/搜索/取消及 More 全不选设备通过；其它上下文待验 |
@@ -39,7 +39,7 @@
 | R24 | `/settings/account_category_display_order` · AccountCategoryDisplayOrderSettingsPage | AccountOrderPage | L、C | 拖动、取消、保存、重置、账户列表顺序 | API24 跨屏拖动、保存/返回取消、重置与重启持久化通过 |
 | R25 | `/settings/sync` · ApplicationCloudSyncSettingsPage | CloudSettingsPage | C | 选择相关键、手动上传／下载、自动更新、禁用、跨客户端格式兼容 | 全部47键真实HTTP往返/局部/禁用通过；完整设备效果待验 |
 | R26 | `/settings/browser_caches` · BrowserCacheSettingPage | `settings/data_settings.dart` · CacheSettingsPage | 本地缓存／WebView cache | 各缓存期限、单项／全清理，不删除账本、待同步及待上传图片 | API36离线全清理保留账本/队列/图片及最终包页面/过期入口通过；单项实际清理与压力待验 |
-| R27 | `/settings` · SettingsPage | `settings/mobile_settings.dart` · SettingsPage | L、C | 条件入口、主题／时区／动画／滑动返回、退出待同步保护、打开桌面版 | API24/36主题/入口部分通过，待同步退出取消保留通过；全部设置效果待验 |
+| R27 | `/settings` · SettingsPage | `settings/mobile_settings.dart` · SettingsPage | L、C | 条件入口、主题／时区／动画／滑动返回、退出待同步保护、打开桌面版 | E38 一级设置常驻导航及代表性紧凑操作菜单通过；API24/36主题/入口部分、待同步退出取消保留通过；全部设置效果待验 |
 | R28 | `/app_lock` · ApplicationLockPage | `settings/security.dart` · AppLockPage | Android 安全存储／生物识别 | PIN两次确认、启用／更换／禁用、生物识别、重启锁定 | API36 PIN通过；API24无生物硬件失败保留通过；其它待验 |
 | R29 | `/exchange_rates` · exchangerates/ListPage | ExchangeRatesPage | `v1/exchange_rates/latest.json` | 筛选、排序、改变基准与金额、数据源、自定义汇率删除 | 最终包基准1.00、服务商汇率列表与刷新入口通过；筛选/排序/删除待验 |
 | R30 | `/exchange_rates/update` · exchangerates/UpdatePage | ExchangeRatesEditPage | `v1/exchange_rates/user_custom/update.json` | 正数边界、四位输入、服务端存储精度／截断与基准换算、默认币种、取消／保存 | 定点/截断/边界业务与HTTP通过；设备待验 |
