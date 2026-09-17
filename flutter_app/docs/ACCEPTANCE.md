@@ -54,6 +54,7 @@
 | E36 / R07、D05 | “记一笔”首帧可输入且初始化无加载圈；概要组件改为 4×1、无品牌文字、主体进入首页 | [device-quick-start-widget-4x1-result.json](evidence/device-quick-start-widget-4x1-result.json)：初始化期间输入 7.00 并保留至正式编辑器；AOT 包 API24 冷启动 578/722ms、API36 重复冷启动 1851ms、热启动 7ms。API24 Provider 为 290×40dp，选择器显示 4×1；[桌面组件](evidence/widget-summary-4x1-api24.png)无品牌文字，[主体点击](evidence/widget-summary-open-home-api24.png)进入首页，Tab 仍在桌面原地切换 | 首次安装后的 ART 优化及设备性能会影响冷启动；debug JIT 时长不作为发布包结论。实体厂商 Launcher 和低端实体机待验 |
 | E37 / D05 | 4×1 概要同比截至今日；收入／支出涨跌箭头与颜色；总计三等分 | [device-widget-yoy-total-result.json](evidence/device-widget-yoy-total-result.json)：同比只使用本月 1 日至今天与去年同月同期数据，当月展示金额继续使用整月口径；收入上涨红色▲／下跌绿色▼，支出上涨绿色▲／下跌红色▼均在 API24 验证。总计 Tab 显示收入、支出、总额三个等宽区域；[API24 浅色](evidence/widget-total-three-columns-api24.png)与[API36 深色中文](evidence/widget-total-three-columns-dark-api36.png)通过 | 涨跌截图使用确定性组件快照，区间计算由业务测试覆盖；实体厂商 Launcher 仍待验。旧 4×2 实例需移除后重加才能取得 4×1 高度 |
 | E38 / R01、R05、R10、R15、R27、D02、D05 | 五个一级页面共用常驻底栏；中心首页高亮；各页右下角新增；底部选择弹窗紧凑化 | API36／`CC7B6ADA` debug 包依次切换详情、账户、首页、统计、设置，选中语义与页面原状态保留；系统返回从账户回首页，二级新增／选择页隐藏底栏；统计期间栏与公共底栏不重叠；详情仅保留一个新增入口。Theme、分类两栏和交易时间三类代表弹层显示 15–16px 可见字和至少 48dp 点击行；长按浮动新增仍进入模板／AI。原始证据：`ezb-nav-home.png`、`ezb-sheet-theme.png`、`ezb-sheet-category.png`、`ezb-sheet-time.png`、`ezb-nav-dark-large-stable.png`、`ezb-nav-landscape.png` | 已覆盖 API36 1080×2400、横屏、深浅色、系统字号 1.3、关闭动画和返回键；API24、平板、实体设备及所有语言长文案仍待验。图标／颜色和设置专用操作菜单已复用相同紧凑尺寸但未逐个设备操作，不能推广为全部弹层业务分支通过 |
+| E39 / D05 | 4×1 概要左上固定“本月”；收入／支出同比下方显示增减金额；总计标签与金额放大 | API24／API36 安装 `62AE6B91` debug 包。API24 真实 4×1 组件依次点击收入、支出和总计：收入显示 `同比 ▲ 25%`／`增加 ¥2,000.00`，支出显示 `同比 ▼ 20%`／`减少 ¥300.00`，总计三栏完整且无裁切；切换简体中文后左上显示“本月”。API36 Pixel Launcher 选择器显示 4×1，深色简中收入和总计通过。原始证据：`widget-opt-api24-income-final2.png`、`widget-opt-api24-expense-final.png`、`widget-opt-api24-total-final.png`、`widget-opt-api24-zh-income.png`、`widget-opt-api36-zh-dark-income.png`、`widget-opt-api36-zh-dark-total.png` | 确定性组件快照只验证呈现，同比差额区间由业务测试覆盖；实体厂商 Launcher、超长货币金额和更多语言仍待验 |
 
 E19 明确关闭先前 AI 文字页混入拍照、英文 Dio 诊断和键盘抢焦点三个设备缺陷；保留各迭代构建的原始证据。
 
@@ -63,7 +64,7 @@ E29／E30 同样保留迭代 JSON 的旧待验说明，并以其中带构建 SHA
 
 隔离邮件测试还确认了原后端已有两项限制：[同一 Unix 秒内新建的重置密码 token 可再次使用](evidence/auth-reset-replay-result.json)，以及重置密码会把周起始从 1 改为 0（[前后接口复现](evidence/auth-reset-profile-boundary-result.json)）。`forget_passwords.go` 本次未修改；这些不是 Flutter 新增行为。邮件接口正常人工时序的验收不能覆盖或隐藏该边界。
 
-迭代证据继续保留原构建边界。E31 记录 9394604B 基线包的版本、SHA-256、构建日志和两平台复验；E34 记录 27BADBBB 包新增桌面入口；E35 记录 2F12D6A9 包的输入、快捷入口与两栏选择器复验；E36 记录 17EB8431 debug 包和 89EB009E AOT 包的快捷首帧及 4×1 组件；E37 记录 0EB5D0BC debug 包和 44EE52A4 AOT 包的同比及总计布局；E38 记录 CC7B6ADA debug 包的常驻导航、浮动新增和紧凑弹层复验。较早 APK 的其它结果仍不能自动推广到新构建未操作的场景。
+迭代证据继续保留原构建边界。E31 记录 9394604B 基线包的版本、SHA-256、构建日志和两平台复验；E34 记录 27BADBBB 包新增桌面入口；E35 记录 2F12D6A9 包的输入、快捷入口与两栏选择器复验；E36 记录 17EB8431 debug 包和 89EB009E AOT 包的快捷首帧及 4×1 组件；E37 记录 0EB5D0BC debug 包和 44EE52A4 AOT 包的同比及总计布局；E38 记录 CC7B6ADA debug 包的常驻导航、浮动新增和紧凑弹层复验；E39 记录 62AE6B91 debug 包的“本月”、同比差额及放大总计文字复验。较早 APK 的其它结果仍不能自动推广到新构建未操作的场景。
 
 ## 自动化与构建
 
@@ -74,11 +75,11 @@ E29／E30 同样保留迭代 JSON 的旧待验说明，并以其中带构建 SHA
 | Go 回归 | 13:44:31 `BUILD_PIPELINE=1 go test -count=1 ./...` 全部通过，含 `cmd` 已有数据升级测试；普通完整运行的 Norges Bank 在线集成测试因外站请求 10 秒超时失败 | CI 模式跳过在线数据源检查，不能表述为所有实时第三方汇率服务通过；普通模式外站失败保留为限制 |
 | 三数据库同步集成 | 同步独立审查重新运行 `go test -count=1 ./pkg/api`：SQLite 2.338s、PostgreSQL 3.914s、MySQL 3.762s 均通过，实际外部数据库只使用 `sync_test` | 不代表所有生产历史版本升级路径、所有数据库部署方式都已验证 |
 | 三数据库已有数据升级 | [backend-upgrade-audit.md](evidence/backend-upgrade-audit.md)：实际升级函数、升级前已填账本、首次快照／Web 写入、转账与删除、关闭重开再升级均通过；SQLite 0.422s、PostgreSQL16 1.411s、MySQL8 2.587s | 升级前模型结构与本次迁移前一致；不包含每个历史发行备份、并发升级、断电／磁盘满与大规模性能 |
-| Dart 金额／格式／同步／设置 | [flutter-widget-tests-27badbbb.log](evidence/flutter-widget-tests-27badbbb.log)：212 项全部通过；新增当月收入／支出／净额、上年同月百分比、转账排除、退款符号和零基期业务检查 | 业务测试不等于 UI 场景；不与各作用域计数相加 |
+| Dart 金额／格式／同步／设置 | 当前源码 216 项全部通过；包含当月收入／支出／净额、上年同期百分比与差额、转账排除、退款符号和零基期业务检查 | 业务测试不等于 UI 场景；不与各作用域计数相加 |
 | 本轮账户／对账业务 | `test/catalog_business_test.dart` 22 项通过：请求契约、债务符号、金额上限、日期边界、空日期延续、财年、账单周期、月末、币种与精确合计、信用额度、隐藏与缺汇率 | 业务已修正，真实设备跨币种账本对照待验 |
 | 会话业务 | `test/session_presentation_test.dart` 12 项通过：11 个原 JS fixture + 原生 Android；API token rotation 与安全存储失败也有业务覆盖 | E24 已覆盖实际列表／单次和全部注销；API/MCP 专用设备显示仍待验 |
-| 静态分析 | 0EB5D0BC 最终源码 `flutter analyze` 0 问题；213 项 Dart 业务测试通过 | 后续源码变更需重验 |
-| Android APK | debug：227,365,591 bytes，SHA-256 `0EB5D0BCE6E71B6C82580CFF1ECBE7564954A927E3A8D7C1E1EC5899A8E6AE06`；AOT release：78,393,867 bytes，SHA-256 `44EE52A4ADCF3D6AB4B832270B780ABC3C18C496CA84D6E629801DDDF268F679`；API24／36 安装，E37 设备复验通过 | 两个本地包均使用 debug key；正式分发需私有签名。实体设备和 E37 未列场景仍需验收 |
+| 静态分析 | 当前源码 `flutter analyze --no-pub` 0 问题；216 项 Dart 业务测试通过 | 后续源码变更需重验 |
+| Android APK | 当前 debug：215,143,659 bytes，SHA-256 `62AE6B91BB07B584CBC50BC38A030B3C1F68BA0A8FFCBA8681FA6E3C5B897C70`；API24／36 安装并完成 E39 设备复验。E37 AOT release 仍为 78,393,867 bytes、SHA-256 `44EE52A4ADCF3D6AB4B832270B780ABC3C18C496CA84D6E629801DDDF268F679` | 两个本地包均使用 debug key；正式分发需私有签名。当前源码未重新构建 release；实体设备和 E39 未列场景仍需验收 |
 | 独立 CI | [flutter.yml](../../.github/workflows/flutter.yml) 已配置 Flutter 3.47.2、锁依赖、analyze、业务测试、APK artifact；YAML 解析和 8 步配置校验通过 | 尚无 GitHub Actions 实际运行记录 |
 
 ## 本轮发现并修复的差异

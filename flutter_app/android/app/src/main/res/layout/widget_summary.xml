@@ -93,15 +93,34 @@
             android:textSize="9sp"
             android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/summary_yoy"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
-            android:includeFontPadding="false"
-            android:text="—"
-            android:textColor="@color/widget_text_secondary"
-            android:textSize="11sp" />
+            android:gravity="end"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/summary_yoy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:text="—"
+                android:textColor="@color/widget_text_secondary"
+                android:textSize="11sp" />
+
+            <TextView
+                android:id="@+id/summary_yoy_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:text="—"
+                android:textColor="@color/widget_text_secondary"
+                android:textSize="10sp" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -127,7 +146,7 @@
                 android:includeFontPadding="false"
                 android:text="@string/widget_income"
                 android:textColor="@color/widget_text_secondary"
-                android:textSize="8sp" />
+                android:textSize="11sp" />
 
             <TextView
                 android:id="@+id/summary_total_income_amount"
@@ -139,7 +158,7 @@
                 android:maxLines="1"
                 android:text="—"
                 android:textColor="@color/widget_text"
-                android:textSize="12sp"
+                android:textSize="15sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -157,7 +176,7 @@
                 android:includeFontPadding="false"
                 android:text="@string/widget_expense"
                 android:textColor="@color/widget_text_secondary"
-                android:textSize="8sp" />
+                android:textSize="11sp" />
 
             <TextView
                 android:id="@+id/summary_total_expense_amount"
@@ -169,7 +188,7 @@
                 android:maxLines="1"
                 android:text="—"
                 android:textColor="@color/widget_text"
-                android:textSize="12sp"
+                android:textSize="15sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -187,7 +206,7 @@
                 android:includeFontPadding="false"
                 android:text="@string/widget_net_total"
                 android:textColor="@color/widget_text_secondary"
-                android:textSize="8sp" />
+                android:textSize="11sp" />
 
             <TextView
                 android:id="@+id/summary_total_net_amount"
@@ -199,7 +218,7 @@
                 android:maxLines="1"
                 android:text="—"
                 android:textColor="@color/widget_text"
-                android:textSize="12sp"
+                android:textSize="15sp"
                 android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>

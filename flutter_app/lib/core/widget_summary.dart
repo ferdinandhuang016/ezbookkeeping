@@ -14,13 +14,11 @@ class WidgetPeriodValues {
   final BigInt comparisonCurrent;
   final BigInt previous;
 
+  BigInt get difference => comparisonCurrent - previous;
+
   String? get yearOverYear {
     if (previous == BigInt.zero) return null;
-    final percent = aggregatePercent(
-      comparisonCurrent - previous,
-      previous.abs(),
-      precision: 1,
-    );
+    final percent = aggregatePercent(difference, previous.abs(), precision: 1);
     return comparisonCurrent > previous ? '+$percent%' : '$percent%';
   }
 

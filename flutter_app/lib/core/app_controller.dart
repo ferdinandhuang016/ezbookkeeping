@@ -569,12 +569,15 @@ class AppController extends ChangeNotifier with WidgetsBindingObserver {
         'month': now.month,
         'incomeAmount': amount(summary.income.current),
         'incomeYearOverYear': yearOverYear(summary.income),
+        'incomeYearOverYearAmount': amount(summary.income.difference.abs()),
         'incomeTrend': summary.income.trend,
         'expenseAmount': amount(summary.expense.current),
         'expenseYearOverYear': yearOverYear(summary.expense),
+        'expenseYearOverYearAmount': amount(summary.expense.difference.abs()),
         'expenseTrend': summary.expense.trend,
         'totalAmount': amount(summary.total.current),
         'totalYearOverYear': yearOverYear(summary.total),
+        'totalYearOverYearAmount': amount(summary.total.difference.abs()),
         'totalTrend': summary.total.trend,
       });
     } on MissingPluginException {

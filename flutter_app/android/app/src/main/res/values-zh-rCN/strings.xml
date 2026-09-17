@@ -9,8 +9,12 @@
     <string name="widget_expense">支出</string>
     <string name="widget_total">总计</string>
     <string name="widget_net_total">总额</string>
-    <string name="widget_this_month">当月</string>
+    <string name="widget_this_month">本月</string>
     <string name="widget_month_value">%1$d年%2$d月</string>
     <string name="widget_yoy_value">同比 %1$s</string>
+    <string name="widget_yoy_increase_amount">增加 %1$s</string>
+    <string name="widget_yoy_decrease_amount">减少 %1$s</string>
+    <string name="widget_yoy_flat_amount">持平 %1$s</string>
+    <string name="widget_yoy_difference_unavailable">差额 —</string>
     <string name="widget_open_to_update">打开应用以更新</string>
 </resources>

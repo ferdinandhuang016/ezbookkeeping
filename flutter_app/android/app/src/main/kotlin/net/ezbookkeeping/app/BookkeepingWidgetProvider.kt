@@ -12,9 +12,9 @@ import android.widget.RemoteViews
 object HomeWidgetSupport {
     private const val PREFERENCES = "home_widgets"
     private val snapshotKeys = listOf(
-        "year", "month", "incomeAmount", "incomeYearOverYear",
-        "incomeTrend", "expenseAmount", "expenseYearOverYear", "expenseTrend",
-        "totalAmount", "totalYearOverYear", "totalTrend"
+        "year", "month", "incomeAmount", "incomeYearOverYear", "incomeYearOverYearAmount",
+        "incomeTrend", "expenseAmount", "expenseYearOverYear", "expenseYearOverYearAmount",
+        "expenseTrend", "totalAmount", "totalYearOverYear", "totalYearOverYearAmount", "totalTrend"
     )
 
     fun updateSnapshot(context: Context, values: Map<*, *>) {
@@ -117,18 +117,13 @@ class SummaryWidgetProvider : AppWidgetProvider() {
             views.setTextViewText(R.id.summary_total_expense_label, context.getString(R.string.widget_expense))
             views.setTextViewText(R.id.summary_total_net_label, context.getString(R.string.widget_net_total))
             views.setTextViewText(R.id.summary_empty, context.getString(R.string.widget_open_to_update))
-            val year = preferences.getString("year", null)
-            val month = preferences.getString("month", null)
-            views.setTextViewText(
-                R.id.summary_period,
-                if (year == null || month == null) context.getString(R.string.widget_this_month)
-                else context.getString(R.string.widget_month_value, year.toInt(), month.toInt())
-            )
+            views.setTextViewText(R.id.summary_period, context.getString(R.string.widget_this_month))
             val amount = preferences.getString("${selected}Amount", null) ?: "—"
             val comparison = preferences.getString("${selected}YearOverYear", null) ?: "—"
+            val comparisonAmount = preferences.getString("${selected}YearOverYearAmount", null) ?: "—"
             val trend = preferences.getString("${selected}Trend", "unavailable") ?: "unavailable"
             views.setTextViewText(R.id.summary_amount, amount)
-            bindComparison(context, views, selected, comparison, trend)
+            bindComparison(context, views, selected, comparison, comparisonAmount, trend)
             views.setViewVisibility(
                 R.id.summary_empty,
                 if (amount == "—") View.VISIBLE else View.GONE
@@ -166,6 +161,7 @@ class SummaryWidgetProvider : AppWidgetProvider() {
             views: RemoteViews,
             selected: String,
             comparison: String,
+            comparisonAmount: String,
             trend: String
         ) {
             val arrow = when (trend) {
@@ -179,6 +175,13 @@ class SummaryWidgetProvider : AppWidgetProvider() {
                 R.id.summary_yoy,
                 context.getString(R.string.widget_yoy_value, text)
             )
+            val amountText = when (trend) {
+                "up" -> context.getString(R.string.widget_yoy_increase_amount, comparisonAmount)
+                "down" -> context.getString(R.string.widget_yoy_decrease_amount, comparisonAmount)
+                "flat" -> context.getString(R.string.widget_yoy_flat_amount, comparisonAmount)
+                else -> context.getString(R.string.widget_yoy_difference_unavailable)
+            }
+            views.setTextViewText(R.id.summary_yoy_amount, amountText)
             val color = when {
                 trend == "up" && selected == "expense" -> R.color.widget_trend_green
                 trend == "down" && selected == "expense" -> R.color.widget_trend_red
@@ -187,6 +190,7 @@ class SummaryWidgetProvider : AppWidgetProvider() {
                 else -> R.color.widget_text_secondary
             }
             views.setTextColor(R.id.summary_yoy, context.getColor(color))
+            views.setTextColor(R.id.summary_yoy_amount, context.getColor(color))
         }
 
         private fun bindTab(

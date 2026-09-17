@@ -31,11 +31,13 @@ void main() {
       expect(summary.income.current, BigInt.from(14000));
       expect(summary.income.comparisonCurrent, BigInt.from(10000));
       expect(summary.income.previous, BigInt.from(8000));
+      expect(summary.income.difference, BigInt.from(2000));
       expect(summary.income.yearOverYear, '+25%');
       expect(summary.income.trend, 'up');
       expect(summary.expense.current, BigInt.from(8000));
       expect(summary.expense.comparisonCurrent, BigInt.from(5000));
       expect(summary.expense.previous, BigInt.from(10000));
+      expect(summary.expense.difference, BigInt.from(-5000));
       expect(summary.expense.yearOverYear, '-50%');
       expect(summary.expense.trend, 'down');
       expect(summary.total.current, BigInt.from(6000));
@@ -77,6 +79,7 @@ void main() {
     );
 
     expect(summary.income.yearOverYear, '0%');
+    expect(summary.income.difference, BigInt.zero);
     expect(summary.income.trend, 'flat');
   });
 }
