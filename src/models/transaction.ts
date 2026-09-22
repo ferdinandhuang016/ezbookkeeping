@@ -25,6 +25,9 @@ export class Transaction implements TransactionInfoResponse {
     public sourceAccountId: string;
     public destinationAccountId: string;
     public sourceAmount: number;
+    public serviceCharge: number = 0;
+    public originalCurrency: string = '';
+    public originalAmount: number = 0;
     public destinationAmount: number;
     public hideAmount: boolean;
     public tagIds: string[];
@@ -244,6 +247,9 @@ export class Transaction implements TransactionInfoResponse {
             sourceAccountId: this.sourceAccountId,
             destinationAccountId: this.type === TransactionType.Transfer ? this.destinationAccountId : '0',
             sourceAmount: this.sourceAmount,
+            serviceCharge: this.type === TransactionType.Transfer ? this.serviceCharge : 0,
+            originalCurrency: this.originalCurrency || undefined,
+            originalAmount: this.originalCurrency ? this.originalAmount : undefined,
             destinationAmount: this.type === TransactionType.Transfer ? this.destinationAmount : 0,
             hideAmount: this.hideAmount,
             tagIds: this.tagIds,
@@ -271,6 +277,9 @@ export class Transaction implements TransactionInfoResponse {
             sourceAccountId: this.sourceAccountId,
             destinationAccountId: this.type === TransactionType.Transfer ? this.destinationAccountId : '0',
             sourceAmount: this.sourceAmount,
+            serviceCharge: this.type === TransactionType.Transfer ? this.serviceCharge : 0,
+            originalCurrency: this.originalCurrency || undefined,
+            originalAmount: this.originalCurrency ? this.originalAmount : undefined,
             destinationAmount: this.type === TransactionType.Transfer ? this.destinationAmount : 0,
             hideAmount: this.hideAmount,
             tagIds: this.tagIds,
@@ -293,6 +302,9 @@ export class Transaction implements TransactionInfoResponse {
             categoryId: this.getCategoryId(),
             sourceAccountId: this.sourceAccountId,
             sourceAmount: this.sourceAmount,
+            serviceCharge: this.type === TransactionType.Transfer ? this.serviceCharge : 0,
+            originalCurrency: this.originalCurrency || undefined,
+            originalAmount: this.originalCurrency ? this.originalAmount : undefined,
             destinationAccountId: this.type === TransactionType.Transfer ? this.destinationAccountId : '0',
             destinationAmount: this.type === TransactionType.Transfer ? this.destinationAmount : 0,
             hideAmount: this.hideAmount,
@@ -344,6 +356,10 @@ export class Transaction implements TransactionInfoResponse {
         if (transactionResponse.category) {
             transaction.setCategory(TransactionCategory.of(transactionResponse.category));
         }
+
+        transaction.originalCurrency = transactionResponse.originalCurrency ?? '';
+        transaction.originalAmount = transactionResponse.originalAmount ?? 0;
+        transaction.serviceCharge = transactionResponse.serviceCharge ?? 0;
 
         if (transactionResponse.sourceAccount) {
             transaction.setSourceAccount(Account.of(transactionResponse.sourceAccount));
@@ -422,6 +438,10 @@ export class Transaction implements TransactionInfoResponse {
 
             transaction.setPictures(pictures);
         }
+
+        transaction.originalCurrency = transactionDraft.originalCurrency ?? '';
+        transaction.originalAmount = transactionDraft.originalAmount ?? 0;
+        transaction.serviceCharge = transactionDraft.serviceCharge ?? 0;
 
         return transaction;
     }
@@ -524,6 +544,9 @@ export interface TransactionDraft {
     readonly categoryId?: string;
     readonly sourceAccountId?: string;
     readonly sourceAmount?: number;
+    readonly serviceCharge?: number;
+    readonly originalCurrency?: string;
+    readonly originalAmount?: number;
     readonly destinationAccountId?: string;
     readonly destinationAmount?: number;
     readonly hideAmount?: boolean;
@@ -545,6 +568,9 @@ export interface TransactionCreateRequest {
     readonly sourceAccountId: string;
     readonly destinationAccountId: string;
     readonly sourceAmount: number;
+    readonly serviceCharge?: number;
+    readonly originalCurrency?: string;
+    readonly originalAmount?: number;
     readonly destinationAmount: number;
     readonly hideAmount: boolean;
     readonly tagIds: string[];
@@ -564,6 +590,9 @@ export interface TransactionModifyRequest {
     readonly sourceAccountId: string;
     readonly destinationAccountId: string;
     readonly sourceAmount: number;
+    readonly serviceCharge?: number;
+    readonly originalCurrency?: string;
+    readonly originalAmount?: number;
     readonly destinationAmount: number;
     readonly hideAmount: boolean;
     readonly tagIds: string[];
@@ -675,6 +704,9 @@ export interface TransactionInfoResponse {
     readonly destinationAccountId: string;
     readonly destinationAccount?: AccountInfoResponse;
     readonly sourceAmount: number;
+    readonly serviceCharge?: number;
+    readonly originalCurrency?: string;
+    readonly originalAmount?: number;
     readonly destinationAmount: number;
     readonly hideAmount: boolean;
     readonly tagIds: string[];

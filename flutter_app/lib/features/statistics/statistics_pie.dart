@@ -15,6 +15,8 @@ class StatisticsPie extends StatefulWidget {
     required this.totalValue,
     required this.colors,
     required this.onOpen,
+    required this.onSelect,
+    this.selectedId,
     required this.showPercent,
     required this.hasData,
   });
@@ -25,6 +27,8 @@ class StatisticsPie extends StatefulWidget {
   final String totalTitle, totalValue;
   final List<Color> colors;
   final ValueChanged<int> onOpen;
+  final ValueChanged<String> onSelect;
+  final String? selectedId;
   final bool showPercent;
   final bool hasData;
 
@@ -44,12 +48,16 @@ class _StatisticsPieState extends State<StatisticsPie> {
               oldWidget.entries[i].key != widget.entries[i].key ||
               oldWidget.entries[i].value != widget.entries[i].value,
         )) {
-      selected = 0;
+      final index = widget.entries.indexWhere(
+        (entry) => entry.key == widget.selectedId,
+      );
+      selected = index < 0 ? 0 : index;
     }
   }
 
   void select(int offset) {
     setState(() => selected = (selected + offset) % widget.entries.length);
+    widget.onSelect(widget.entries[selected].key);
   }
 
   @override
@@ -90,10 +98,11 @@ class _StatisticsPieState extends State<StatisticsPie> {
     );
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: AspectRatio(
-            aspectRatio: 1,
+        Center(
+          child: SizedBox.square(
+            dimension: (MediaQuery.sizeOf(context).height * .28)
+                .clamp(0, 220)
+                .toDouble(),
             child: LayoutBuilder(
               builder: (context, constraints) {
                 final radius = constraints.maxWidth / 2;
@@ -127,6 +136,7 @@ class _StatisticsPieState extends State<StatisticsPie> {
                                   index >= 0 &&
                                   index < painted.length) {
                                 setState(() => selected = painted[index]);
+                                widget.onSelect(entries[selected].key);
                               }
                             },
                           ),
@@ -157,12 +167,26 @@ class _StatisticsPieState extends State<StatisticsPie> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (!widget.hasData)
-                              Text(
-                                tr(context, 'No data'),
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  color: CupertinoColors.white,
-                                  fontSize: 17,
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  tr(context, 'No data'),
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: CupertinoColors.white,
+                                    fontSize: 17,
+                                  ),
+                                ),
+                              )
+                            else if (radius < 85)
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  widget.totalValue,
+                                  style: const TextStyle(
+                                    color: CupertinoColors.white,
+                                    fontSize: 17,
+                                  ),
                                 ),
                               )
                             else ...[

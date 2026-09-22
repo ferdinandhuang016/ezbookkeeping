@@ -74,7 +74,8 @@ class LedgerRepository {
       final type = t['type'];
       final source = t['sourceAccountId']?.toString() ?? '';
       final destination = t['destinationAccountId']?.toString() ?? '';
-      final amount = (t['sourceAmount'] as num? ?? 0).toInt();
+      final amount = (t['sourceAmount'] as num? ?? 0).toInt() +
+          (type == 4 ? (t['serviceCharge'] as num? ?? 0).toInt() : 0);
       if (type == 2) {
         deltas.update(
           source,
@@ -188,6 +189,10 @@ class LedgerRepository {
       if (data[key] is! int || (data[key] as int).abs() > Money.maxAmount) {
         throw const FormatException('Amount value exceeds limitation');
       }
+    }
+    if (type == 4 && ((data['serviceCharge'] as num? ?? 0).toInt() < 0 ||
+        (data['sourceAmount'] as int) + (data['serviceCharge'] as num? ?? 0).toInt() > Money.maxAmount)) {
+      throw const FormatException('Amount value exceeds limitation');
     }
     if ((data['sourceAccountId']?.toString() ?? '').isEmpty ||
         data['sourceAccountId'] == '0') {

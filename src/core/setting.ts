@@ -38,6 +38,7 @@ export interface ApplicationSettings extends BaseApplicationSetting {
     fontSize: number;
     timeZone: string;
     autoUpdateExchangeRatesData: boolean;
+    enabledCurrencies: Record<string, boolean>;
     showAccountBalance: boolean;
     accountCategoryOrders: string;
     chartColors: string;
@@ -136,6 +137,7 @@ export const ALL_ALLOWED_CLOUD_SYNC_APP_SETTING_KEY_TYPES: Record<string, UserAp
     'showAccountBalance': UserApplicationCloudSettingType.Boolean,
     'accountCategoryOrders': UserApplicationCloudSettingType.String,
     'autoUpdateExchangeRatesData': UserApplicationCloudSettingType.Boolean,
+    'enabledCurrencies': UserApplicationCloudSettingType.StringBooleanMap,
     'chartColors': UserApplicationCloudSettingType.String,
     // Navigation Bar
     'showAddTransactionButtonInDesktopNavbar': UserApplicationCloudSettingType.Boolean,
@@ -202,6 +204,10 @@ export const DEFAULT_APPLICATION_SETTINGS: ApplicationSettings = {
     fontSize: 1,
     timeZone: '',
     autoUpdateExchangeRatesData: true,
+    enabledCurrencies: {
+        CNY: true,
+        USD: true
+    },
     showAccountBalance: true,
     accountCategoryOrders: '',
     chartColors: '',

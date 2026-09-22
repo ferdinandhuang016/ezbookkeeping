@@ -281,10 +281,16 @@ func (a *TransactionTemplatesApi) TemplateModifyHandler(c *core.WebContext) (any
 		AccountId:            templateModifyReq.SourceAccountId,
 		TagIds:               strings.Join(templateModifyReq.TagIds, ","),
 		Amount:               templateModifyReq.SourceAmount,
+		ServiceCharge:        templateModifyReq.ServiceCharge,
 		RelatedAccountId:     templateModifyReq.DestinationAccountId,
 		RelatedAccountAmount: templateModifyReq.DestinationAmount,
 		HideAmount:           templateModifyReq.HideAmount,
 		Comment:              templateModifyReq.Comment,
+	}
+	if newTemplate.Type == models.TRANSACTION_TYPE_TRANSFER {
+		newTemplate.Amount += newTemplate.ServiceCharge
+	} else {
+		newTemplate.ServiceCharge = 0
 	}
 
 	if template.TemplateType == models.TRANSACTION_TEMPLATE_TYPE_SCHEDULE {
@@ -328,6 +334,7 @@ func (a *TransactionTemplatesApi) TemplateModifyHandler(c *core.WebContext) (any
 		newTemplate.AccountId == template.AccountId &&
 		newTemplate.TagIds == template.TagIds &&
 		newTemplate.Amount == template.Amount &&
+		newTemplate.ServiceCharge == template.ServiceCharge &&
 		newTemplate.RelatedAccountId == template.RelatedAccountId &&
 		newTemplate.RelatedAccountAmount == template.RelatedAccountAmount &&
 		newTemplate.HideAmount == template.HideAmount &&
@@ -491,11 +498,17 @@ func (a *TransactionTemplatesApi) createNewTemplateModel(uid int64, templateCrea
 		AccountId:            templateCreateReq.SourceAccountId,
 		TagIds:               strings.Join(templateCreateReq.TagIds, ","),
 		Amount:               templateCreateReq.SourceAmount,
+		ServiceCharge:        templateCreateReq.ServiceCharge,
 		RelatedAccountId:     templateCreateReq.DestinationAccountId,
 		RelatedAccountAmount: templateCreateReq.DestinationAmount,
 		HideAmount:           templateCreateReq.HideAmount,
 		Comment:              templateCreateReq.Comment,
 		DisplayOrder:         order,
+	}
+	if template.Type == models.TRANSACTION_TYPE_TRANSFER {
+		template.Amount += template.ServiceCharge
+	} else {
+		template.ServiceCharge = 0
 	}
 
 	if templateCreateReq.TemplateType == models.TRANSACTION_TEMPLATE_TYPE_SCHEDULE {

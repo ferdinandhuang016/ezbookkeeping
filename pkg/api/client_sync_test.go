@@ -69,6 +69,7 @@ func newSyncFixture(t *testing.T) *syncFixture {
 		syncTestUid.Store(time.Now().UnixNano()%1000000000000 + 1000000000000)
 	})
 	require.NoError(t, binding.Validator.Engine().(*validator.Validate).RegisterValidation("validTransactionAmount", validators.ValidTransactionAmount))
+	require.NoError(t, binding.Validator.Engine().(*validator.Validate).RegisterValidation("validCurrency", validators.ValidCurrency))
 	uid := syncTestUid.Add(1)
 	f := &syncFixture{uid: uid, account: uid * 10, destination: uid*10 + 1, category: uid*10 + 3, transferCategory: uid*10 + 5, db: datastore.Container.UserDataStore.Choose(uid)}
 	closeSyncFixtureEngine(t, f.db)

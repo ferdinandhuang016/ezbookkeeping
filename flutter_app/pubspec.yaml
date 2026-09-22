@@ -1,5 +1,5 @@
 name: ezbookkeeping
-description: Native Android client for ezBookkeeping, with durable offline accounting.
+description: Native Android client for Danggui Expense, with durable offline accounting.
 publish_to: none
 version: 1.0.0+1
 environment:

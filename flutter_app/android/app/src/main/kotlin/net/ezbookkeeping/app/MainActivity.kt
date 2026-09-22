@@ -2,6 +2,10 @@ package net.ezbookkeeping.app
 
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.location.Geocoder
 import android.net.Uri
 import android.os.Bundle
 import android.icu.text.Collator
@@ -18,6 +22,7 @@ import java.util.Locale
 class MainActivity : FlutterFragmentActivity() {
     private var channel: MethodChannel? = null
     private var pendingLaunchRoute: String? = null
+    private var quickAddCovered = false
     private var locationClient: AMapLocationClient? = null
     private val inbox: File get() = File(filesDir, "shared_inbox")
 
@@ -62,6 +67,13 @@ class MainActivity : FlutterFragmentActivity() {
                     result.success(pendingLaunchRoute)
                     pendingLaunchRoute = null
                 }
+                "revealQuickAdd" -> {
+                    if (quickAddCovered) {
+                        window.decorView.foreground = null
+                        quickAddCovered = false
+                    }
+                    result.success(null)
+                }
                 "updateHomeWidgets" -> {
                     HomeWidgetSupport.updateSnapshot(this, call.arguments as? Map<*, *> ?: emptyMap<Any, Any>())
                     result.success(null)
@@ -71,13 +83,18 @@ class MainActivity : FlutterFragmentActivity() {
                     result.success(null)
                 }
                 "getAmapLocation" -> getAmapLocation(result)
+                "reverseGeocode" -> reverseGeocode(
+                    call.argument<Double>("latitude"),
+                    call.argument<Double>("longitude"),
+                    result,
+                )
                 else -> result.notImplemented()
             }
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        receiveLauncherEntry(intent, false)
+        receiveLauncherEntry(intent)
         super.onCreate(savedInstanceState)
         // Activity recreation must not enqueue the same incoming Intent again.
         if (savedInstanceState == null) {
@@ -86,10 +103,17 @@ class MainActivity : FlutterFragmentActivity() {
     }
 
     override fun onNewIntent(intent: Intent) {
-        receiveLauncherEntry(intent, true)
+        if (launcherRoute(intent) == "/transaction/add" && !quickAddCovered) {
+            val dark = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK ==
+                Configuration.UI_MODE_NIGHT_YES
+            window.decorView.foreground = ColorDrawable(if (dark) Color.BLACK else Color.WHITE)
+            quickAddCovered = true
+        }
+        receiveLauncherEntry(intent)
         super.onNewIntent(intent)
         setIntent(intent)
         receiveSharedImages(intent)
+        dispatchPendingLaunchRoute()
     }
 
     override fun onDestroy() {
@@ -156,19 +180,62 @@ class MainActivity : FlutterFragmentActivity() {
         }
     }
 
-    private fun receiveLauncherEntry(intent: Intent?, notifyFlutter: Boolean) {
+    @Suppress("DEPRECATION")
+    private fun reverseGeocode(
+        latitude: Double?,
+        longitude: Double?,
+        result: MethodChannel.Result,
+    ) {
+        if (latitude == null || longitude == null ||
+            latitude !in -90.0..90.0 || longitude !in -180.0..180.0
+        ) {
+            result.error("INVALID_COORDINATE", "Invalid geographic coordinate", null)
+            return
+        }
+        if (!Geocoder.isPresent()) {
+            result.success(null)
+            return
+        }
+        Thread {
+            val name = try {
+                val address = Geocoder(applicationContext, Locale.getDefault())
+                    .getFromLocation(latitude, longitude, 1)
+                    ?.firstOrNull()
+                address?.getAddressLine(0)?.trim()?.takeIf { it.isNotEmpty() }
+                    ?: listOfNotNull(
+                        address?.featureName,
+                        address?.thoroughfare,
+                        address?.subLocality,
+                        address?.locality,
+                        address?.adminArea,
+                        address?.countryName,
+                    ).map { it.trim() }.filter { it.isNotEmpty() }.distinct()
+                        .joinToString(" ").takeIf { it.isNotEmpty() }
+            } catch (_: Exception) {
+                null
+            }
+            runOnUiThread { result.success(name?.take(255)) }
+        }.start()
+    }
+
+    private fun receiveLauncherEntry(intent: Intent?) {
         val route = launcherRoute(intent) ?: return
         // Consume the launcher command on this Intent so activity recreation does
         // not enqueue it again. A new shortcut or widget click supplies a new Intent.
         intent?.action = Intent.ACTION_MAIN
         intent?.data = null
         pendingLaunchRoute = route
-        if (notifyFlutter) {
-            channel?.let {
-                it.invokeMethod("openRoute", pendingLaunchRoute)
-                pendingLaunchRoute = null
+    }
+
+    private fun dispatchPendingLaunchRoute() {
+        val route = pendingLaunchRoute ?: return
+        channel?.invokeMethod("openRoute", route, object : MethodChannel.Result {
+            override fun success(result: Any?) {
+                if (pendingLaunchRoute == route) pendingLaunchRoute = null
             }
-        }
+            override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) = Unit
+            override fun notImplemented() = Unit
+        })
     }
 
     private fun launcherRoute(intent: Intent?): String? {

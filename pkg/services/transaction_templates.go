@@ -149,7 +149,7 @@ func (s *TransactionTemplateService) ModifyTemplate(c core.Context, template *mo
 			return err
 		}
 
-		updatedRows, err := sess.ID(template.TemplateId).Cols("name", "type", "category_id", "account_id", "scheduled_frequency_type", "scheduled_frequency", "scheduled_start_time", "scheduled_end_time", "scheduled_at", "scheduled_timezone_utc_offset", "tag_ids", "amount", "related_account_id", "related_account_amount", "hide_amount", "comment", "updated_unix_time").Where("uid=? AND deleted=?", template.Uid, false).Update(template)
+		updatedRows, err := sess.ID(template.TemplateId).Cols("name", "type", "category_id", "account_id", "scheduled_frequency_type", "scheduled_frequency", "scheduled_start_time", "scheduled_end_time", "scheduled_at", "scheduled_timezone_utc_offset", "tag_ids", "amount", "service_charge", "related_account_id", "related_account_amount", "hide_amount", "comment", "updated_unix_time").Where("uid=? AND deleted=?", template.Uid, false).Update(template)
 
 		if err != nil {
 			return err
@@ -264,6 +264,9 @@ func (s *TransactionTemplateService) DeleteAllTemplates(c core.Context, uid int6
 }
 
 func (s *TransactionTemplateService) isTemplateValid(sess *xorm.Session, template *models.TransactionTemplate) error {
+	if template.ServiceCharge < 0 || template.Amount > models.MaximumTransactionAmount || template.ServiceCharge > template.Amount || (template.Type != models.TRANSACTION_TYPE_TRANSFER && template.ServiceCharge != 0) {
+		return errs.ErrAmountInvalid
+	}
 	// check accounts are valid
 	sourceAccount := &models.Account{}
 	destinationAccount := &models.Account{}

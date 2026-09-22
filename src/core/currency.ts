@@ -33,6 +33,28 @@ export interface CurrencyPrependAndAppendText {
     readonly appendText?: string;
 }
 
+export function getEffectiveCurrencyCodes(enabledCurrencies: Record<string, boolean>, defaultCurrency: string, accountCurrencies: readonly string[]): Set<string> {
+    const effectiveCurrencies = new Set<string>();
+
+    for (const currency of Object.keys(enabledCurrencies)) {
+        if (enabledCurrencies[currency]) {
+            effectiveCurrencies.add(currency);
+        }
+    }
+
+    if (defaultCurrency) {
+        effectiveCurrencies.add(defaultCurrency);
+    }
+
+    for (const currency of accountCurrencies) {
+        if (currency && currency !== '---') {
+            effectiveCurrencies.add(currency);
+        }
+    }
+
+    return effectiveCurrencies;
+}
+
 export class CurrencyDisplayType implements TypeAndName {
     private static readonly allInstances: CurrencyDisplayType[] = [];
     private static readonly allInstancesByType: Record<number, CurrencyDisplayType> = {};

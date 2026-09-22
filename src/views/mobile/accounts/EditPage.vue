@@ -642,7 +642,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, watch } from 'vue';
 import type { Router } from 'framework7/types';
 
 import { useI18n } from '@/locales/helpers.ts';
@@ -652,7 +652,6 @@ import { useAccountEditPageBase } from '@/views/base/accounts/AccountEditPageBas
 import { useAccountsStore } from '@/stores/account.ts';
 
 import { itemAndIndex } from '@/core/base.ts';
-import type { LocalizedCurrencyInfo } from '@/core/currency.ts';
 import { AccountCategory, AccountType } from '@/core/account.ts';
 import { ALL_ACCOUNT_ICONS } from '@/consts/icon.ts';
 import { ALL_ACCOUNT_COLORS } from '@/consts/color.ts';
@@ -689,7 +688,6 @@ const props = defineProps<{
 
 const {
     tt,
-    getAllCurrencies,
     getCurrencyName,
     formatDateTimeToLongDate,
     formatDateTimeToLongTime,
@@ -711,6 +709,8 @@ const {
     inputIsEmpty,
     allAccountCategories,
     allAccountTypes,
+    allCurrencies,
+    allCurrenciesWithNotSet,
     allAvailableMonthDays,
     getDefaultTimezoneOffsetMinutes,
     getAccountCreditCardStatementDate,
@@ -745,9 +745,6 @@ const showAccountTypeSheet = ref<boolean>(false);
 const showMoreActionSheet = ref<boolean>(false);
 const showDeleteActionSheet = ref<boolean>(false);
 const showCreditCardLimitSheet = ref<boolean>(false);
-
-const allCurrencies = computed<LocalizedCurrencyInfo[]>(() => getAllCurrencies());
-const allCurrenciesWithNotSet = computed<LocalizedCurrencyInfo[]>(() => getAllCurrencies(true));
 
 function formatAccountDisplayBalance(selectedAccount: Account): string {
     const balance = parseBigDecimal(selectedAccount.balance);

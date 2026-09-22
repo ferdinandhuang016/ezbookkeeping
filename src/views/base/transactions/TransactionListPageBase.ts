@@ -372,13 +372,23 @@ export function useTransactionListPageBase() {
     }
 
     function getDisplayAmount(transaction: Transaction, inUserDefaultCurrency?: boolean): string {
+        const formatSourceAmount = (): string => {
+            if (transaction.originalCurrency && !inUserDefaultCurrency) {
+                return formatAmount(parseBigDecimal(transaction.originalAmount), transaction.hideAmount, transaction.originalCurrency);
+            }
+
+            return transaction.sourceAccount
+                ? formatAmount(parseBigDecimal(transaction.sourceAmount), transaction.hideAmount, transaction.sourceAccount.currency, inUserDefaultCurrency)
+                : '';
+        };
+
         if (queryAllFilterAccountIdsCount.value < 1) {
             if (transaction.sourceAccount) {
-                return formatAmount(parseBigDecimal(transaction.sourceAmount), transaction.hideAmount, transaction.sourceAccount.currency, inUserDefaultCurrency);
+                return formatSourceAmount();
             }
         } else if (queryAllFilterAccountIdsCount.value === 1) {
             if (transaction.sourceAccount && (queryAllFilterAccountIds.value[transaction.sourceAccount.id] || queryAllFilterAccountIds.value[transaction.sourceAccount.parentId])) {
-                return formatAmount(parseBigDecimal(transaction.sourceAmount), transaction.hideAmount, transaction.sourceAccount.currency, inUserDefaultCurrency);
+                return formatSourceAmount();
             } else if (transaction.destinationAccount && (queryAllFilterAccountIds.value[transaction.destinationAccount.id] || queryAllFilterAccountIds.value[transaction.destinationAccount.parentId])) {
                 return formatAmount(parseBigDecimal(transaction.destinationAmount), transaction.hideAmount, transaction.destinationAccount.currency, inUserDefaultCurrency);
             }
@@ -386,7 +396,7 @@ export function useTransactionListPageBase() {
             if (transaction.sourceAccount && transaction.destinationAccount) {
                 if ((queryAllFilterAccountIds.value[transaction.sourceAccount.id] || queryAllFilterAccountIds.value[transaction.sourceAccount.parentId])
                     && !queryAllFilterAccountIds.value[transaction.destinationAccount.id] && !queryAllFilterAccountIds.value[transaction.destinationAccount.parentId]) {
-                    return formatAmount(parseBigDecimal(transaction.sourceAmount), transaction.hideAmount, transaction.sourceAccount.currency, inUserDefaultCurrency);
+                    return formatSourceAmount();
                 } else if ((queryAllFilterAccountIds.value[transaction.destinationAccount.id] || queryAllFilterAccountIds.value[transaction.destinationAccount.parentId])
                     && !queryAllFilterAccountIds.value[transaction.sourceAccount.id] && !queryAllFilterAccountIds.value[transaction.sourceAccount.parentId]) {
                     return formatAmount(parseBigDecimal(transaction.destinationAmount), transaction.hideAmount, transaction.destinationAccount.currency, inUserDefaultCurrency);
@@ -395,7 +405,7 @@ export function useTransactionListPageBase() {
         }
 
         if (transaction.sourceAccount) {
-            return formatAmount(parseBigDecimal(transaction.sourceAmount), transaction.hideAmount, transaction.sourceAccount.currency, inUserDefaultCurrency);
+            return formatSourceAmount();
         }
 
         return '';
@@ -404,11 +414,11 @@ export function useTransactionListPageBase() {
     function getDisplayAmountCurrency(transaction: Transaction): string {
         if (queryAllFilterAccountIdsCount.value < 1) {
             if (transaction.sourceAccount) {
-                return transaction.sourceAccount.currency;
+                return transaction.originalCurrency || transaction.sourceAccount.currency;
             }
         } else if (queryAllFilterAccountIdsCount.value === 1) {
             if (transaction.sourceAccount && (queryAllFilterAccountIds.value[transaction.sourceAccount.id] || queryAllFilterAccountIds.value[transaction.sourceAccount.parentId])) {
-                return transaction.sourceAccount.currency;
+                return transaction.originalCurrency || transaction.sourceAccount.currency;
             } else if (transaction.destinationAccount && (queryAllFilterAccountIds.value[transaction.destinationAccount.id] || queryAllFilterAccountIds.value[transaction.destinationAccount.parentId])) {
                 return transaction.destinationAccount.currency;
             }
@@ -416,7 +426,7 @@ export function useTransactionListPageBase() {
             if (transaction.sourceAccount && transaction.destinationAccount) {
                 if ((queryAllFilterAccountIds.value[transaction.sourceAccount.id] || queryAllFilterAccountIds.value[transaction.sourceAccount.parentId])
                     && !queryAllFilterAccountIds.value[transaction.destinationAccount.id] && !queryAllFilterAccountIds.value[transaction.destinationAccount.parentId]) {
-                    return transaction.sourceAccount.currency;
+                    return transaction.originalCurrency || transaction.sourceAccount.currency;
                 } else if ((queryAllFilterAccountIds.value[transaction.destinationAccount.id] || queryAllFilterAccountIds.value[transaction.destinationAccount.parentId])
                     && !queryAllFilterAccountIds.value[transaction.sourceAccount.id] && !queryAllFilterAccountIds.value[transaction.sourceAccount.parentId]) {
                     return transaction.destinationAccount.currency;
@@ -425,7 +435,7 @@ export function useTransactionListPageBase() {
         }
 
         if (transaction.sourceAccount) {
-            return transaction.sourceAccount.currency;
+            return transaction.originalCurrency || transaction.sourceAccount.currency;
         }
 
         return userDefaultCurrency.value;

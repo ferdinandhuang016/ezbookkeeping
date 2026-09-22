@@ -168,7 +168,7 @@ const apiExample = computed<string>(() => {
 const mcpServerConfiguration = computed<string>(() => {
     return '{\n' +
         '    "mcpServers": {\n' +
-        '        "ezbookkeeping-mcp": {\n' +
+        '        "danggui-expense-mcp": {\n' +
         '            "type": "streamable-http",\n' +
         '            "url": "' + serverUrl.value + '",\n' +
         '            "headers": {\n' +

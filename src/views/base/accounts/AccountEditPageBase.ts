@@ -4,10 +4,13 @@ import { useI18n } from '@/locales/helpers.ts';
 
 import { useSettingsStore } from '@/stores/setting.ts';
 import { useUserStore } from '@/stores/user.ts';
+import { useAccountsStore } from '@/stores/account.ts';
 
 import type { TypeAndDisplayName } from '@/core/base.ts';
 import { AccountCategory, AccountType } from '@/core/account.ts';
 import type { LocalizedAccountCategory } from '@/core/account.ts';
+import type { LocalizedCurrencyInfo } from '@/core/currency.ts';
+import { getEffectiveCurrencyCodes } from '@/core/currency.ts';
 import { ACCOUNT_CURRENCY_NOT_SET_VALUE } from '@/consts/currency.ts';
 
 import { Account } from '@/models/account.ts';
@@ -27,11 +30,13 @@ export function useAccountEditPageBase() {
         getAvailableMonthDays,
         getAllAccountCategories,
         getAllAccountTypes,
+        getAllCurrencies,
         formatAmountToLocalizedNumeralsWithCurrency
     } = useI18n();
 
     const settingsStore = useSettingsStore();
     const userStore = useUserStore();
+    const accountsStore = useAccountsStore();
 
     const defaultAccountCategory = AccountCategory.values(settingsStore.appSettings.accountCategoryOrders)[0] ?? AccountCategory.Default;
 
@@ -85,6 +90,16 @@ export function useAccountEditPageBase() {
     const customAccountCategoryOrder = computed<string>(() => settingsStore.appSettings.accountCategoryOrders);
     const allAccountCategories = computed<LocalizedAccountCategory[]>(() => getAllAccountCategories(customAccountCategoryOrder.value));
     const allAccountTypes = computed<TypeAndDisplayName[]>(() => getAllAccountTypes());
+    const effectiveCurrencyCodes = computed<Set<string>>(() => getEffectiveCurrencyCodes(
+        settingsStore.appSettings.enabledCurrencies,
+        userStore.currentUserDefaultCurrency,
+        [...accountsStore.allPlainAccounts.map(item => item.currency), account.value.currency, ...subAccounts.value.map(item => item.currency)]
+    ));
+    const allCurrencies = computed<LocalizedCurrencyInfo[]>(() => getAllCurrencies().filter(currency => effectiveCurrencyCodes.value.has(currency.currencyCode)));
+    const allCurrenciesWithNotSet = computed<LocalizedCurrencyInfo[]>(() => [{
+        currencyCode: ACCOUNT_CURRENCY_NOT_SET_VALUE,
+        displayName: tt('Not set')
+    }, ...allCurrencies.value]);
 
     const allAvailableMonthDays = computed<TypeAndDisplayName[]>(() => {
         const allAvailableDays: TypeAndDisplayName[] = getAvailableMonthDays(28);
@@ -235,6 +250,8 @@ export function useAccountEditPageBase() {
         inputIsEmpty,
         allAccountCategories,
         allAccountTypes,
+        allCurrencies,
+        allCurrenciesWithNotSet,
         allAvailableMonthDays,
         // functions
         getCurrentUnixTimeForNewAccount,

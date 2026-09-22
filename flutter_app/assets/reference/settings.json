@@ -1679,6 +1679,10 @@
     "fontSize": 1,
     "timeZone": "",
     "autoUpdateExchangeRatesData": true,
+    "enabledCurrencies": {
+      "CNY": true,
+      "USD": true
+    },
     "showAccountBalance": true,
     "accountCategoryOrders": "",
     "chartColors": "",
@@ -1736,6 +1740,7 @@
     "showAccountBalance": "boolean",
     "accountCategoryOrders": "string",
     "autoUpdateExchangeRatesData": "boolean",
+    "enabledCurrencies": "string_boolean_map",
     "chartColors": "string",
     "showAddTransactionButtonInDesktopNavbar": "boolean",
     "desktopOverviewPageLayout": "string",
@@ -1806,6 +1811,12 @@
         {
           "settingKey": "autoUpdateExchangeRatesData",
           "settingName": "Auto-update Exchange Rates Data",
+          "mobile": true,
+          "desktop": true
+        },
+        {
+          "settingKey": "enabledCurrencies",
+          "settingName": "Enabled Currencies",
           "mobile": true,
           "desktop": true
         }

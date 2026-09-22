@@ -220,6 +220,7 @@ class NativePage extends StatelessWidget {
     this.floating,
     this.side,
     this.onContentInteraction,
+    this.onScrollNearEnd,
     this.onRefresh,
     this.onTitleTap,
     this.titleKey,
@@ -235,6 +236,7 @@ class NativePage extends StatelessWidget {
   final Widget? floating;
   final Widget? side;
   final VoidCallback? onContentInteraction;
+  final VoidCallback? onScrollNearEnd;
   final Future<void> Function()? onRefresh;
   final VoidCallback? onTitleTap;
   final Key? titleKey;
@@ -347,28 +349,46 @@ class NativePage extends StatelessWidget {
                     child: Stack(
                       fit: StackFit.expand,
                       children: [
-                        Listener(
-                          behavior: HitTestBehavior.translucent,
-                          onPointerUp: onContentInteraction == null
-                              ? null
-                              : (_) => onContentInteraction!(),
-                          child: CustomScrollView(
-                            slivers: [
-                              if (onRefresh != null)
-                                CupertinoSliverRefreshControl(
-                                  onRefresh: onRefresh,
+                        NotificationListener<ScrollNotification>(
+                          onNotification: (notification) {
+                            if (onScrollNearEnd != null &&
+                                notification.depth == 0 &&
+                                notification.metrics.axis == Axis.vertical &&
+                                notification.metrics.extentAfter < 200 &&
+                                ((notification is ScrollUpdateNotification &&
+                                        (notification.scrollDelta ?? 0) > 0) ||
+                                    (notification is OverscrollNotification &&
+                                        notification.overscroll > 0))) {
+                              onScrollNearEnd!();
+                            }
+                            return false;
+                          },
+                          child: Listener(
+                            behavior: HitTestBehavior.translucent,
+                            onPointerUp: onContentInteraction == null
+                                ? null
+                                : (_) => onContentInteraction!(),
+                            child: CustomScrollView(
+                              physics: onScrollNearEnd == null
+                                  ? null
+                                  : const AlwaysScrollableScrollPhysics(),
+                              slivers: [
+                                if (onRefresh != null)
+                                  CupertinoSliverRefreshControl(
+                                    onRefresh: onRefresh,
+                                  ),
+                                SliverPadding(
+                                  padding: EdgeInsets.only(
+                                    bottom: floating == null
+                                        ? (compact ? 12 : 24)
+                                        : 88,
+                                  ),
+                                  sliver: SliverList(
+                                    delegate: SliverChildListDelegate(children),
+                                  ),
                                 ),
-                              SliverPadding(
-                                padding: EdgeInsets.only(
-                                  bottom: floating == null
-                                      ? (compact ? 12 : 24)
-                                      : 88,
-                                ),
-                                sliver: SliverList(
-                                  delegate: SliverChildListDelegate(children),
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                         ?floating,
@@ -1840,6 +1860,8 @@ Widget embeddedAmountPad(
 }) =>
     _AmountPad(initial, onChanged: onChanged, onDone: onDone, compact: compact);
 
+const double amountPadHeight = 352;
+
 class _InstantCupertinoModalPopupRoute<T> extends CupertinoModalPopupRoute<T> {
   _InstantCupertinoModalPopupRoute({
     required super.builder,
@@ -1966,7 +1988,7 @@ class _AmountPadState extends State<_AmountPad> {
       height: widget.compact
           ? null
           : math.min(
-              440,
+              amountPadHeight,
               MediaQuery.sizeOf(context).height -
                   MediaQuery.viewPaddingOf(context).vertical,
             ),

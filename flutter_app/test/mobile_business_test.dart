@@ -96,6 +96,7 @@ void main() {
         'type': 4,
         'sourceAccountId': 'cny',
         'sourceAmount': 3,
+        'serviceCharge': 2,
         'destinationAccountId': 'usd',
         'destinationAmount': 6,
       },
@@ -111,7 +112,7 @@ void main() {
     expect(total({})[2].value, BigInt.zero);
     expect(total({'usd'})[2].currency, 'USD');
     expect(total({'usd'})[2].value, BigInt.from(6));
-    expect(total({'cny'})[3].value, BigInt.from(4));
+    expect(total({'cny'})[3].value, BigInt.from(6));
     expect(total({'cny', 'usd'})[3].value, BigInt.one);
     expect(total({'p'})[3].value, BigInt.one);
     items[0]['sourceAmount'] = -1;

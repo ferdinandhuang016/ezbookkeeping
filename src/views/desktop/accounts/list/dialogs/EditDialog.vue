@@ -107,6 +107,7 @@
                                                      :label="(account.type === AccountType.MultiSubAccounts.type && account.category === AccountCategory.CreditCard.type && currentAccountIndex < 0) ? tt('Default Currency') : tt('Currency')"
                                                      :placeholder="(account.type === AccountType.MultiSubAccounts.type && account.category === AccountCategory.CreditCard.type && currentAccountIndex < 0) ? tt('Default Currency') : tt('Currency')"
                                                      :with-not-set="account.type === AccountType.MultiSubAccounts.type && account.category === AccountCategory.CreditCard.type && currentAccountIndex < 0"
+                                                     :currencies="(account.type === AccountType.MultiSubAccounts.type && account.category === AccountCategory.CreditCard.type && currentAccountIndex < 0) ? allCurrenciesWithNotSet : allCurrencies"
                                                      v-model="selectedAccount.currency" />
                                 </v-col>
                                 <v-col cols="12" md="6" v-if="currentAccountIndex < 0 && account.category === AccountCategory.CreditCard.type">
@@ -265,6 +266,8 @@ const {
     inputIsEmpty,
     allAccountCategories,
     allAccountTypes,
+    allCurrencies,
+    allCurrenciesWithNotSet,
     allAvailableMonthDays,
     getCurrentUnixTimeForNewAccount,
     getDefaultTimezoneOffsetMinutes,

@@ -394,7 +394,7 @@ class _DataManagementState extends NativeState<DataManagementPage> {
       final saved = await FilePicker.saveFile(
         dialogTitle: t('Save Data'),
         fileName:
-            'ezBookkeeping-${DateTime.now().toIso8601String().substring(0, 10)}.$format',
+            'Danggui Expense-${DateTime.now().toIso8601String().substring(0, 10)}.$format',
         type: FileType.custom,
         allowedExtensions: [format],
         bytes: Uint8List.fromList(bytes),
@@ -456,11 +456,25 @@ class ExchangeRatesPage extends ConsumerStatefulWidget {
 class _ExchangeRatesState extends SettingsState<ExchangeRatesPage> {
   late String base = string(app.user['defaultCurrency']);
   int baseAmount = 100;
+  DateTime selectedDate = DateTime(
+    DateTime.now().year,
+    DateTime.now().month,
+    DateTime.now().day,
+  );
+  RecordData? historicalTable;
   List<RecordData> currencies = [];
   Map<String, int> currencyNameOrder = {};
   RecordData get table =>
+      historicalTable ??
       Map<String, dynamic>.from(app.settings['cachedExchangeRates'] ?? {});
   bool get custom => table['dataSource'] == 'user_custom';
+  bool get currentDate {
+    final now = DateTime.now();
+    return selectedDate.year == now.year &&
+        selectedDate.month == now.month &&
+        selectedDate.day == now.day;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -485,7 +499,7 @@ class _ExchangeRatesState extends SettingsState<ExchangeRatesPage> {
         };
         final hadCache = table.isNotEmpty;
         try {
-          await load(force: false);
+          await load(force: true);
         } catch (_) {
           if (!hadCache) rethrow;
         }
@@ -501,8 +515,38 @@ class _ExchangeRatesState extends SettingsState<ExchangeRatesPage> {
     );
   }
 
-  Future<void> load({required bool force}) async =>
-      app.refreshExchangeRates(force: force);
+  Future<void> load({required bool force}) async {
+    if (currentDate) {
+      historicalTable = null;
+      await app.refreshExchangeRates(force: force);
+      return;
+    }
+    final response = await app.get(
+      'v1/exchange_rates/historical.json',
+      query: {'date': isoDate(selectedDate)},
+    );
+    historicalTable = response is Map
+        ? Map<String, dynamic>.from(response)
+        : <String, dynamic>{};
+  }
+
+  Future<void> selectDate() async {
+    final value = await pickDate(
+      context,
+      t('Date'),
+      selectedDate,
+      time: false,
+      nonBlocking: true,
+    );
+    if (value == null || !mounted || isoDate(value) == isoDate(selectedDate)) {
+      return;
+    }
+    setState(() {
+      selectedDate = DateTime(value.year, value.month, value.day);
+      historicalTable = null;
+    });
+    await run(() => load(force: true));
+  }
 
   Future<void> refresh() async {
     await run(() async {
@@ -597,6 +641,16 @@ class _ExchangeRatesState extends SettingsState<ExchangeRatesPage> {
       onRefresh: refresh,
       trailing: iconButton(CupertinoIcons.ellipsis, t('More'), more),
       children: [
+        Section(
+          margin: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+          children: [
+            ItemRow(
+              t('Date'),
+              value: app.formatter.date(selectedDate, long: true),
+              onTap: busy ? null : selectDate,
+            ),
+          ],
+        ),
         if (available.isEmpty)
           Section(children: [ItemRow(t('No exchange rates data'))]),
         if (available.isNotEmpty) ...[

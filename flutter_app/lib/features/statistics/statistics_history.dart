@@ -37,7 +37,7 @@ Map<DateTime, Map<String, int>> assetHistoryByDay(
     final changes = <String, int>{
       '${item['sourceAccountId']}': type == 1
           ? value(item['balanceDelta'])
-          : value(item['sourceAmount']) * (type == 3 || type == 4 ? -1 : 1),
+          : (value(item['sourceAmount']) + (type == 4 ? value(item['serviceCharge']) : 0)) * (type == 3 || type == 4 ? -1 : 1),
       if (type == 4)
         '${item['destinationAccountId']}': value(item['destinationAmount']),
     };

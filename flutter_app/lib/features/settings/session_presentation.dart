@@ -20,12 +20,12 @@ SessionPresentation presentSession(Map<String, dynamic> token) {
     return SessionPresentation('MCP Token', agent, SessionDevice.mcp);
   }
   final name = token['isCurrent'] == true ? 'Current' : 'Other Device';
-  final nativeVersion = RegExp(r'^ezBookkeeping/([\d.]+).*Android')
+  final nativeVersion = RegExp(r'^(?:ezBookkeeping|DangguiExpense)/([\d.]+).*Android')
       .firstMatch(agent);
   if (nativeVersion != null) {
     return SessionPresentation(
       name,
-      'Android (ezBookkeeping ${nativeVersion[1]})',
+      'Android (Danggui Expense ${nativeVersion[1]})',
       SessionDevice.phone,
     );
   }

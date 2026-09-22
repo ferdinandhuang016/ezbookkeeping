@@ -31,11 +31,11 @@ import (
 // WebServer represents the server command
 var WebServer = &cli.Command{
 	Name:  "server",
-	Usage: "ezBookkeeping web server operation",
+	Usage: "Danggui Expense web server operation",
 	Commands: []*cli.Command{
 		{
 			Name:   "run",
-			Usage:  "Run ezBookkeeping web server",
+			Usage:  "Run Danggui Expense web server",
 			Action: bindAction(startWebServer),
 		},
 	},
@@ -512,6 +512,7 @@ func startWebServer(c *core.CliContext) error {
 
 			// Exchange Rates
 			apiV1Route.GET("/exchange_rates/latest.json", bindApi(api.ExchangeRates.LatestExchangeRateHandler, config))
+			apiV1Route.GET("/exchange_rates/historical.json", bindApi(api.ExchangeRates.HistoricalExchangeRateHandler, config))
 			apiV1Route.POST("/exchange_rates/user_custom/update.json", bindApi(api.ExchangeRates.UserCustomExchangeRateUpdateHandler, config))
 			apiV1Route.POST("/exchange_rates/user_custom/delete.json", bindApi(api.ExchangeRates.UserCustomExchangeRateDeleteHandler, config))
 

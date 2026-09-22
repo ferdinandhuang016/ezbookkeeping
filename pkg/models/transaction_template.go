@@ -47,6 +47,7 @@ type TransactionTemplate struct {
 	ScheduledTimezoneUtcOffset int16
 	TagIds                     string `xorm:"VARCHAR(255) NOT NULL"`
 	Amount                     int64  `xorm:"NOT NULL"`
+	ServiceCharge              int64  `xorm:"NOT NULL DEFAULT 0"`
 	RelatedAccountId           int64  `xorm:"NOT NULL"`
 	RelatedAccountAmount       int64  `xorm:"NOT NULL"`
 	HideAmount                 bool   `xorm:"NOT NULL"`
@@ -77,6 +78,7 @@ type TransactionTemplateCreateRequest struct {
 	SourceAccountId            int64                             `json:"sourceAccountId,string" binding:"required,min=1"`
 	DestinationAccountId       int64                             `json:"destinationAccountId,string" binding:"min=0"`
 	SourceAmount               int64                             `json:"sourceAmount" binding:"validTransactionAmount"`
+	ServiceCharge              int64                             `json:"serviceCharge" binding:"min=0,validTransactionAmount"`
 	DestinationAmount          int64                             `json:"destinationAmount" binding:"validTransactionAmount"`
 	HideAmount                 bool                              `json:"hideAmount"`
 	TagIds                     []string                          `json:"tagIds"`
@@ -104,6 +106,7 @@ type TransactionTemplateModifyRequest struct {
 	SourceAccountId            int64                             `json:"sourceAccountId,string" binding:"required,min=1"`
 	DestinationAccountId       int64                             `json:"destinationAccountId,string" binding:"min=0"`
 	SourceAmount               int64                             `json:"sourceAmount" binding:"validTransactionAmount"`
+	ServiceCharge              int64                             `json:"serviceCharge" binding:"min=0,validTransactionAmount"`
 	DestinationAmount          int64                             `json:"destinationAmount" binding:"validTransactionAmount"`
 	HideAmount                 bool                              `json:"hideAmount"`
 	TagIds                     []string                          `json:"tagIds"`
@@ -222,7 +225,8 @@ func (t *TransactionTemplate) toTransactionInfoResponse(utcOffset int16) *Transa
 		UtcOffset:            utcOffset,
 		SourceAccountId:      t.AccountId,
 		DestinationAccountId: t.RelatedAccountId,
-		SourceAmount:         t.Amount,
+		SourceAmount:         t.Amount - t.ServiceCharge,
+		ServiceCharge:        t.ServiceCharge,
 		DestinationAmount:    destinationAmount,
 		HideAmount:           t.HideAmount,
 		TagIds:               tagIds,

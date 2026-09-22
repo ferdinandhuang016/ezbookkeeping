@@ -51,6 +51,7 @@ func TestDatabaseUpgradePopulatedPreSyncLedger(t *testing.T) {
 	settings.SetCurrentConfig(config)
 	gin.SetMode(gin.TestMode)
 	require.NoError(t, binding.Validator.Engine().(*validator.Validate).RegisterValidation("validTransactionAmount", validators.ValidTransactionAmount))
+	require.NoError(t, binding.Validator.Engine().(*validator.Validate).RegisterValidation("validCurrency", validators.ValidCurrency))
 	require.NoError(t, uuid.InitializeUuidGenerator(config))
 	open := func() *xorm.Engine {
 		require.NoError(t, datastore.InitializeDataStore(config))
@@ -66,7 +67,7 @@ func TestDatabaseUpgradePopulatedPreSyncLedger(t *testing.T) {
 	require.Empty(t, tables, "refusing to seed an existing database")
 	// These are the existing database-update models, before sync was added.
 	// Their persisted fields have not changed in the native-client migration.
-	require.NoError(t, datastore.Container.UserDataStore.SyncStructs(new(models.User), new(models.TwoFactor), new(models.TwoFactorRecoveryCode), new(models.TokenRecord), new(models.Account), new(models.Transaction), new(models.TransactionCategory), new(models.TransactionTagGroup), new(models.TransactionTag), new(models.TransactionTagIndex), new(models.TransactionTemplate), new(models.TransactionPictureInfo), new(models.UserCustomIcon), new(models.UserCustomExchangeRate), new(models.UserApplicationCloudSetting), new(models.UserExternalAuth), new(models.InsightsExplorer)))
+	require.NoError(t, datastore.Container.UserDataStore.SyncStructs(new(models.User), new(models.TwoFactor), new(models.TwoFactorRecoveryCode), new(models.TokenRecord), new(models.Account), new(models.Transaction), new(models.TransactionCategory), new(models.TransactionTagGroup), new(models.TransactionTag), new(models.TransactionTagIndex), new(models.TransactionTemplate), new(models.TransactionPictureInfo), new(models.UserCustomIcon), new(models.UserCustomExchangeRate), new(models.ExchangeRateHistory), new(models.UserApplicationCloudSetting), new(models.UserExternalAuth), new(models.InsightsExplorer)))
 	syncModels := []any{new(models.SyncLedgerState), new(models.SyncRecord), new(models.SyncChange), new(models.SyncOperationReceipt), new(models.SyncPictureReceipt), new(models.NativeOAuthSession)}
 	for _, model := range syncModels {
 		exists, err := engine.IsTableExist(model)

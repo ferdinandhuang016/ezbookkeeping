@@ -13,11 +13,12 @@ void main() {
       .cast<Map<String, dynamic>>();
   CloudSettingsSelection draft() => CloudSettingsSelection(groups);
   test(
-    'all 47 cloud keys include related keys but exclude local-only settings',
+    'all 48 cloud keys include related keys but exclude local-only settings',
     () {
       final value = draft()..selectAll(true);
       expect(value.selected, (reference['cloudTypes'] as Map).keys.toSet());
-      expect(value.selected, hasLength(47));
+      expect(value.selected, hasLength(48));
+      expect(value.selected, contains('enabledCurrencies'));
       expect(
         value.selected,
         contains('lastSelectedFileTypeInImportTransactionDialog'),
@@ -28,7 +29,7 @@ void main() {
       value.invert();
       expect(value.selected, isEmpty);
       value.invert();
-      expect(value.selected, hasLength(47));
+      expect(value.selected, hasLength(48));
       value.selectAll(false);
       expect(value.selected, isEmpty);
     },
@@ -115,7 +116,7 @@ void main() {
     expect(value.changed, false);
     expect(value.enabled, true);
     expect(() => value.acceptRemote(null), throwsFormatException);
-    expect(value.selected, hasLength(47));
+    expect(value.selected, hasLength(48));
     value.acceptRemote([]);
     expect(value.selected, isEmpty);
     expect(value.enabled, false);

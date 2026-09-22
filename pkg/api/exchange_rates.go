@@ -1,6 +1,8 @@
 package api
 
 import (
+	"time"
+
 	"github.com/mayswind/ezbookkeeping/pkg/core"
 	"github.com/mayswind/ezbookkeeping/pkg/errs"
 	"github.com/mayswind/ezbookkeeping/pkg/exchangerates"
@@ -15,6 +17,7 @@ type ExchangeRatesApi struct {
 	ApiUsingConfig
 	users                   *services.UserService
 	userCustomExchangeRates *services.UserCustomExchangeRatesService
+	exchangeRateHistory     *services.ExchangeRateHistoryService
 }
 
 // Initialize a exchange rate api singleton instance
@@ -25,6 +28,7 @@ var (
 		},
 		users:                   services.Users,
 		userCustomExchangeRates: services.UserCustomExchangeRates,
+		exchangeRateHistory:     services.ExchangeRateHistory,
 	}
 )
 
@@ -36,7 +40,59 @@ func (a *ExchangeRatesApi) LatestExchangeRateHandler(c *core.WebContext) (any, *
 		return nil, errs.Or(err, errs.ErrOperationFailed)
 	}
 
+	if exchangeRateResponse == nil {
+		return nil, nil
+	}
+
+	rateDate := time.Now().In(time.FixedZone("CST", 8*60*60)).Format("2006-01-02")
+	if err = a.exchangeRateHistory.SaveExchangeRates(c, c.GetCurrentUid(), rateDate, exchangeRateResponse); err != nil {
+		log.Errorf(c, "[exchange_rates.LatestExchangeRateHandler] failed to retain exchange rates for user \"uid:%d\", because %s", c.GetCurrentUid(), err.Error())
+		return nil, errs.Or(err, errs.ErrOperationFailed)
+	}
+
 	return exchangeRateResponse, nil
+}
+
+// HistoricalExchangeRateHandler returns and retains exchange rates for a specified date.
+func (a *ExchangeRatesApi) HistoricalExchangeRateHandler(c *core.WebContext) (any, *errs.Error) {
+	var historyReq models.ExchangeRateHistoryRequest
+
+	if err := c.ShouldBindQuery(&historyReq); err != nil {
+		return nil, errs.NewIncompleteOrIncorrectSubmissionError(err)
+	}
+
+	if _, err := time.Parse("2006-01-02", historyReq.Date); err != nil {
+		return nil, errs.ErrQueryItemsInvalid
+	}
+
+	response, err := a.exchangeRateHistory.GetExchangeRates(c, c.GetCurrentUid(), historyReq.Date)
+
+	if err != nil {
+		log.Errorf(c, "[exchange_rates.HistoricalExchangeRateHandler] failed to get retained exchange rates for user \"uid:%d\", because %s", c.GetCurrentUid(), err.Error())
+		return nil, errs.Or(err, errs.ErrOperationFailed)
+	}
+
+	if response != nil {
+		return response, nil
+	}
+
+	response, err = exchangerates.Container.GetExchangeRatesByDate(c, c.GetCurrentUid(), a.CurrentConfig(), historyReq.Date)
+
+	if err != nil {
+		log.Errorf(c, "[exchange_rates.HistoricalExchangeRateHandler] failed to request exchange rates on date \"%s\" for user \"uid:%d\", because %s", historyReq.Date, c.GetCurrentUid(), err.Error())
+		return nil, errs.Or(err, errs.ErrOperationFailed)
+	}
+
+	if response == nil {
+		return nil, nil
+	}
+
+	if err = a.exchangeRateHistory.SaveExchangeRates(c, c.GetCurrentUid(), historyReq.Date, response); err != nil {
+		log.Errorf(c, "[exchange_rates.HistoricalExchangeRateHandler] failed to retain exchange rates on date \"%s\" for user \"uid:%d\", because %s", historyReq.Date, c.GetCurrentUid(), err.Error())
+		return nil, errs.Or(err, errs.ErrOperationFailed)
+	}
+
+	return response, nil
 }
 
 // UserCustomExchangeRateUpdateHandler updates user custom exchange rates data by request parameters for current user

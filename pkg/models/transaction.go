@@ -134,6 +134,9 @@ type Transaction struct {
 	TransactionTime      int64             `xorm:"UNIQUE(UQE_transaction_uid_time) INDEX(IDX_transaction_uid_deleted_time) INDEX(IDX_transaction_uid_deleted_type_time) INDEX(IDX_transaction_uid_deleted_type_account_id_time) INDEX(IDX_transaction_uid_deleted_category_id_time) INDEX(IDX_transaction_uid_deleted_account_id_time) NOT NULL"`
 	TimezoneUtcOffset    int16             `xorm:"NOT NULL"`
 	Amount               int64             `xorm:"NOT NULL"`
+	ServiceCharge        int64             `xorm:"NOT NULL DEFAULT 0"`
+	OriginalCurrency     string            `xorm:"VARCHAR(3) NOT NULL DEFAULT ''"`
+	OriginalAmount       int64             `xorm:"NOT NULL DEFAULT 0"`
 	RelatedId            int64             `xorm:"NOT NULL"`
 	RelatedAccountId     int64             `xorm:"NOT NULL"`
 	RelatedAccountAmount int64             `xorm:"NOT NULL"`
@@ -171,6 +174,9 @@ type TransactionCreateRequest struct {
 	SourceAccountId      int64                          `json:"sourceAccountId,string" binding:"required,min=1"`
 	DestinationAccountId int64                          `json:"destinationAccountId,string" binding:"min=0"`
 	SourceAmount         int64                          `json:"sourceAmount" binding:"validTransactionAmount"`
+	ServiceCharge        int64                          `json:"serviceCharge" binding:"min=0,validTransactionAmount"`
+	OriginalCurrency     string                         `json:"originalCurrency" binding:"omitempty,len=3,validCurrency"`
+	OriginalAmount       *int64                         `json:"originalAmount" binding:"omitempty,validTransactionAmount"`
 	DestinationAmount    int64                          `json:"destinationAmount" binding:"validTransactionAmount"`
 	HideAmount           bool                           `json:"hideAmount"`
 	TagIds               []string                       `json:"tagIds"`
@@ -191,6 +197,9 @@ type TransactionModifyRequest struct {
 	SourceAccountId      int64                          `json:"sourceAccountId,string" binding:"required,min=1"`
 	DestinationAccountId int64                          `json:"destinationAccountId,string" binding:"min=0"`
 	SourceAmount         int64                          `json:"sourceAmount" binding:"validTransactionAmount"`
+	ServiceCharge        int64                          `json:"serviceCharge" binding:"min=0,validTransactionAmount"`
+	OriginalCurrency     string                         `json:"originalCurrency" binding:"omitempty,len=3,validCurrency"`
+	OriginalAmount       *int64                         `json:"originalAmount" binding:"omitempty,validTransactionAmount"`
 	DestinationAmount    int64                          `json:"destinationAmount" binding:"validTransactionAmount"`
 	HideAmount           bool                           `json:"hideAmount"`
 	TagIds               []string                       `json:"tagIds"`
@@ -425,6 +434,9 @@ type TransactionInfoResponse struct {
 	DestinationAccountId int64                                    `json:"destinationAccountId,string,omitempty"`
 	DestinationAccount   *AccountInfoResponse                     `json:"destinationAccount,omitempty"`
 	SourceAmount         int64                                    `json:"sourceAmount"`
+	ServiceCharge        int64                                    `json:"serviceCharge"`
+	OriginalCurrency     string                                   `json:"originalCurrency,omitempty"`
+	OriginalAmount       *int64                                   `json:"originalAmount,omitempty"`
 	BalanceDelta         *int64                                   `json:"balanceDelta,omitempty"` // Actual adjustment delta, populated only for synchronization.
 	DestinationAmount    *int64                                   `json:"destinationAmount,omitempty"`
 	HideAmount           bool                                     `json:"hideAmount"`
@@ -634,15 +646,21 @@ func (t *Transaction) ToTransactionInfoResponse(tagIds []int64, editable bool) *
 	if t.Type == TRANSACTION_DB_TYPE_TRANSFER_OUT {
 		destinationAccountId = t.RelatedAccountId
 		destinationAmount = &t.RelatedAccountAmount
+		sourceAmount -= t.ServiceCharge
 	} else if t.Type == TRANSACTION_DB_TYPE_TRANSFER_IN {
 		sourceAccountId = t.RelatedAccountId
-		sourceAmount = t.RelatedAccountAmount
+		sourceAmount = t.RelatedAccountAmount - t.ServiceCharge
 
 		destinationAccountId = t.AccountId
 		destinationAmount = &t.Amount
 	}
 
 	geoLocation := &TransactionGeoLocationResponse{}
+	var originalAmount *int64
+
+	if t.OriginalCurrency != "" {
+		originalAmount = &t.OriginalAmount
+	}
 
 	if t.GeoLongitude != 0 || t.GeoLatitude != 0 {
 		geoLocation.Longitude = t.GeoLongitude
@@ -661,6 +679,9 @@ func (t *Transaction) ToTransactionInfoResponse(tagIds []int64, editable bool) *
 		SourceAccountId:      sourceAccountId,
 		DestinationAccountId: destinationAccountId,
 		SourceAmount:         sourceAmount,
+		ServiceCharge:        t.ServiceCharge,
+		OriginalCurrency:     t.OriginalCurrency,
+		OriginalAmount:       originalAmount,
 		DestinationAmount:    destinationAmount,
 		HideAmount:           t.HideAmount,
 		TagIds:               utils.Int64ArrayToStringArray(tagIds),

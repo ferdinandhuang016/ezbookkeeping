@@ -12,7 +12,7 @@ import (
 // Database represents the database command
 var Database = &cli.Command{
 	Name:  "database",
-	Usage: "ezBookkeeping database maintenance",
+	Usage: "Danggui Expense database maintenance",
 	Commands: []*cli.Command{
 		{
 			Name:   "update",
@@ -160,6 +160,14 @@ func updateAllDatabaseTablesStructure(c *core.CliContext) error {
 	}
 
 	log.BootInfof(c, "[database.updateAllDatabaseTablesStructure] user custom exchange rate table maintained successfully")
+
+	err = datastore.Container.UserDataStore.SyncStructs(new(models.ExchangeRateHistory))
+
+	if err != nil {
+		return err
+	}
+
+	log.BootInfof(c, "[database.updateAllDatabaseTablesStructure] exchange rate history table maintained successfully")
 
 	err = datastore.Container.UserDataStore.SyncStructs(new(models.UserApplicationCloudSetting))
 

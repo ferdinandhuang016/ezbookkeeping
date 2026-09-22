@@ -1,11 +1,25 @@
 package exchangerates
 
 import (
+	"time"
+
 	"github.com/mayswind/ezbookkeeping/pkg/core"
 	"github.com/mayswind/ezbookkeeping/pkg/errs"
 	"github.com/mayswind/ezbookkeeping/pkg/models"
+	"github.com/mayswind/ezbookkeeping/pkg/services"
 	"github.com/mayswind/ezbookkeeping/pkg/settings"
 )
+
+func init() {
+	services.HistoricalExchangeRatesProvider = func(c core.Context, uid int64, date string) (*models.LatestExchangeRateResponse, error) {
+		config := settings.Container.GetCurrentConfig()
+		rates, err := Container.GetExchangeRatesByDate(c, uid, config, date)
+		if err == nil && rates == nil && date == time.Now().Format("2006-01-02") {
+			return Container.GetLatestExchangeRates(c, uid, config)
+		}
+		return rates, err
+	}
+}
 
 // ExchangeRatesDataProviderContainer contains the current exchange rates data provider
 type ExchangeRatesDataProviderContainer struct {
@@ -70,12 +84,26 @@ func InitializeExchangeRatesDataSource(config *settings.Config) error {
 	} else if config.ExchangeRatesDataSource == settings.CentralBankOfUzbekistanDataSource {
 		Container.current = newCommonHttpExchangeRatesDataProvider(config, &CentralBankOfUzbekistanDataSource{})
 		return nil
+	} else if config.ExchangeRatesDataSource == settings.StateAdministrationOfForeignExchangeDataSource {
+		Container.current = newStateAdministrationOfForeignExchangeDataProvider(config)
+		return nil
 	} else if config.ExchangeRatesDataSource == settings.UserCustomExchangeRatesDataSource {
 		Container.current = newUserCustomExchangeRatesDataProvider()
 		return nil
 	}
 
 	return errs.ErrInvalidExchangeRatesDataSource
+}
+
+// GetExchangeRatesByDate returns exchange rates for the specified date when the current provider supports it.
+func (e *ExchangeRatesDataProviderContainer) GetExchangeRatesByDate(c core.Context, uid int64, currentConfig *settings.Config, date string) (*models.LatestExchangeRateResponse, error) {
+	provider, ok := e.current.(HistoricalExchangeRatesDataProvider)
+
+	if !ok {
+		return nil, nil
+	}
+
+	return provider.GetExchangeRatesByDate(c, uid, currentConfig, date)
 }
 
 // GetLatestExchangeRates returns the latest exchange rates data from the current exchange rates data source

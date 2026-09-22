@@ -73,6 +73,7 @@ class AppController extends ChangeNotifier with WidgetsBindingObserver {
   bool _handlingOAuthCallback = false;
   bool _nativeLaunchPrepared = false;
   String? _pendingNativeRoute;
+  int _homeLaunchId = 0;
   JsonMap _translations = {};
   JsonMap _englishTranslations = {};
   JsonMap _formattingReference = {};
@@ -97,6 +98,7 @@ class AppController extends ChangeNotifier with WidgetsBindingObserver {
     'showTagInTransactionListPage': true,
     'autoSaveTransactionDraft': 'disabled',
     'autoUpdateExchangeRatesData': true,
+    'enabledCurrencies': {'CNY': true, 'USD': true},
     'alwaysRequireConfirmationOfClipboardContentBeforeSubmission': true,
   };
   JsonMap settings = Map.of(_defaultSettings);
@@ -218,7 +220,13 @@ class AppController extends ChangeNotifier with WidgetsBindingObserver {
     _nativeLaunchPrepared = true;
     _native.setMethodCallHandler((call) async {
       if (call.method == 'sharedImages') await _checkShares();
-      if (call.method == 'openRoute') _queueNativeRoute(call.arguments);
+      if (call.method == 'openRoute') {
+        _queueNativeRoute(call.arguments);
+        if (call.arguments == '/transaction/add') {
+          await WidgetsBinding.instance.endOfFrame;
+          await _native.invokeMethod<void>('revealQuickAdd');
+        }
+      }
     });
     try {
       _queueNativeRoute(
@@ -236,7 +244,7 @@ class AppController extends ChangeNotifier with WidgetsBindingObserver {
           '/transaction/add?launcher=true&noTransactionDraft=true';
       notifyListeners();
     } else if (route == '/') {
-      _pendingNativeRoute = '/';
+      _pendingNativeRoute = '/?homeLaunch=${++_homeLaunchId}';
       notifyListeners();
     }
   }

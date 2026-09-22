@@ -6,6 +6,7 @@ import { useUserStore } from '@/stores/user.ts';
 import { useExchangeRatesStore } from '@/stores/exchangeRates.ts';
 
 import type { BigDecimal } from '@/core/numeral.ts';
+import type { TextualYearMonthDay } from '@/core/datetime.ts';
 import { TRANSACTION_MIN_AMOUNT, TRANSACTION_MAX_AMOUNT } from '@/consts/transaction.ts';
 
 import type {
@@ -19,7 +20,11 @@ import {
     getExchangedAmountByRate
 } from '@/lib/numeral.ts';
 
-import { parseDateTimeFromUnixTime } from '@/lib/datetime.ts';
+import {
+    getCurrentUnixTime,
+    parseDateTimeFromUnixTime,
+    parseDateTimeFromUnixTimeWithBrowserTimezone
+} from '@/lib/datetime.ts';
 
 export function useExchangeRatesPageBase() {
     const { getAllDisplayExchangeRates, formatDateTimeToLongDate, parseAmountFromWesternArabicNumerals } = useI18n();
@@ -29,22 +34,37 @@ export function useExchangeRatesPageBase() {
 
     const baseCurrency = ref<string>(userStore.currentUserDefaultCurrency);
     const baseAmount = ref<number>(100);
+    const currentDate = parseDateTimeFromUnixTimeWithBrowserTimezone(getCurrentUnixTime()).getGregorianCalendarYearDashMonthDashDay();
+    const exchangeRatesDate = ref<TextualYearMonthDay>(currentDate);
+    const historicalExchangeRatesData = ref<LatestExchangeRateResponse>();
 
     const defaultCurrency = computed<string>(() => userStore.currentUserDefaultCurrency);
-    const exchangeRatesData = computed<LatestExchangeRateResponse | undefined>(() => exchangeRatesStore.latestExchangeRates.data);
-    const isUserCustomExchangeRates = computed<boolean>(() => exchangeRatesStore.isUserCustomExchangeRates);
+    const isCurrentExchangeRatesDate = computed<boolean>(() => exchangeRatesDate.value === currentDate);
+    const exchangeRatesData = computed<LatestExchangeRateResponse | undefined>(() => isCurrentExchangeRatesDate.value
+        ? exchangeRatesStore.latestExchangeRates.data
+        : historicalExchangeRatesData.value);
+    const isUserCustomExchangeRates = computed<boolean>(() => exchangeRatesData.value?.dataSource === 'user_custom');
 
     const exchangeRatesDataUpdateTime = computed<string>(() => {
-        if (!exchangeRatesStore.exchangeRatesLastUpdateTime) {
+        if (!exchangeRatesData.value?.updateTime) {
             return '';
         }
 
-        const exchangeRatesLastUpdateTime = parseDateTimeFromUnixTime(exchangeRatesStore.exchangeRatesLastUpdateTime);
+        const exchangeRatesLastUpdateTime = parseDateTimeFromUnixTime(exchangeRatesData.value.updateTime);
         return formatDateTimeToLongDate(exchangeRatesLastUpdateTime);
     });
 
     const availableExchangeRates = computed<LocalizedLatestExchangeRate[]>(() => {
         return getAllDisplayExchangeRates(exchangeRatesData.value);
+    });
+    const exchangeRateMap = computed<Record<string, LatestExchangeRate>>(() => {
+        const ret: Record<string, LatestExchangeRate> = {};
+
+        for (const exchangeRate of exchangeRatesData.value?.exchangeRates ?? []) {
+            ret[exchangeRate.currency] = exchangeRate;
+        }
+
+        return ret;
     });
 
     function getConvertedAmount(baseAmount: BigDecimal, fromExchangeRate?: LatestExchangeRate | LocalizedLatestExchangeRate, toExchangeRate?: LatestExchangeRate | LocalizedLatestExchangeRate): BigDecimal | '' | null {
@@ -74,12 +94,16 @@ export function useExchangeRatesPageBase() {
         // states
         baseCurrency,
         baseAmount,
+        exchangeRatesDate,
+        historicalExchangeRatesData,
         // computed states
         defaultCurrency,
+        isCurrentExchangeRatesDate,
         exchangeRatesData,
         isUserCustomExchangeRates,
         exchangeRatesDataUpdateTime,
         availableExchangeRates,
+        exchangeRateMap,
         // functions
         getConvertedAmount,
         setAsBaseline

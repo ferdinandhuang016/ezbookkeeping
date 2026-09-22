@@ -915,6 +915,13 @@ export default {
             timeout: getExchangeRatesRequestTimeout() || DEFAULT_API_TIMEOUT
         } as ApiRequestConfig);
     },
+    getHistoricalExchangeRates: (date: string): ApiResponsePromise<LatestExchangeRateResponse | null> => {
+        return axios.get<ApiResponse<LatestExchangeRateResponse | null>>('v1/exchange_rates/historical.json', {
+            params: {
+                date: date
+            }
+        });
+    },
     updateUserCustomExchangeRate: (req: UserCustomExchangeRateUpdateRequest): ApiResponsePromise<UserCustomExchangeRateUpdateResponse> => {
         return axios.post<ApiResponse<UserCustomExchangeRateUpdateResponse>>('v1/exchange_rates/user_custom/update.json', req);
     },

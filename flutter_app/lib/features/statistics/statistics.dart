@@ -264,7 +264,9 @@ class LedgerStatistics {
 
   BigInt transactionValue(RecordData item, {bool destination = false}) =>
       convert(
-        item[destination ? 'destinationAmount' : 'sourceAmount'] ?? 0,
+        destination ? item['destinationAmount'] ?? 0 :
+            aggregateAmount(item['sourceAmount']) +
+            (number(item['type']) == 4 ? aggregateAmount(item['serviceCharge']) : BigInt.zero),
         string(
           lookup(
             accounts,
@@ -331,6 +333,9 @@ class LedgerStatistics {
         existing['sourceAmount'] =
             aggregateAmount(existing['sourceAmount']) +
             aggregateAmount(item['sourceAmount']);
+        existing['serviceCharge'] =
+            aggregateAmount(existing['serviceCharge']) +
+            aggregateAmount(item['serviceCharge']);
         existing['destinationAmount'] =
             aggregateAmount(existing['destinationAmount']) +
             aggregateAmount(item['destinationAmount']);
@@ -389,7 +394,8 @@ class LedgerStatistics {
       }
       final sourceDelta = type == 1
           ? aggregateAmount(item['balanceDelta'])
-          : aggregateAmount(item['sourceAmount']) *
+          : (aggregateAmount(item['sourceAmount']) +
+                (type == 4 ? aggregateAmount(item['serviceCharge']) : BigInt.zero)) *
                 BigInt.from([3, 4].contains(type) ? -1 : 1);
       balance[source] = (balance[source] ?? BigInt.zero) - sourceDelta;
       if (type == 4) {
@@ -441,7 +447,31 @@ class _StatisticsState extends NativeState<StatisticsPage> {
   int chartType = 0;
   int sort = 0;
   int aggregation = 0;
+  String? selectedPieKey;
+  int visibleExpenseCount = 20;
+  int expenseItemCount = 0;
+  String? activeExpenseKey;
+  bool loadMoreExpensesQueued = false;
   final hiddenSeries = <String>{};
+
+  void loadMoreExpenses() {
+    if (loadMoreExpensesQueued ||
+        activeExpenseKey == null ||
+        visibleExpenseCount >= expenseItemCount) {
+      return;
+    }
+    final key = activeExpenseKey;
+    loadMoreExpensesQueued = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      loadMoreExpensesQueued = false;
+      if (mounted &&
+          activeExpenseKey == key &&
+          visibleExpenseCount < expenseItemCount) {
+        setState(() => visibleExpenseCount += 20);
+      }
+    });
+  }
+
   bool get currentBalance => analysis == 0 && [6, 7, 18, 19].contains(dataType);
   bool get showAmount =>
       !currentBalance || app.settings['showAccountBalance'] != false;
@@ -693,6 +723,8 @@ class _StatisticsState extends NativeState<StatisticsPage> {
       }
       dataType = selected.$2;
       hiddenSeries.clear();
+      selectedPieKey = null;
+      visibleExpenseCount = 20;
     });
   }
 
@@ -1073,6 +1105,29 @@ class _StatisticsState extends NativeState<StatisticsPage> {
             dataType,
             accountFilter: filter.accounts,
           );
+    final showExpenseDetails =
+        analysis == 0 &&
+        chartType == 0 &&
+        [1, 2].contains(dataType) &&
+        entries.isNotEmpty;
+    final expenseKey = showExpenseDetails
+        ? entries.any((entry) => entry.key == selectedPieKey)
+              ? selectedPieKey!
+              : entries.first.key
+        : null;
+    final expenseFilter = expenseKey == null
+        ? null
+        : statisticsDrilldown(app, filter, dataType, itemId: expenseKey);
+    final expenseItems = expenseFilter == null
+        ? <RecordData>[]
+        : (items
+              .where(
+                (item) => expenseFilter.matches(item, dateOf: transactionDate),
+              )
+              .toList()
+            ..sort((a, b) => number(b['time']).compareTo(number(a['time']))));
+    activeExpenseKey = expenseKey;
+    expenseItemCount = expenseItems.length;
     void openTransactions(int index, [String? seriesId]) {
       if (index < 0 || index >= entries.length) return;
       final key = entries[index].key;
@@ -1248,6 +1303,10 @@ class _StatisticsState extends NativeState<StatisticsPage> {
       onTitleTap: selectData,
       busy: busy,
       onRefresh: app.refresh,
+      onScrollNearEnd:
+          showExpenseDetails && expenseItems.length > visibleExpenseCount
+          ? loadMoreExpenses
+          : null,
       trailing: iconButton(CupertinoIcons.ellipsis, t('More'), more),
       bottom: Container(
         height: 64,
@@ -1319,6 +1378,11 @@ class _StatisticsState extends NativeState<StatisticsPage> {
             sortingHeader(),
             StatisticsPie(
               entries: entries,
+              selectedId: expenseKey,
+              onSelect: (key) => setState(() {
+                selectedPieKey = key;
+                visibleExpenseCount = 20;
+              }),
               label: label,
               displayValue: displayValue,
               displayPercent: displayPercent,
@@ -1466,6 +1530,31 @@ class _StatisticsState extends NativeState<StatisticsPage> {
                 ),
             ],
           ]),
+        if (showExpenseDetails)
+          Section(
+            title:
+                '${label(expenseKey!)} · ${t('Transactions')} (${app.formatter.digits('${expenseItems.length}')})',
+            children: [
+              if (expenseItems.isEmpty) ItemRow(t('No transactions')),
+              for (
+                var i = 0;
+                i < expenseItems.length && i < visibleExpenseCount;
+                i++
+              )
+                TransactionRow(
+                  item: expenseItems[i],
+                  app: app,
+                  showDate: true,
+                  previousItem: i == 0 ? null : expenseItems[i - 1],
+                ),
+              ItemRow(
+                t('Details'),
+                onTap: () => openTransactions(
+                  entries.indexWhere((entry) => entry.key == expenseKey),
+                ),
+              ),
+            ],
+          ),
       ],
     );
   }

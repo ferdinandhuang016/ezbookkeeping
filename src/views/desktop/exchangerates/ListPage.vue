@@ -22,6 +22,10 @@
                                     <v-skeleton-loader class="skeleton-no-margin mt-2 mb-4 pt-h1" type="text" :loading="true"></v-skeleton-loader>
                                 </span>
                             </div>
+                            <date-select class="mt-3"
+                                         :disabled="loading"
+                                         :label="tt('Date')"
+                                         v-model="exchangeRatesDate" />
                         </div>
                         <v-divider />
                         <div class="mx-4 mt-3">
@@ -195,11 +199,15 @@ const { tt, getCurrentNumeralSystemType, formatExchangeRateAmountToWesternArabic
 const {
     baseCurrency,
     baseAmount,
+    exchangeRatesDate,
+    historicalExchangeRatesData,
     defaultCurrency,
+    isCurrentExchangeRatesDate,
     exchangeRatesData,
     isUserCustomExchangeRates,
     exchangeRatesDataUpdateTime,
     availableExchangeRates,
+    exchangeRateMap,
     getConvertedAmount,
     setAsBaseline
 } = useExchangeRatesPageBase();
@@ -223,10 +231,14 @@ const numeralSystem = computed<NumeralSystem>(() => getCurrentNumeralSystemType(
 function reload(force: boolean): void {
     loading.value = true;
 
-    exchangeRatesStore.getLatestExchangeRates({
-        silent: false,
-        force: force
-    }).then(() => {
+    const request = isCurrentExchangeRatesDate.value
+        ? exchangeRatesStore.getLatestExchangeRates({ silent: false, force: force })
+        : exchangeRatesStore.getHistoricalExchangeRates(exchangeRatesDate.value).then(data => {
+            historicalExchangeRatesData.value = data ?? undefined;
+            return data;
+        });
+
+    request.then(() => {
         loading.value = false;
 
         if (exchangeRatesData.value && exchangeRatesData.value.exchangeRates) {
@@ -240,7 +252,7 @@ function reload(force: boolean): void {
                 }
             }
 
-            if (force) {
+            if (force && isCurrentExchangeRatesDate.value) {
                 snackbar.value?.showMessage('Exchange rates data has been updated');
             } else if (!foundDefaultCurrency) {
                 snackbar.value?.showMessage('There is no exchange rates data for your default currency');
@@ -249,7 +261,9 @@ function reload(force: boolean): void {
     }).catch(error => {
         loading.value = false;
 
-        if (!error.processed) {
+        if (error?.isUpToDate) {
+            snackbar.value?.showMessage('Exchange rates data is up to date');
+        } else if (!error.processed) {
             snackbar.value?.showError(error);
         }
     });
@@ -301,7 +315,7 @@ function getFinalConvertedAmount(toExchangeRate: LocalizedLatestExchangeRate, di
         }
     }
 
-    const fromExchangeRate = exchangeRatesStore.latestExchangeRateMap[baseCurrency.value];
+    const fromExchangeRate = exchangeRateMap.value[baseCurrency.value];
     let exchangeRateAmount: BigDecimal | '' | null = BIG_DECIMAL_ZERO;
 
     try {
@@ -336,5 +350,7 @@ watch(lgAndUp, (newValue) => {
     }
 });
 
-reload(false);
+watch(exchangeRatesDate, () => reload(false));
+
+reload(true);
 </script>

@@ -1162,6 +1162,10 @@ func (a *TransactionsApi) TransactionCreateHandler(c *core.WebContext) (any, *er
 		return nil, errs.NewIncompleteOrIncorrectSubmissionError(err)
 	}
 
+	if (transactionCreateReq.OriginalCurrency == "") != (transactionCreateReq.OriginalAmount == nil) {
+		return nil, errs.ErrTransactionOriginalAmountInvalid
+	}
+
 	clientTimezone, err := c.GetClientTimezone()
 
 	if err != nil {
@@ -1307,6 +1311,10 @@ func (a *TransactionsApi) TransactionModifyHandler(c *core.WebContext) (any, *er
 		return nil, errs.NewIncompleteOrIncorrectSubmissionError(err)
 	}
 
+	if (transactionModifyReq.OriginalCurrency == "") != (transactionModifyReq.OriginalAmount == nil) {
+		return nil, errs.ErrTransactionOriginalAmountInvalid
+	}
+
 	clientTimezone, err := c.GetClientTimezone()
 
 	if err != nil {
@@ -1416,7 +1424,14 @@ func (a *TransactionsApi) TransactionModifyHandler(c *core.WebContext) (any, *er
 		Comment:           transactionModifyReq.Comment,
 	}
 
+	if transactionModifyReq.OriginalAmount != nil {
+		newTransaction.OriginalCurrency = transactionModifyReq.OriginalCurrency
+		newTransaction.OriginalAmount = *transactionModifyReq.OriginalAmount
+	}
+
 	if newTransaction.Type == models.TRANSACTION_DB_TYPE_TRANSFER_OUT {
+		newTransaction.Amount += transactionModifyReq.ServiceCharge
+		newTransaction.ServiceCharge = transactionModifyReq.ServiceCharge
 		newTransaction.RelatedAccountId = transactionModifyReq.DestinationAccountId
 		newTransaction.RelatedAccountAmount = transactionModifyReq.DestinationAmount
 	}
@@ -1433,6 +1448,9 @@ func (a *TransactionsApi) TransactionModifyHandler(c *core.WebContext) (any, *er
 		newTransaction.TimezoneUtcOffset == transaction.TimezoneUtcOffset &&
 		newTransaction.AccountId == transaction.AccountId &&
 		newTransaction.Amount == transaction.Amount &&
+		newTransaction.ServiceCharge == transaction.ServiceCharge &&
+		newTransaction.OriginalCurrency == transaction.OriginalCurrency &&
+		newTransaction.OriginalAmount == transaction.OriginalAmount &&
 		(newTransaction.Type != models.TRANSACTION_DB_TYPE_TRANSFER_OUT || newTransaction.RelatedAccountId == transaction.RelatedAccountId) &&
 		(newTransaction.Type != models.TRANSACTION_DB_TYPE_TRANSFER_OUT || newTransaction.RelatedAccountAmount == transaction.RelatedAccountAmount) &&
 		newTransaction.HideAmount == transaction.HideAmount &&
@@ -3155,7 +3173,14 @@ func (a *TransactionsApi) createNewTransactionModel(uid int64, transactionCreate
 		CreatedIp:         clientIp,
 	}
 
+	if transactionCreateReq.OriginalAmount != nil {
+		transaction.OriginalCurrency = transactionCreateReq.OriginalCurrency
+		transaction.OriginalAmount = *transactionCreateReq.OriginalAmount
+	}
+
 	if transactionCreateReq.Type == models.TRANSACTION_TYPE_TRANSFER {
+		transaction.Amount += transactionCreateReq.ServiceCharge
+		transaction.ServiceCharge = transactionCreateReq.ServiceCharge
 		transaction.RelatedAccountId = transactionCreateReq.DestinationAccountId
 		transaction.RelatedAccountAmount = transactionCreateReq.DestinationAmount
 	}

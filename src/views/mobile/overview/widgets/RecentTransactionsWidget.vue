@@ -215,8 +215,10 @@ function getDisplayTime(transaction: TransactionInfoResponse): string {
 
 function getDisplayAmount(transaction: TransactionInfoResponse): string {
     const account = getSourceAccount(transaction);
-    const amount = !showAmountInHomePage.value || transaction.hideAmount ? DISPLAY_HIDDEN_AMOUNT : parseBigDecimal(transaction.sourceAmount);
-    return formatAmountToLocalizedNumeralsWithCurrency(amount, account?.currency ?? '');
+    const currency = transaction.originalCurrency || account?.currency || '';
+    const value = transaction.originalCurrency ? transaction.originalAmount ?? transaction.sourceAmount : transaction.sourceAmount;
+    const amount = !showAmountInHomePage.value || transaction.hideAmount ? DISPLAY_HIDDEN_AMOUNT : parseBigDecimal(value);
+    return formatAmountToLocalizedNumeralsWithCurrency(amount, currency);
 }
 
 function getSourceAccount(transaction: TransactionInfoResponse): Account | undefined {

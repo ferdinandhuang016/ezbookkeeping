@@ -13,7 +13,7 @@ import (
 	"github.com/mayswind/ezbookkeeping/pkg/utils"
 )
 
-const mcpServerName = core.ApplicationName + "-mcp"
+const mcpServerName = "danggui-expense-mcp"
 
 // ModelContextProtocolAPI represents model context protocol api
 type ModelContextProtocolAPI struct {

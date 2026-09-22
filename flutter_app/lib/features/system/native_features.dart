@@ -374,10 +374,12 @@ class _LocationPage extends ConsumerStatefulWidget {
 
 class _LocationState extends NativeState<_LocationPage> {
   WebViewController? web;
+  Timer? mapLoadTimer;
   late RecordData coordinates = {...?widget.initial};
   String? mapError;
   bool injected = false;
   bool mapReady = false;
+  bool mapLoadingSlow = false;
   bool clickEnabled = false;
   late final Uri mapUri = Uri.parse('${app.serverUrl}native-map');
   String latitude = '', longitude = '';
@@ -397,17 +399,28 @@ class _LocationState extends NativeState<_LocationPage> {
   }
 
   Future<void> initializeMap() async {
+    mapLoadTimer?.cancel();
     final controller = WebViewController();
-    web = controller;
-    injected = false;
-    mapReady = false;
-    clickEnabled = false;
-    mapError = null;
+    if (!mounted) return;
+    setState(() {
+      web = controller;
+      injected = false;
+      mapReady = false;
+      mapLoadingSlow = false;
+      clickEnabled = false;
+      mapError = null;
+    });
+    mapLoadTimer = Timer(const Duration(seconds: 8), () {
+      if (mounted && !mapReady && mapError == null) {
+        setState(() => mapLoadingSlow = true);
+      }
+    });
     await controller.setJavaScriptMode(JavaScriptMode.unrestricted);
     await controller.addJavaScriptChannel(
       'EbkMap',
       onMessageReceived: (message) async {
-        if (!injected ||
+        if (web != controller ||
+            !injected ||
             message.message.length > 1024 ||
             !allowed(await controller.currentUrl() ?? '')) {
           return;
@@ -416,10 +429,17 @@ class _LocationState extends NativeState<_LocationPage> {
           final body = jsonDecode(message.message);
           if (body is! Map) return;
           if (body['type'] == 'ready') {
-            if (mounted) setState(() => mapReady = true);
+            mapLoadTimer?.cancel();
+            if (mounted) {
+              setState(() {
+                mapReady = true;
+                mapLoadingSlow = false;
+              });
+            }
             return;
           }
           if (body['type'] == 'error') {
+            mapLoadTimer?.cancel();
             if (mounted) setState(() => mapError = string(body['message']));
             return;
           }
@@ -449,7 +469,8 @@ class _LocationState extends NativeState<_LocationPage> {
             ? NavigationDecision.navigate
             : NavigationDecision.prevent,
         onPageFinished: (url) async {
-          if (injected ||
+          if (web != controller ||
+              injected ||
               !allowed(url) ||
               !allowed(await controller.currentUrl() ?? '')) {
             return;
@@ -460,11 +481,15 @@ class _LocationState extends NativeState<_LocationPage> {
               'window.configureNativeMap(${jsonEncode({'token': app.api.token, 'language': app.api.language, 'coordinate': coordinates, 'readOnly': widget.readOnly, 'zoomIn': t('Zoom in'), 'zoomOut': t('Zoom out')})})',
             );
           } catch (_) {
-            if (mounted) setState(() => mapError = t('Cannot Initialize Map'));
+            mapLoadTimer?.cancel();
+            if (mounted && web == controller) {
+              setState(() => mapError = t('Cannot Initialize Map'));
+            }
           }
         },
         onWebResourceError: (error) {
-          if (error.isForMainFrame == true && mounted) {
+          if (error.isForMainFrame == true && mounted && web == controller) {
+            mapLoadTimer?.cancel();
             setState(() => mapError = error.description);
           }
         },
@@ -482,6 +507,12 @@ class _LocationState extends NativeState<_LocationPage> {
     }
     await controller.loadRequest(mapUri);
     if (mounted) setState(() {});
+  }
+
+  @override
+  void dispose() {
+    mapLoadTimer?.cancel();
+    super.dispose();
   }
 
   Future<void> locate() async {
@@ -587,10 +618,49 @@ class _LocationState extends NativeState<_LocationPage> {
                 ),
               ),
               if (!mapReady && mapError == null)
-                const Positioned.fill(
+                Positioned.fill(
                   child: ColoredBox(
-                    color: CupertinoColors.systemGroupedBackground,
-                    child: Center(child: CupertinoActivityIndicator()),
+                    color: CupertinoColors.systemGroupedBackground.resolveFrom(
+                      context,
+                    ),
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const CupertinoActivityIndicator(radius: 14),
+                            const SizedBox(height: 12),
+                            Text(
+                              t('Loading Map...'),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: CupertinoColors.secondaryLabel
+                                    .resolveFrom(context),
+                              ),
+                            ),
+                            if (mapLoadingSlow) ...[
+                              const SizedBox(height: 8),
+                              Text(
+                                t(
+                                  'Map loading is taking longer than expected.',
+                                ),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: CupertinoColors.secondaryLabel
+                                      .resolveFrom(context),
+                                ),
+                              ),
+                              CupertinoButton(
+                                onPressed: () => run(initializeMap),
+                                child: Text(t('Retry')),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ),
             ],

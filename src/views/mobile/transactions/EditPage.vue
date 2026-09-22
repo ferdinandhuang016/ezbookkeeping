@@ -66,6 +66,66 @@
             ></f7-list-input>
 
             <f7-list-item
+                class="list-item-with-header-and-title list-item-title-hide-overflow"
+                link="#" no-chevron
+                :class="{ 'readonly': mode === TransactionEditPageMode.View }"
+                :header="tt('Transaction Currency')"
+                :title="transactionCurrency"
+                @click="showTransactionCurrencyPopup = true"
+                v-if="transaction instanceof Transaction && isMultiCurrencyCreditCardTransaction"
+            >
+                <list-item-selection-popup value-type="item"
+                                           key-field="currencyCode" value-field="currencyCode"
+                                           title-field="displayName" after-field="currencyCode"
+                                           :title="tt('Transaction Currency')"
+                                           :enable-filter="true"
+                                           :filter-placeholder="tt('Currency')"
+                                           :filter-no-items-text="tt('No results')"
+                                           :items="effectiveCurrencies"
+                                           v-model:show="showTransactionCurrencyPopup"
+                                           v-model="transactionCurrency">
+                </list-item-selection-popup>
+            </f7-list-item>
+
+            <f7-list-item
+                class="list-item-with-header-and-title list-item-title-hide-overflow"
+                link="#" no-chevron
+                :class="{ 'readonly': mode === TransactionEditPageMode.View }"
+                :header="tt('Currency')"
+                :title="sourceAccountCurrencySelection"
+                @click="showSourceCurrencyPopup = true"
+                v-else
+            >
+                <list-item-selection-popup value-type="item"
+                                           key-field="currencyCode" value-field="currencyCode"
+                                           title-field="displayName" after-field="currencyCode"
+                                           :title="tt('Currency')"
+                                           :enable-filter="true"
+                                           :filter-placeholder="tt('Currency')"
+                                           :filter-no-items-text="tt('No results')"
+                                           :items="selectableAccountCurrencies"
+                                           v-model:show="showSourceCurrencyPopup"
+                                           v-model="sourceAccountCurrencySelection">
+                </list-item-selection-popup>
+            </f7-list-item>
+
+            <f7-list-item
+                class="transaction-edit-amount"
+                link="#" no-chevron
+                :header="tt('Original Amount')"
+                :title="getDisplayAmount(parseBigDecimal(transaction.originalAmount), transaction.hideAmount, transaction.originalCurrency)"
+                @click="showOriginalAmountSheet = true"
+                v-if="transaction instanceof Transaction && isMultiCurrencyCreditCardTransaction && transaction.originalCurrency"
+            >
+                <number-pad-sheet :min-value="TRANSACTION_MIN_AMOUNT"
+                                  :max-value="TRANSACTION_MAX_AMOUNT"
+                                  :currency="transaction.originalCurrency"
+                                  v-model:show="showOriginalAmountSheet"
+                                  v-model="transaction.originalAmount"
+                ></number-pad-sheet>
+            </f7-list-item>
+
+            <f7-list-item
                 class="transaction-edit-amount"
                 link="#" no-chevron
                 :class="sourceAmountClass"
@@ -84,17 +144,16 @@
             <f7-list-item
                 class="transaction-edit-amount text-color-primary"
                 link="#" no-chevron
-                :class="destinationAmountClass"
-                :header="transferInAmountTitle"
-                :title="getDisplayAmount(parseBigDecimal(transaction.destinationAmount), transaction.hideAmount, destinationAccountCurrency)"
-                @click="showDestinationAmountSheet = true"
+                :header="tt('Service Charge')"
+                :title="getDisplayAmount(parseBigDecimal(transaction.serviceCharge), transaction.hideAmount, sourceAccountCurrency)"
+                @click="showServiceChargeSheet = true"
                 v-if="transaction.type === TransactionType.Transfer"
             >
-                <number-pad-sheet :min-value="TRANSACTION_MIN_AMOUNT"
+                <number-pad-sheet :min-value="0"
                                   :max-value="TRANSACTION_MAX_AMOUNT"
-                                  :currency="destinationAccountCurrency"
-                                  v-model:show="showDestinationAmountSheet"
-                                  v-model="transaction.destinationAmount"
+                                  :currency="sourceAccountCurrency"
+                                  v-model:show="showServiceChargeSheet"
+                                  v-model="transaction.serviceCharge"
                 ></number-pad-sheet>
             </f7-list-item>
 
@@ -458,13 +517,10 @@
                 <f7-actions-button @click="recognizeFromClipboard">{{ tt('AI Clipboard Text Recognition') }}</f7-actions-button>
             </f7-actions-group>
             <f7-actions-group v-if="mode !== TransactionEditPageMode.View && transaction.type === TransactionType.Transfer">
-                <f7-actions-button @click="swapTransactionData(true, false)">{{ tt('Swap Account') }}</f7-actions-button>
-                <f7-actions-button @click="swapTransactionData(false, true)">{{ tt('Swap Amount') }}</f7-actions-button>
-                <f7-actions-button @click="swapTransactionData(true, true)">{{ tt('Swap Account and Amount') }}</f7-actions-button>
+                <f7-actions-button @click="swapTransactionData()">{{ tt('Swap Account') }}</f7-actions-button>
             </f7-actions-group>
             <f7-actions-group v-if="mode !== TransactionEditPageMode.View">
-                <f7-actions-button v-if="isSupportClipboard && !isiOS()" @click="pasteAmount('sourceAmount')">{{ tt('Paste Amount') }}</f7-actions-button>
-                <f7-actions-button v-if="isSupportClipboard && !isiOS() && transaction.type === TransactionType.Transfer" @click="pasteAmount('destinationAmount')">{{ tt('Paste Destination Amount') }}</f7-actions-button>
+                <f7-actions-button v-if="isSupportClipboard && !isiOS()" @click="pasteAmount()">{{ tt('Paste Amount') }}</f7-actions-button>
                 <f7-actions-button v-if="transaction.hideAmount" @click="transaction.hideAmount = false">{{ tt('Show Amount') }}</f7-actions-button>
                 <f7-actions-button v-if="!transaction.hideAmount" @click="transaction.hideAmount = true">{{ tt('Hide Amount') }}</f7-actions-button>
             </f7-actions-group>
@@ -622,6 +678,8 @@ const {
     imageUploadQualityType,
     allTimezones,
     allVisibleAccounts,
+    effectiveCurrencies,
+    selectableAccountCurrencies,
     allVisibleCategorizedAccounts,
     allCategories,
     allTagsMap,
@@ -634,17 +692,18 @@ const {
     quickSaveButtonTitle,
     sourceAmountTitle,
     sourceAccountTitle,
-    transferInAmountTitle,
     sourceAccountName,
     destinationAccountName,
     sourceAccountCurrency,
-    destinationAccountCurrency,
+    isMultiCurrencyCreditCardTransaction,
+    sourceAccountCurrencySelection,
     transactionDisplayTimezone,
     transactionTimezoneTimeDifference,
     geoLocationStatusInfo,
     transactionDescriptionTitle,
     inputEmptyProblemMessage,
     inputIsEmpty,
+    prepareTransferDestinationAmount,
     setTransactionModel,
     updateTransactionModelFromRecognizedResponse,
     updateTransactionModelByAfterSaveAction,
@@ -678,7 +737,10 @@ const showTimezonePopup = ref<boolean>(false);
 const showGeoLocationActionSheet = ref<boolean>(false);
 const showMoreActionSheet = ref<boolean>(false);
 const showSourceAmountSheet = ref<boolean>(false);
-const showDestinationAmountSheet = ref<boolean>(false);
+const showOriginalAmountSheet = ref<boolean>(false);
+const showTransactionCurrencyPopup = ref<boolean>(false);
+const showSourceCurrencyPopup = ref<boolean>(false);
+const showServiceChargeSheet = ref<boolean>(false);
 const showCategorySheet = ref<boolean>(false);
 const showSourceAccountSheet = ref<boolean>(false);
 const showDestinationAccountSheet = ref<boolean>(false);
@@ -688,6 +750,26 @@ const showScheduledStartDateSheet = ref<boolean>(false);
 const showScheduledEndDateSheet = ref<boolean>(false);
 const showGeoLocationMapSheet = ref<boolean>(false);
 const showTransactionTagSheet = ref<boolean>(false);
+
+const transactionCurrency = computed<string>({
+    get: () => transaction.value instanceof Transaction && transaction.value.originalCurrency
+        ? transaction.value.originalCurrency
+        : sourceAccountCurrency.value,
+    set: (value: string) => {
+        if (!(transaction.value instanceof Transaction)) {
+            return;
+        }
+
+        const oldOriginalCurrency = transaction.value.originalCurrency;
+        transaction.value.originalCurrency = value === sourceAccountCurrency.value ? '' : value;
+
+        if (!transaction.value.originalCurrency) {
+            transaction.value.originalAmount = 0;
+        } else if (!oldOriginalCurrency && !transaction.value.originalAmount) {
+            transaction.value.originalAmount = transaction.value.sourceAmount;
+        }
+    }
+});
 const showTransactionPictures = ref<boolean>(pageTypeAndMode?.type === TransactionEditPageType.Transaction
     && (pageTypeAndMode?.mode === TransactionEditPageMode.Add || pageTypeAndMode?.mode === TransactionEditPageMode.Edit)
     && settingsStore.appSettings.alwaysShowTransactionPicturesInMobileTransactionEditPage);
@@ -716,16 +798,6 @@ const sourceAmountClass = computed<Record<string, boolean>>(() => {
     };
 
     classes[getFontClassByAmount(transaction.value.sourceAmount)] = true;
-
-    return classes;
-});
-
-const destinationAmountClass = computed<Record<string, boolean>>(() => {
-    const classes: Record<string, boolean> = {
-        'readonly': mode.value === TransactionEditPageMode.View
-    };
-
-    classes[getFontClassByAmount(transaction.value.destinationAmount)] = true;
 
     return classes;
 });
@@ -1089,7 +1161,7 @@ function init(): void {
     });
 }
 
-function save(afterAction: AfterSaveAction): void {
+async function save(afterAction: AfterSaveAction): Promise<void> {
     const router = props.f7router;
 
     if (mode.value === TransactionEditPageMode.View) {
@@ -1101,6 +1173,17 @@ function save(afterAction: AfterSaveAction): void {
     if (problemMessage) {
         showAlert(problemMessage);
         return;
+    }
+
+    if (transaction.value.type === TransactionType.Transfer) {
+        if (transaction.value.serviceCharge < 0 || transaction.value.sourceAmount + transaction.value.serviceCharge > TRANSACTION_MAX_AMOUNT) {
+            showAlert('Amount is too large');
+            return;
+        }
+        if (!await prepareTransferDestinationAmount()) {
+            showAlert('Unable to retrieve exchange rates data');
+            return;
+        }
     }
 
     if (pageTypeAndMode?.type === TransactionEditPageType.Transaction && (mode.value === TransactionEditPageMode.Add || mode.value === TransactionEditPageMode.Edit)) {
@@ -1278,7 +1361,7 @@ function recognizeFromClipboard(): void {
     }
 }
 
-function pasteAmount(type: 'sourceAmount' | 'destinationAmount'): void {
+function pasteAmount(): void {
     if (mode.value === TransactionEditPageMode.View || !isSupportClipboard) {
         return;
     }
@@ -1300,11 +1383,7 @@ function pasteAmount(type: 'sourceAmount' | 'destinationAmount'): void {
             return;
         }
 
-        if (type === 'sourceAmount') {
-            transaction.value.sourceAmount = parsedAmount;
-        } else if (type === 'destinationAmount') {
-            transaction.value.destinationAmount = parsedAmount;
-        }
+        transaction.value.sourceAmount = parsedAmount;
     }).catch(error => {
         logger.error('failed to read clipboard text', error);
         showToast('Unable to read clipboard text');

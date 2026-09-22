@@ -369,7 +369,7 @@ export const useTransactionsStore = defineStore('transactions', () => {
                 dailyTotalAmounts[transactionDay] = dailyTotalAmount;
             }
 
-            let amount: BigDecimal = parseBigDecimal(transaction.sourceAmount);
+            let amount: BigDecimal = parseBigDecimal(transaction.sourceAmount + (transaction.type === TransactionType.Transfer ? transaction.serviceCharge : 0));
             let account = transaction.sourceAccount;
 
             if (totalAccountIdsCount > 0 && transaction.destinationAccount

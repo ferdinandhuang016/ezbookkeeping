@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import '../../ui/common.dart';
 import '../../ui/selection_sheets.dart';
 import '../../core/formatting.dart';
+import '../../core/currency_selection.dart';
 import '../../core/onboarding.dart';
 import '../transactions/transactions.dart';
 import 'catalog_business.dart';
@@ -148,7 +149,12 @@ class _SwipeActionsRowState extends State<SwipeActionsRow> {
             ),
           ),
           GestureDetector(
-            onLongPress: widget.onLongPress,
+            onLongPress: widget.onLongPress == null
+                ? null
+                : () {
+                    HapticFeedback.vibrate();
+                    widget.onLongPress!();
+                  },
             onHorizontalDragUpdate: (details) => setState(
               () => offset = (offset + details.delta.dx).clamp(
                 rtl ? 0 : -width,
@@ -380,28 +386,31 @@ class _AccountListState extends NativeState<AccountListPage> {
       t('More'): () => accountActions(this, item),
       t('Delete'): () => accountActions(this, item, action: 'delete'),
     },
-    child: ItemRow(
-      string(item['name']),
-      leading: recordIcon(item, fallback: CupertinoIcons.creditcard),
-      subtitle: [
-        if (item['hidden'] == true) t('Hidden'),
-        string(item['comment']),
-      ].where((e) => e.isNotEmpty).join(' · '),
-      value: accountAmount(item, child: child),
-      padding: child
-          ? const EdgeInsetsDirectional.fromSTEB(34, 6, 12, 6)
-          : const EdgeInsetsDirectional.fromSTEB(14, 6, 12, 6),
-      onTap: () => context.push('/transaction/list?accountId=${item['id']}'),
-      trailing: iconButton(
-        CupertinoIcons.ellipsis,
-        t('More'),
-        () => accountActions(this, item),
+    child: ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 48),
+      child: ItemRow(
+        string(item['name']),
+        leading: recordIcon(item, fallback: CupertinoIcons.creditcard),
+        subtitle: [
+          if (item['hidden'] == true) t('Hidden'),
+          string(item['comment']),
+        ].where((e) => e.isNotEmpty).join(' · '),
+        value: accountAmount(item, child: child),
+        padding: child
+            ? const EdgeInsetsDirectional.fromSTEB(34, 2, 8, 2)
+            : const EdgeInsetsDirectional.fromSTEB(14, 2, 8, 2),
+        onTap: () => context.push('/transaction/list?accountId=${item['id']}'),
+        trailing: iconButton(
+          CupertinoIcons.ellipsis,
+          t('More'),
+          () => accountActions(this, item),
+        ),
       ),
     ),
   );
 
   @override
-  Widget buildPage(BuildContext _) {
+  Widget buildPage(BuildContext context) {
     final items = app.accounts
         .where((item) => showHidden || item['hidden'] != true)
         .toList();
@@ -441,6 +450,16 @@ class _AccountListState extends NativeState<AccountListPage> {
     for (final category in accountCategories.keys) {
       if (!order.contains(category)) order.add(category);
     }
+    final totals = {
+      'Total Assets': assets,
+      'Total Liabilities': liabilities,
+      'Net Assets': assets - liabilities,
+    };
+    String totalValue(int value) => !showBalances
+        ? '••••'
+        : rateError != null
+        ? t('Exchange rate unavailable')
+        : amount(value, string(app.user['defaultCurrency']));
     return NativePage(
       title: t('Accounts'),
       busy: busy,
@@ -458,51 +477,115 @@ class _AccountListState extends NativeState<AccountListPage> {
       ),
       children: [
         Section(
-          title: t('Net Assets'),
+          margin: const EdgeInsets.fromLTRB(8, 2, 8, 6),
           children: [
-            for (final entry in {
-              'Net Assets': assets - liabilities,
-              'Total Assets': assets,
-              'Total Liabilities': liabilities,
-            }.entries)
-              ItemRow(
-                t(entry.key),
-                value: !showBalances
-                    ? '••••'
-                    : rateError != null
-                    ? t('Exchange rate unavailable')
-                    : amount(entry.value, string(app.user['defaultCurrency'])),
-              ),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final horizontal =
+                    rateError == null &&
+                    constraints.maxWidth >= 320 &&
+                    MediaQuery.textScalerOf(context).scale(14) <= 18;
+                if (!horizontal) {
+                  return Column(
+                    children: [
+                      for (final entry in totals.entries)
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(minHeight: 48),
+                          child: ItemRow(
+                            t(entry.key),
+                            value: totalValue(entry.value),
+                            compact: true,
+                          ),
+                        ),
+                    ],
+                  );
+                }
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 10, 8, 10),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (final entry in totals.entries)
+                        Expanded(
+                          child: Semantics(
+                            label:
+                                '${t(entry.key)}: ${totalValue(entry.value)}',
+                            child: ExcludeSemantics(
+                              child: Column(
+                                children: [
+                                  Text(
+                                    t(entry.key),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: CupertinoColors.secondaryLabel
+                                          .resolveFrom(context),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    totalValue(entry.value),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: entry.key == 'Total Assets'
+                                          ? CupertinoColors.systemRed
+                                                .resolveFrom(context)
+                                          : entry.key == 'Total Liabilities'
+                                          ? CupertinoColors.systemBlue
+                                                .resolveFrom(context)
+                                          : CupertinoColors.label.resolveFrom(
+                                              context,
+                                            ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              },
+            ),
           ],
         ),
         for (final category in order)
           if (items.any((item) => number(item['category']) == category) ||
               app.settings['hideCategoriesWithoutAccounts'] != true)
             Section(
+              margin: const EdgeInsets.fromLTRB(8, 2, 8, 6),
               title:
                   '${t(accountCategories[category]!)}  ${displayBalance(accountCategoryBalance(app.accounts, category, string(app.user['defaultCurrency']), exchangeRates, availableCredit: availableCredit))}',
               children: [
                 if (category == 3)
-                  ItemRow(
-                    t(
-                      availableCredit
-                          ? 'Available Credit'
-                          : 'Outstanding Balance',
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(minHeight: 48),
+                    child: ItemRow(
+                      t(
+                        availableCredit
+                            ? 'Available Credit'
+                            : 'Outstanding Balance',
+                      ),
+                      compact: true,
+                      onTap: () async {
+                        final selected = await choose<bool>(
+                          context,
+                          t('Default Credit Card Amount'),
+                          {
+                            false: t('Outstanding Balance'),
+                            true: t('Available Credit'),
+                          },
+                          selected: availableCredit,
+                        );
+                        if (selected != null && mounted) {
+                          setState(() => availableCredit = selected);
+                        }
+                      },
                     ),
-                    onTap: () async {
-                      final selected = await choose<bool>(
-                        context,
-                        t('Default Credit Card Amount'),
-                        {
-                          false: t('Outstanding Balance'),
-                          true: t('Available Credit'),
-                        },
-                        selected: availableCredit,
-                      );
-                      if (selected != null && mounted) {
-                        setState(() => availableCredit = selected);
-                      }
-                    },
                   ),
                 for (final item in items.where(
                   (item) => number(item['category']) == category,
@@ -523,7 +606,10 @@ class _AccountListState extends NativeState<AccountListPage> {
                     ),
                 ],
                 if (!items.any((item) => number(item['category']) == category))
-                  ItemRow(t('No available account')),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(minHeight: 48),
+                    child: ItemRow(t('No available account'), compact: true),
+                  ),
               ],
             ),
       ],
@@ -782,6 +868,12 @@ class _AccountEditState extends NativeState<AccountEditPage> {
                       final value = await chooseCurrency(
                         context,
                         string(data['currency']),
+                        allowed: effectiveCurrencyCodes(
+                          settings: app.settings,
+                          user: app.user,
+                          accounts: app.accounts,
+                          extra: [string(data['currency'])],
+                        ),
                       );
                       if (value != null && mounted) {
                         setState(() => data['currency'] = value);
@@ -1098,6 +1190,12 @@ class _SubAccountState extends NativeState<SubAccountPage> {
                     final value = await chooseCurrency(
                       context,
                       string(data['currency']),
+                      allowed: effectiveCurrencyCodes(
+                        settings: app.settings,
+                        user: app.user,
+                        accounts: app.accounts,
+                        extra: [string(data['currency'])],
+                      ),
                     );
                     if (value != null && mounted) {
                       setState(() => data['currency'] = value);
@@ -1179,21 +1277,15 @@ class _SubAccountState extends NativeState<SubAccountPage> {
 
 Future<String?> chooseColor(BuildContext context, String current) =>
     chooseOriginalColor(context, current, availableColors);
-Future<String?> chooseCurrency(BuildContext context, String current) async {
-  final decoded = jsonDecode(
-    await rootBundle.loadString('assets/reference/currencies.json'),
-  );
-  final choices = <String, String>{};
-  if (decoded is List) {
-    for (final item in decoded.whereType<Map>()) {
-      choices[string(item['code'])] = '${item['code']} · ${item['name']}';
-    }
-  } else if (decoded is Map) {
-    for (final entry in decoded.entries) {
-      choices[string(entry.key)] =
-          '${entry.key} · ${entry.value is Map ? entry.value['name'] : entry.value}';
-    }
-  }
+Future<String?> chooseCurrency(
+  BuildContext context,
+  String current, {
+  Set<String>? allowed,
+}) async {
+  final choices = {
+    for (final item in await currencyChoices(allowed: allowed))
+      string(item['id']): string(item['name']),
+  };
   if (!context.mounted) return null;
   return choose(context, 'Currency', choices, selected: current);
 }

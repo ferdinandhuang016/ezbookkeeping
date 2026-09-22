@@ -21,6 +21,9 @@ import (
 
 const pageCountForLoadTransactionAmounts = 1000
 
+// HistoricalExchangeRatesProvider is registered by the exchange-rate provider package.
+var HistoricalExchangeRatesProvider func(core.Context, int64, string) (*models.LatestExchangeRateResponse, error)
+
 // TransactionService represents transaction service
 type TransactionService struct {
 	ServiceUsingDB
@@ -923,6 +926,7 @@ func (s *TransactionService) CreateScheduledTransactions(c core.Context, current
 			TimezoneUtcOffset: template.ScheduledTimezoneUtcOffset,
 			AccountId:         template.AccountId,
 			Amount:            template.Amount,
+			ServiceCharge:     template.ServiceCharge,
 			HideAmount:        template.HideAmount,
 			Comment:           template.Comment,
 			CreatedIp:         c.ClientIP(),
@@ -932,6 +936,24 @@ func (s *TransactionService) CreateScheduledTransactions(c core.Context, current
 		if template.Type == models.TRANSACTION_TYPE_TRANSFER {
 			transaction.RelatedAccountId = template.RelatedAccountId
 			transaction.RelatedAccountAmount = template.RelatedAccountAmount
+			source, sourceErr := Accounts.GetAccountByAccountId(c, template.Uid, template.AccountId)
+			destination, destinationErr := Accounts.GetAccountByAccountId(c, template.Uid, template.RelatedAccountId)
+			if sourceErr != nil || destinationErr != nil {
+				failedCount++
+				log.Errorf(c, "[transactions.CreateScheduledTransactions] failed to load transfer accounts for template \"id:%d\"", template.TemplateId)
+				continue
+			}
+			if source.Currency == destination.Currency {
+				transaction.RelatedAccountAmount = template.Amount - template.ServiceCharge
+			} else {
+				amount, conversionErr := s.convertScheduledTransferAmount(c, template.Uid, transactionTime.Format("2006-01-02"), template.Amount-template.ServiceCharge, source.Currency, destination.Currency)
+				if conversionErr != nil {
+					failedCount++
+					log.Errorf(c, "[transactions.CreateScheduledTransactions] failed to convert transfer for template \"id:%d\": %s", template.TemplateId, conversionErr.Error())
+					continue
+				}
+				transaction.RelatedAccountAmount = amount
+			}
 		}
 
 		tagIds := template.GetTagIds()
@@ -949,6 +971,51 @@ func (s *TransactionService) CreateScheduledTransactions(c core.Context, current
 	log.Infof(c, "[transactions.CreateScheduledTransactions] %d transactions has been created successfully, %d templates does not need to create transactions and %d transactions failed to create", successCount, skipCount, failedCount)
 
 	return nil
+}
+
+func (s *TransactionService) convertScheduledTransferAmount(c core.Context, uid int64, date string, amount int64, sourceCurrency, destinationCurrency string) (int64, error) {
+	rates, err := ExchangeRateHistory.GetExchangeRates(c, uid, date)
+	if err != nil {
+		return 0, err
+	}
+	if rates == nil && HistoricalExchangeRatesProvider != nil {
+		rates, err = HistoricalExchangeRatesProvider(c, uid, date)
+		if err != nil {
+			return 0, err
+		}
+		if rates != nil {
+			if err = ExchangeRateHistory.SaveExchangeRates(c, uid, date, rates); err != nil {
+				return 0, err
+			}
+		}
+	}
+	if rates == nil {
+		return 0, fmt.Errorf("exchange rates unavailable for %s", date)
+	}
+	return convertTransferAmount(amount, sourceCurrency, destinationCurrency, rates)
+}
+
+func convertTransferAmount(amount int64, sourceCurrency, destinationCurrency string, rates *models.LatestExchangeRateResponse) (int64, error) {
+	rateMap := map[string]string{rates.BaseCurrency: "1"}
+	for _, rate := range rates.ExchangeRates {
+		rateMap[rate.Currency] = rate.Rate
+	}
+	fromRate, fromOK := new(big.Rat).SetString(rateMap[sourceCurrency])
+	toRate, toOK := new(big.Rat).SetString(rateMap[destinationCurrency])
+	if !fromOK || !toOK || fromRate.Sign() <= 0 || toRate.Sign() <= 0 {
+		return 0, fmt.Errorf("exchange rate missing for %s or %s", sourceCurrency, destinationCurrency)
+	}
+	converted := new(big.Rat).Mul(new(big.Rat).SetInt64(amount), new(big.Rat).Quo(toRate, fromRate))
+	value := new(big.Int).Quo(converted.Num(), converted.Denom())
+	if !value.IsInt64() || value.Int64() > models.MaximumTransactionAmount {
+		return 0, errs.ErrAmountInvalid
+	}
+	convertedAmount := value.Int64()
+	switch destinationCurrency {
+	case "BIF", "CLP", "DJF", "GNF", "ISK", "JPY", "KMF", "KRW", "PYG", "RWF", "UGX", "VND", "VUV", "XAF", "XOF", "XPF":
+		convertedAmount = convertedAmount / 100 * 100
+	}
+	return convertedAmount, nil
 }
 
 // ModifyTransaction saves an existed transaction to database
@@ -1065,7 +1132,11 @@ func (s *TransactionService) ModifyTransaction(c core.Context, transaction *mode
 			return errs.ErrCannotModifyTransactionInParentAccount
 		}
 
-		if transaction.Type == models.TRANSACTION_DB_TYPE_TRANSFER_OUT && sourceAccount.Currency == destinationAccount.Currency && transaction.Amount != transaction.RelatedAccountAmount {
+		if err = s.isOriginalAmountValid(transaction, sourceAccount); err != nil {
+			return err
+		}
+
+		if transaction.Type == models.TRANSACTION_DB_TYPE_TRANSFER_OUT && sourceAccount.Currency == destinationAccount.Currency && transaction.Amount-transaction.ServiceCharge != transaction.RelatedAccountAmount {
 			return errs.ErrTransactionSourceAndDestinationAmountNotEqual
 		}
 
@@ -1143,6 +1214,18 @@ func (s *TransactionService) ModifyTransaction(c core.Context, transaction *mode
 			}
 
 			updateCols = append(updateCols, "amount")
+		}
+
+		if transaction.ServiceCharge != oldTransaction.ServiceCharge {
+			updateCols = append(updateCols, "service_charge")
+		}
+
+		if transaction.OriginalCurrency != oldTransaction.OriginalCurrency {
+			updateCols = append(updateCols, "original_currency")
+		}
+
+		if transaction.OriginalAmount != oldTransaction.OriginalAmount {
+			updateCols = append(updateCols, "original_amount")
 		}
 
 		if transaction.Type == models.TRANSACTION_DB_TYPE_TRANSFER_OUT {
@@ -2289,6 +2372,7 @@ func (s *TransactionService) GetRelatedTransferTransaction(originalTransaction *
 		TimezoneUtcOffset:    originalTransaction.TimezoneUtcOffset,
 		AccountId:            originalTransaction.RelatedAccountId,
 		Amount:               originalTransaction.RelatedAccountAmount,
+		ServiceCharge:        originalTransaction.ServiceCharge,
 		RelatedId:            originalTransaction.TransactionId,
 		RelatedAccountId:     originalTransaction.AccountId,
 		RelatedAccountAmount: originalTransaction.Amount,
@@ -2726,8 +2810,12 @@ func (s *TransactionService) doCreateTransaction(c core.Context, database *datas
 		return errs.ErrCannotAddTransactionToParentAccount
 	}
 
+	if err = s.isOriginalAmountValid(transaction, sourceAccount); err != nil {
+		return err
+	}
+
 	if (transaction.Type == models.TRANSACTION_DB_TYPE_TRANSFER_OUT || transaction.Type == models.TRANSACTION_DB_TYPE_TRANSFER_IN) &&
-		sourceAccount.Currency == destinationAccount.Currency && transaction.Amount != transaction.RelatedAccountAmount {
+		sourceAccount.Currency == destinationAccount.Currency && ((transaction.Type == models.TRANSACTION_DB_TYPE_TRANSFER_OUT && transaction.Amount-transaction.ServiceCharge != transaction.RelatedAccountAmount) || (transaction.Type == models.TRANSACTION_DB_TYPE_TRANSFER_IN && transaction.RelatedAccountAmount-transaction.ServiceCharge != transaction.Amount)) {
 		return errs.ErrTransactionSourceAndDestinationAmountNotEqual
 	}
 
@@ -2968,6 +3056,26 @@ func (s *TransactionService) doCreateTransaction(c core.Context, database *datas
 	}
 
 	return err
+}
+
+func (s *TransactionService) isOriginalAmountValid(transaction *models.Transaction, account *models.Account) error {
+	if transaction.OriginalCurrency == "" {
+		if transaction.OriginalAmount != 0 {
+			return errs.ErrTransactionOriginalAmountInvalid
+		}
+
+		return nil
+	}
+
+	if transaction.Type != models.TRANSACTION_DB_TYPE_INCOME && transaction.Type != models.TRANSACTION_DB_TYPE_EXPENSE {
+		return errs.ErrTransactionOriginalCurrencyNotSupported
+	}
+
+	if account.Category != models.ACCOUNT_CATEGORY_CREDIT_CARD || account.Currency == transaction.OriginalCurrency {
+		return errs.ErrTransactionOriginalCurrencyNotSupported
+	}
+
+	return nil
 }
 
 func (s *TransactionService) updateAccountBalance(sess *xorm.Session, account *models.Account, delta int64) (int64, error) {
@@ -3297,6 +3405,12 @@ func (s *TransactionService) appendFilterPicturesConditionToQuery(sess *xorm.Ses
 }
 
 func (s *TransactionService) isAccountIdValid(transaction *models.Transaction) error {
+	if transaction.ServiceCharge < 0 || (transaction.Type == models.TRANSACTION_DB_TYPE_TRANSFER_OUT && (transaction.Amount > models.MaximumTransactionAmount || transaction.ServiceCharge > transaction.Amount)) {
+		return errs.ErrAmountInvalid
+	}
+	if transaction.Type != models.TRANSACTION_DB_TYPE_TRANSFER_OUT && transaction.Type != models.TRANSACTION_DB_TYPE_TRANSFER_IN && transaction.ServiceCharge != 0 {
+		return errs.ErrAmountInvalid
+	}
 	if transaction.Type == models.TRANSACTION_DB_TYPE_MODIFY_BALANCE {
 		if transaction.RelatedAccountId != 0 && transaction.RelatedAccountId != transaction.AccountId {
 			return errs.ErrTransactionDestinationAccountCannotBeSet

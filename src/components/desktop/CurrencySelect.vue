@@ -7,7 +7,7 @@
         :disabled="disabled"
         :label="label"
         :placeholder="placeholder"
-        :items="allCurrencies"
+        :items="displayCurrencies"
         :no-data-text="tt('No results')"
         :custom-filter="filterCurrency"
         v-model="currentCurrencyValue"
@@ -50,6 +50,7 @@ const props = defineProps<{
     label?: string;
     placeholder?: string;
     withNotSet?: boolean;
+    currencies?: LocalizedCurrencyInfo[];
     modelValue: string;
 }>();
 
@@ -60,6 +61,7 @@ const emit = defineEmits<{
 const { tt, getAllCurrencies } = useI18n();
 
 const allCurrencies = computed<LocalizedCurrencyInfo[]>(() => getAllCurrencies(props.withNotSet));
+const displayCurrencies = computed<LocalizedCurrencyInfo[]>(() => props.currencies ?? allCurrencies.value);
 
 const currentCurrencyValue = computed<string | null>({
     get: () => props.modelValue,

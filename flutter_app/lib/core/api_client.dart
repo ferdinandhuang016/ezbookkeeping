@@ -48,8 +48,8 @@ class ApiClient {
       headers: {
         'Accept': 'application/json',
         'User-Agent': Platform.isAndroid
-            ? 'ezBookkeeping/1.0.0 (Linux; Android; Mobile) Flutter'
-            : 'ezBookkeeping/1.0.0 (${Platform.operatingSystem}) Flutter',
+            ? 'DangguiExpense/1.0.0 (Linux; Android; Mobile) Flutter'
+            : 'DangguiExpense/1.0.0 (${Platform.operatingSystem}) Flutter',
       },
     );
   }

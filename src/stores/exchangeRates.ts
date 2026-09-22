@@ -231,6 +231,13 @@ export const useExchangeRatesStore = defineStore('exchangeRates', () => {
         });
     }
 
+    function getHistoricalExchangeRates(date: string): Promise<LatestExchangeRateResponse | null> {
+        return services.getHistoricalExchangeRates(date).then(response => {
+            const data = response.data;
+            return data && data.success ? data.result ?? null : null;
+        });
+    }
+
     function updateUserCustomExchangeRate({ currency, rate }: { currency: string, rate: number }): Promise<UserCustomExchangeRateUpdateResponse> {
         return new Promise((resolve, reject) => {
             services.updateUserCustomExchangeRate({
@@ -327,6 +334,23 @@ export const useExchangeRatesStore = defineStore('exchangeRates', () => {
         return getExchangedAmountByRate(amount, fromCurrencyExchangeRate.rate, toCurrencyExchangeRate.rate);
     }
 
+    function getExchangedAmountFromData(exchangeRatesData: LatestExchangeRateResponse, amount: BigDecimal, fromCurrency: string, toCurrency: string): BigDecimal | null {
+        const exchangeRateMap: Record<string, LatestExchangeRate> = {};
+
+        for (const exchangeRate of exchangeRatesData.exchangeRates) {
+            exchangeRateMap[exchangeRate.currency] = exchangeRate;
+        }
+
+        const fromCurrencyExchangeRate = exchangeRateMap[fromCurrency];
+        const toCurrencyExchangeRate = exchangeRateMap[toCurrency];
+
+        if (!fromCurrencyExchangeRate || !toCurrencyExchangeRate) {
+            return null;
+        }
+
+        return getExchangedAmountByRate(amount, fromCurrencyExchangeRate.rate, toCurrencyExchangeRate.rate);
+    }
+
     return {
         // states
         latestExchangeRates,
@@ -340,8 +364,10 @@ export const useExchangeRatesStore = defineStore('exchangeRates', () => {
         resetLatestExchangeRates,
         autoUpdateExchangeRatesData,
         getLatestExchangeRates,
+        getHistoricalExchangeRates,
         updateUserCustomExchangeRate,
         deleteUserCustomExchangeRate,
-        getExchangedAmount
+        getExchangedAmount,
+        getExchangedAmountFromData
     };
 });

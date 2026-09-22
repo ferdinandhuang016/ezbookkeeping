@@ -1,3 +1,5 @@
+import 'package:flutter/services.dart';
+
 import '../ui/common.dart';
 import 'catalogs/catalogs.dart';
 import 'overview/home.dart';
@@ -78,8 +80,8 @@ class _PrimaryShellState extends State<PrimaryShell> {
             children: [
               if (value == 2)
                 Container(
-                  width: 36,
-                  height: 36,
+                  width: 52,
+                  height: 52,
                   decoration: BoxDecoration(
                     color: index == value
                         ? brand
@@ -90,7 +92,7 @@ class _PrimaryShellState extends State<PrimaryShell> {
                   ),
                   child: Icon(
                     icon,
-                    size: 21,
+                    size: 30,
                     color: index == value
                         ? CupertinoColors.white
                         : CupertinoColors.label.resolveFrom(context),
@@ -130,6 +132,11 @@ class _PrimaryShellState extends State<PrimaryShell> {
   @override
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.paddingOf(context).bottom;
+    void openTemplates() {
+      HapticFeedback.vibrate();
+      openTransactionTemplates(context);
+    }
+
     return PopScope<void>(
       canPop: index == 2,
       onPopInvokedWithResult: (didPop, _) {
@@ -184,9 +191,9 @@ class _PrimaryShellState extends State<PrimaryShell> {
               child: Semantics(
                 label: tr(context, 'Add Transaction'),
                 button: true,
-                onLongPress: () => openTransactionTemplates(context),
+                onLongPress: openTemplates,
                 child: GestureDetector(
-                  onLongPress: () => openTransactionTemplates(context),
+                  onLongPress: openTemplates,
                   child: CupertinoButton(
                     minimumSize: const Size(56, 56),
                     padding: EdgeInsets.zero,

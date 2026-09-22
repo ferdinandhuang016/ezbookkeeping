@@ -473,9 +473,9 @@ class _AuthPageState extends ConsumerState<AuthPage> {
             alignment: WrapAlignment.center,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              const Text(
-                'Powered by ',
-                style: TextStyle(
+              Text(
+                '${c.t('global.app.title')} ',
+                style: const TextStyle(
                   fontSize: 13,
                   color: CupertinoColors.secondaryLabel,
                 ),
@@ -488,7 +488,7 @@ class _AuthPageState extends ConsumerState<AuthPage> {
                   mode: LaunchMode.externalApplication,
                 ),
                 child: const Text(
-                  'ezBookkeeping',
+                  'Source code',
                   style: TextStyle(fontSize: 13),
                 ),
               ),

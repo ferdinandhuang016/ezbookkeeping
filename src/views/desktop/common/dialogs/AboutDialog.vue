@@ -118,7 +118,7 @@
                                         <v-divider/>
                                         <br/>
                                         <div>
-                                            <span>ezBookkeeping's codebase and localization translation rely on contributions from the community. The following people have contributed to ezBookkeeping:</span>
+                                            <span>Danggui Expense is based on ezBookkeeping. Its codebase and translations rely on contributions from the following people:</span>
                                         </div>
                                         <div class="mt-4">
                                             <strong>Project Maintainer</strong>
@@ -175,7 +175,7 @@
                                         </table>
 
                                         <div class="my-4">
-                                            <span>ezBookkeeping also contains additional third party software and illustration.</span><br/>
+                                            <span>Danggui Expense also contains additional third party software and illustration.</span><br/>
                                             <span>All the third party software / illustration included or linked is redistributed under the terms and conditions of their original licenses.</span>
                                         </div>
                                         <div class="py-2" :key="licenseInfo.name" v-for="licenseInfo in thirdPartyLicenses">

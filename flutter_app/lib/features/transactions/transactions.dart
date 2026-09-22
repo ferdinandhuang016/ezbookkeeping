@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -6,6 +7,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:timezone/timezone.dart' as tz;
 
+import '../../core/currency_selection.dart';
+import '../../core/formatting.dart';
 import '../../ui/common.dart';
 import '../../ui/quick_add_startup.dart';
 import '../system/native_features.dart';
@@ -427,6 +430,8 @@ Map<String, String> transactionListAddQuery(
 class _TransactionListState extends NativeState<TransactionListPage> {
   late final TransactionFilter filter;
   int visibleCount = 50;
+  int availableCount = 0;
+  bool loadMoreQueued = false;
   bool showSearch = false;
   late final searchController = TextEditingController(text: filter.keyword);
   int pageType = 0;
@@ -530,6 +535,26 @@ class _TransactionListState extends NativeState<TransactionListPage> {
     );
   }
 
+  Future<void> transactionActions(RecordData item) async {
+    final action = await choose(
+      context,
+      t('More'),
+      {
+        'copy': t('Copy'),
+        if (app.canEditTransaction(item)) 'delete': t('Delete'),
+      },
+      destructive: {'delete'},
+    );
+    if (!mounted) return;
+    if (action == 'copy') {
+      context.push(
+        '/transaction/add?id=${Uri.encodeQueryComponent(string(item['id']))}&copy=true',
+      );
+    } else if (action == 'delete') {
+      await removeTransaction(item);
+    }
+  }
+
   @override
   DateTime transactionDate(RecordData item) => app.formatter.transactionDate(
     item,
@@ -545,6 +570,19 @@ class _TransactionListState extends NativeState<TransactionListPage> {
     visibleCount = number(app.settings['itemsCountInTransactionListPage'] ?? 15)
         .clamp(5, 100);
   });
+
+  void loadMore() {
+    if (loadMoreQueued || pageType == 1 || visibleCount >= availableCount) {
+      return;
+    }
+    loadMoreQueued = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      loadMoreQueued = false;
+      if (mounted && pageType != 1 && visibleCount < availableCount) {
+        setState(() => visibleCount += 50);
+      }
+    });
+  }
 
   String selectedName(String kind) {
     final account = kind == 'account';
@@ -1145,6 +1183,7 @@ class _TransactionListState extends NativeState<TransactionListPage> {
             )
             .toList()
           ..sort(compareTransactionsNewestFirst);
+    availableCount = items.length;
     final visibleItems = pageType == 1
         ? items
               .where((item) => transactionDate(item).day == calendarDay)
@@ -1173,6 +1212,9 @@ class _TransactionListState extends NativeState<TransactionListPage> {
       onTitleTap: selectView,
       busy: busy,
       onRefresh: app.refresh,
+      onScrollNearEnd: pageType != 1 && items.length > visibleCount
+          ? loadMore
+          : null,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -1390,6 +1432,7 @@ class _TransactionListState extends NativeState<TransactionListPage> {
                 for (final item in entry.value)
                   SwipeActionsRow(
                     key: ValueKey(item['id']),
+                    onLongPress: () => transactionActions(item),
                     actions: {
                       if (number(item['type']) != 1)
                         t('Duplicate'): () => context.push(
@@ -1415,11 +1458,6 @@ class _TransactionListState extends NativeState<TransactionListPage> {
             ],
           ),
         if (visibleItems.isEmpty) emptyState(t('No transactions')),
-        if (pageType != 1 && items.length > visibleCount)
-          actionButton(
-            t('Load more'),
-            () => setState(() => visibleCount += 50),
-          ),
       ],
     );
   }
@@ -1660,7 +1698,7 @@ class TransactionRow extends StatelessWidget {
           ? app.t(transactionType(type))
           : string(category['name']);
       return CupertinoButton(
-        padding: const EdgeInsets.fromLTRB(12, 14, 16, 14),
+        padding: const EdgeInsets.fromLTRB(12, 8, 16, 8),
         onPressed: () => context.push(
           '/transaction/edit?id=${Uri.encodeQueryComponent(string(item['id']))}',
         ),
@@ -1714,7 +1752,8 @@ class TransactionRow extends StatelessWidget {
                       Expanded(
                         child: Text(
                           name,
-                          maxLines: 2,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.w600,
@@ -1739,10 +1778,11 @@ class TransactionRow extends StatelessWidget {
                   ),
                   if (string(item['comment']).isNotEmpty)
                     Padding(
-                      padding: const EdgeInsets.only(top: 3),
+                      padding: const EdgeInsets.only(top: 2),
                       child: Text(
                         string(item['comment']),
-                        maxLines: 2,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: 13,
                           color: CupertinoColors.secondaryLabel.resolveFrom(
@@ -1751,9 +1791,11 @@ class TransactionRow extends StatelessWidget {
                         ),
                       ),
                     ),
-                  const SizedBox(height: 5),
+                  const SizedBox(height: 2),
                   Text(
                     '${app.formatter.time(date)}  ${string(account['name'])}${type == 4 ? ' → ${recordName(accounts, item['destinationAccountId'])}' : ''}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 12,
                       color: CupertinoColors.secondaryLabel.resolveFrom(
@@ -2358,9 +2400,8 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
   bool picturesExpanded = false;
   bool amountPadOpen = false;
   bool selectorOpen = false;
-  bool autoLocateAfterAmount = false;
-  bool autoLocateWaitScheduled = false;
   int selectorGeneration = 0;
+  int transferConversionGeneration = 0;
   bool launcherAmountEntered = false;
   bool gpsAttempted = false;
   String gpsStatus = '';
@@ -2397,6 +2438,9 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
     data = {
       'type': number(widget.query['type'] ?? 3),
       'sourceAmount': 0,
+      'serviceCharge': 0,
+      'originalCurrency': '',
+      'originalAmount': 0,
       'destinationAmount': 0,
       'sourceAccountId': '0',
       'destinationAccountId': '0',
@@ -2509,24 +2553,19 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
         !template &&
         data['id'] == null &&
         data['geoLocation'] == null &&
-        app.settings['autoGetCurrentGeoLocation'] == true &&
+        (widget.query['copy'] == 'true' ||
+            app.settings['autoGetCurrentGeoLocation'] == true) &&
         !gpsAttempted;
     if (shouldEditAmount || shouldAutoLocate) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         if (!mounted) return;
+        if (shouldAutoLocate && !gpsAttempted) unawaited(autoLocate());
         if (shouldEditAmount) {
           if (embeddedAmountPadEnabled) {
-            autoLocateAfterAmount = shouldAutoLocate;
             await editSourceAmount();
           } else {
             await editSourceAmount(instant: widget.query['launcher'] == 'true');
           }
-        }
-        if (mounted &&
-            shouldAutoLocate &&
-            !autoLocateAfterAmount &&
-            !gpsAttempted) {
-          await autoLocate();
         }
       });
     }
@@ -2623,11 +2662,26 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
         point = {
           'latitude': position.latitude,
           'longitude': position.longitude,
-          'name': '',
         };
+        try {
+          final name = await reverseGeocodeNative(
+            position.latitude,
+            position.longitude,
+          );
+          if (name.isNotEmpty) point['name'] = name;
+        } catch (_) {
+          // Use AMap below when the platform geocoder is unavailable.
+        }
       } catch (_) {
         if (!mounted) return;
         point = await getAmapCurrentLocation(context, app);
+      }
+      if (string(point['name']).isEmpty && mounted) {
+        try {
+          point = await getAmapCurrentLocation(context, app);
+        } catch (_) {
+          // Retain the coordinates when neither geocoder can resolve a name.
+        }
       }
       if (mounted && data['geoLocation'] == null) {
         change('geoLocation', {
@@ -2652,6 +2706,77 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
         app.settings['autoSaveTransactionDraft'] == 'enabled') {
       app.setPreference(draftKey, jsonEncode(data));
     }
+    if (type == 4 &&
+        {'sourceAmount', 'sourceAccountId', 'destinationAccountId', 'time', 'utcOffset', 'type'}.contains(key)) {
+      unawaited(recalculateTransferDestinationAmount());
+    }
+  }
+
+  Future<bool> recalculateTransferDestinationAmount() async {
+    final generation = ++transferConversionGeneration;
+    final source = accountCurrency(string(data['sourceAccountId']));
+    final destination = accountCurrency(string(data['destinationAccountId']));
+    if (source.isEmpty || destination.isEmpty) return false;
+    if (source == destination) {
+      change('destinationAmount', number(data['sourceAmount']));
+      return true;
+    }
+    change('destinationAmount', 0);
+    final wall = transactionDate(data);
+    final date =
+        '${wall.year.toString().padLeft(4, '0')}-${wall.month.toString().padLeft(2, '0')}-${wall.day.toString().padLeft(2, '0')}';
+    try {
+      dynamic response;
+      try {
+        response = await app.get(
+          'v1/exchange_rates/historical.json',
+          query: {'date': date},
+        );
+      } catch (_) {
+        response = null;
+      }
+      if (response == null) {
+        final cachedAt = number(app.settings['exchangeRatesCachedAt']);
+        final cachedDate = cachedAt > 0
+            ? DateTime.fromMillisecondsSinceEpoch(cachedAt * 1000)
+            : null;
+        if (cachedDate != null &&
+            '${cachedDate.year.toString().padLeft(4, '0')}-${cachedDate.month.toString().padLeft(2, '0')}-${cachedDate.day.toString().padLeft(2, '0')}' == date) {
+          response = app.settings['cachedExchangeRates'];
+        }
+      }
+      if (!mounted || generation != transferConversionGeneration || response is! Map) {
+        return false;
+      }
+      final rates = <String, String>{
+        string(response['baseCurrency']): '1',
+        for (final row in records(response['exchangeRates']))
+          string(row['currency']): string(row['rate']),
+      };
+      if (rates[source] == null || rates[destination] == null) return false;
+      final raw = BookkeepingFormatter.convertAggregate(
+        number(data['sourceAmount']),
+        rates[source]!,
+        rates[destination]!,
+        truncate: true,
+      ).toInt();
+      var fraction = 2;
+      for (final currency in records(app.formatter.reference['currencies'])) {
+        if (string(currency['code']) == destination) {
+          fraction = number(currency['fraction']);
+          break;
+        }
+      }
+      final factor = fraction == 0 ? 100 : fraction == 1 ? 10 : 1;
+      final converted = raw ~/ factor * factor;
+      if (mounted && generation == transferConversionGeneration) {
+        change('destinationAmount', converted);
+        return true;
+      }
+    } catch (_) {
+      return false;
+    }
+    return false;
   }
 
   void setWallTime(DateTime wall) {
@@ -2662,6 +2787,7 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
     );
     change('time', value.time);
     change('utcOffset', value.utcOffset);
+    recalculateAccountAmount();
   }
 
   Future<void> editSourceAmount({bool instant = false}) async {
@@ -2714,56 +2840,28 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
       data['sourceAmount'] = value;
       dirty = true;
     });
+    if (type == 4) unawaited(recalculateTransferDestinationAmount());
   }
 
-  void closeEmbeddedAmountPad([
-    int? value,
-    bool scheduleAutoLocateAfterClose = true,
-  ]) {
+  void closeEmbeddedAmountPad([int? value]) {
     if (!mounted || !amountPadOpen || !embeddedAmountPadEnabled) return;
     setState(() {
       data['sourceAmount'] = value ?? number(data['sourceAmount']);
       amountPadOpen = false;
       dirty = true;
     });
+    if (type == 4) unawaited(recalculateTransferDestinationAmount());
     if (autoDraftAllowed &&
         app.settings['autoSaveTransactionDraft'] == 'enabled') {
       app.setPreference(draftKey, jsonEncode(data));
     }
-    if (scheduleAutoLocateAfterClose) schedulePendingAutoLocate();
   }
 
   Future<void> completeEmbeddedAmount(int value) async {
-    closeEmbeddedAmountPad(value, false);
-    try {
-      if (mounted && type != 1) {
-        await selectCategory(openAccountAfter: true);
-      }
-    } finally {
-      if (mounted) schedulePendingAutoLocate();
+    closeEmbeddedAmountPad(value);
+    if (mounted && type != 1) {
+      await selectCategory(openAccountAfter: true);
     }
-  }
-
-  void schedulePendingAutoLocate() {
-    if (!autoLocateAfterAmount || autoLocateWaitScheduled || gpsAttempted) {
-      return;
-    }
-    autoLocateWaitScheduled = true;
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      while (mounted &&
-          (amountPadOpen || ModalRoute.of(context)?.isCurrent != true)) {
-        await Future<void>.delayed(const Duration(milliseconds: 100));
-      }
-      if (mounted &&
-          autoLocateAfterAmount &&
-          !gpsAttempted &&
-          data['geoLocation'] == null &&
-          app.settings['autoGetCurrentGeoLocation'] == true) {
-        autoLocateAfterAmount = false;
-        await autoLocate();
-      }
-      autoLocateWaitScheduled = false;
-    });
   }
 
   List<RecordData> categoryGroups() => app.categories
@@ -2835,6 +2933,108 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
 
   String accountCurrency(String id) =>
       string(lookup(flatten(app.accounts, 'subAccounts'), id)['currency']);
+
+  RecordData get sourceAccount =>
+      lookup(flatten(app.accounts, 'subAccounts'), data['sourceAccountId']);
+
+  bool get multiCurrencyCreditCard =>
+      !template &&
+      (type == 2 || type == 3) &&
+      number(sourceAccount['category']) == 3;
+
+  String get transactionCurrency {
+    final original = string(data['originalCurrency']);
+    return original.isEmpty
+        ? accountCurrency(string(data['sourceAccountId']))
+        : original;
+  }
+
+  Future<void> selectTransactionCurrency() async {
+    final account = accountCurrency(string(data['sourceAccountId']));
+    final allowed = effectiveCurrencyCodes(
+      settings: app.settings,
+      user: app.user,
+      accounts: app.accounts,
+      extra: [account, string(data['originalCurrency'])],
+    );
+    final choices = {
+      for (final item in await currencyChoices(allowed: allowed))
+        string(item['id']): string(item['name']),
+    };
+    if (!mounted) return;
+    final selected = await openSelector(
+      (nonBlocking) => choose<String>(
+        context,
+        t('Transaction Currency'),
+        choices,
+        selected: transactionCurrency,
+        nonBlocking: nonBlocking,
+      ),
+    );
+    if (!mounted || selected == null || selected == transactionCurrency) {
+      return;
+    }
+    if (selected == account) {
+      change('originalCurrency', '');
+      change('originalAmount', 0);
+      return;
+    }
+    change('originalCurrency', selected);
+    if (number(data['originalAmount']) == 0) {
+      change('originalAmount', number(data['sourceAmount']));
+    }
+    await recalculateAccountAmount();
+  }
+
+  Future<void> editOriginalAmount() async {
+    final value = await amountPad(context, number(data['originalAmount']));
+    if (value == null || !mounted) return;
+    change('originalAmount', value);
+    await recalculateAccountAmount();
+  }
+
+  int conversionGeneration = 0;
+  Future<void> recalculateAccountAmount() async {
+    final generation = ++conversionGeneration;
+    final account = accountCurrency(string(data['sourceAccountId']));
+    final original = string(data['originalCurrency']);
+    if (!multiCurrencyCreditCard || original.isEmpty || original == account) {
+      if (original.isNotEmpty || number(data['originalAmount']) != 0) {
+        change('originalCurrency', '');
+        change('originalAmount', 0);
+      }
+      return;
+    }
+    final wall = transactionDate(data);
+    final date =
+        '${wall.year.toString().padLeft(4, '0')}-${wall.month.toString().padLeft(2, '0')}-${wall.day.toString().padLeft(2, '0')}';
+    try {
+      final response = await app.get(
+        'v1/exchange_rates/historical.json',
+        query: {'date': date},
+      );
+      if (!mounted || generation != conversionGeneration || response is! Map) {
+        return;
+      }
+      final rates = <String, String>{
+        string(response['baseCurrency']): '1',
+        for (final row in records(response['exchangeRates']))
+          string(row['currency']): string(row['rate']),
+      };
+      if (rates[original] == null || rates[account] == null) return;
+      final amount = BookkeepingFormatter.convertAggregate(
+        number(data['originalAmount']),
+        rates[original]!,
+        rates[account]!,
+        truncate: true,
+      ).toInt();
+      if (mounted && generation == conversionGeneration) {
+        change('sourceAmount', amount);
+      }
+    } catch (_) {
+      // Keep the manually editable account amount when no historical rate exists.
+    }
+  }
 
   Future<void> selectSourceCurrency() async {
     final currencies =
@@ -2908,6 +3108,7 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
     );
     if (chosen == null || !mounted) return false;
     change(key, chosen);
+    if (key == 'sourceAccountId') await recalculateAccountAmount();
     return true;
   }
 
@@ -2930,7 +3131,9 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
     }
     final result = await run(() async {
       if (number(data['sourceAmount']).abs() > 999999999999999 ||
-          number(data['destinationAmount']).abs() > 999999999999999) {
+          number(data['destinationAmount']).abs() > 999999999999999 ||
+          number(data['serviceCharge']) < 0 ||
+          number(data['sourceAmount']) + number(data['serviceCharge']) > 999999999999999) {
         throw FormatException(t('Amount is too large'));
       }
       if (string(data['sourceAccountId']).isEmpty ||
@@ -2949,6 +3152,9 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
           t('Please select a different destination account'),
         );
       }
+      if (type == 4 && !await recalculateTransferDestinationAmount()) {
+        throw FormatException(t('Unable to retrieve exchange rates data'));
+      }
       if (string(data['comment']).length > 255) {
         throw FormatException(t('Description is too long'));
       }
@@ -2959,7 +3165,12 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
         ...data,
         'destinationAccountId': type == 4 ? data['destinationAccountId'] : '0',
         'destinationAmount': type == 4 ? data['destinationAmount'] : 0,
+        'serviceCharge': type == 4 ? data['serviceCharge'] : 0,
       };
+      if (string(body['originalCurrency']).isEmpty) {
+        body.remove('originalCurrency');
+        body.remove('originalAmount');
+      }
       if (template) {
         if (string(data['name']).trim().isEmpty) {
           throw FormatException(t('Please enter a template name'));
@@ -2990,6 +3201,9 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
             final now = app.formatter.localDate(DateTime.now());
             data.addAll({
               'sourceAmount': 0,
+              'serviceCharge': 0,
+              'originalCurrency': '',
+              'originalAmount': 0,
               'destinationAmount': 0,
               'sourceAccountId': widget.query['accountId'] ?? '0',
               'destinationAccountId': '0',
@@ -3081,12 +3295,8 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
         'recognize': t('AI Clipboard Text Recognition'),
       if (!readOnly && type == 4) ...{
         'swapAccounts': t('Swap Account'),
-        'swapAmounts': t('Swap Amount'),
-        'swapBoth': t('Swap Account and Amount'),
       },
       if (!readOnly) 'pasteSource': t('Paste Amount'),
-      if (!readOnly && type == 4)
-        'pasteDestination': t('Paste Destination Amount'),
       if (!readOnly && data['id'] != null)
         'hideAmount': t(
           data['hideAmount'] == true ? 'Show Amount' : 'Hide Amount',
@@ -3096,17 +3306,7 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
           app.config['enableTransactionPictures'] == true &&
           !picturesExpanded)
         'pictures': t('Add Picture'),
-      if (readOnly && !template && type != 1) ...{
-        'copy': t('Duplicate'),
-        'copyTime': t('Duplicate (With Time)'),
-        if (data['geoLocation'] != null)
-          'copyGeo': t('Duplicate (With Geographic Location)'),
-        if (data['geoLocation'] != null)
-          'copyTimeGeo': t('Duplicate (With Time and Geographic Location)'),
-      },
-      if (!readOnly && !template) 'draft': t('Save Draft'),
-      if (!readOnly && !template) 'again': t('Save and Add Another'),
-      if (!template && type != 1) 'template': t('Save as Template'),
+      if (!template && data['id'] != null) 'copy': t('Copy'),
       if (data['id'] != null && (template || app.canEditTransaction(data)))
         'delete': t('Delete'),
     });
@@ -3120,17 +3320,10 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
       change('hideAmount', data['hideAmount'] != true);
       return;
     }
-    if (action.startsWith('swap')) {
-      final sourceAccount = data['sourceAccountId'],
-          sourceAmount = data['sourceAmount'];
-      if (action != 'swapAmounts') {
-        change('sourceAccountId', data['destinationAccountId']);
-        change('destinationAccountId', sourceAccount);
-      }
-      if (action != 'swapAccounts') {
-        change('sourceAmount', data['destinationAmount']);
-        change('destinationAmount', sourceAmount);
-      }
+    if (action == 'swapAccounts') {
+      final sourceAccount = data['sourceAccountId'];
+      change('sourceAccountId', data['destinationAccountId']);
+      change('destinationAccountId', sourceAccount);
       return;
     }
     if (action.startsWith('paste')) {
@@ -3138,7 +3331,7 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
         final clipboard = await Clipboard.getData(Clipboard.kTextPlain);
         if (clipboard == null) return;
         change(
-          action == 'pasteSource' ? 'sourceAmount' : 'destinationAmount',
+          'sourceAmount',
           parseAmount(clipboard.text ?? ''),
         );
       });
@@ -3153,28 +3346,22 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
       }
       return;
     }
-    if (action.startsWith('copy') || action == 'template') {
+    if (action == 'copy') {
       final copy = duplicateTransactionData(
         data,
         now: app.formatter.localDate(DateTime.now()),
-        withTime: action.contains('Time'),
-        withGeo: action.contains('Geo'),
       );
-      final path = action == 'template' ? '/template/add' : '/transaction/add';
       Navigator.of(context).push(
         nativeRoute(
           context,
-          builder: (_) => TransactionEditPage(route: path, initialData: copy),
+          builder: (_) => TransactionEditPage(
+            route: '/transaction/add',
+            query: const {'copy': 'true'},
+            initialData: copy,
+          ),
         ),
       );
     }
-    if (action == 'draft') {
-      await run(() async {
-        await app.setPreference(draftKey, jsonEncode(data));
-        dirty = false;
-      }, success: true);
-    }
-    if (action == 'again') await save(again: true);
     if (mounted &&
         action == 'delete' &&
         await confirm(
@@ -3433,6 +3620,7 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
                         'categoryId',
                         leafCategories(app, value).firstOrNull?['id'] ?? '0',
                       );
+                      recalculateAccountAmount();
                     }
                   },
                 ),
@@ -3446,8 +3634,25 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
                     readOnly: readOnly,
                     onChanged: (value) => change('name', value),
                   ),
+                if (multiCurrencyCreditCard &&
+                    string(data['originalCurrency']).isNotEmpty)
+                  ItemRow(
+                    t('Original Amount'),
+                    value: amount(
+                      data['originalAmount'],
+                      string(data['originalCurrency']),
+                    ),
+                    color: amountColor(app, type, context),
+                    onTap: readOnly ? null : editOriginalAmount,
+                  ),
                 ItemRow(
-                  t(type == 4 ? 'Transfer Out Amount' : 'Amount'),
+                  t(
+                    type == 4
+                        ? 'Transfer Out Amount'
+                        : string(data['originalCurrency']).isNotEmpty
+                        ? 'Account Amount'
+                        : 'Amount',
+                  ),
                   value: data['hideAmount'] == true && readOnly
                       ? '••••'
                       : amount(
@@ -3464,13 +3669,13 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
                 ),
                 if (type == 4)
                   ItemRow(
-                    t('Transfer In Amount'),
+                    t('Service Charge'),
                     value: amount(
-                      data['destinationAmount'],
+                      data['serviceCharge'],
                       string(
                         lookup(
                           accounts,
-                          data['destinationAccountId'],
+                          data['sourceAccountId'],
                         )['currency'],
                       ),
                     ),
@@ -3480,10 +3685,10 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
                         : () async {
                             final value = await amountPad(
                               context,
-                              number(data['destinationAmount']),
+                              number(data['serviceCharge']),
                             );
                             if (value != null && mounted) {
-                              change('destinationAmount', value);
+                              change('serviceCharge', value);
                             }
                           },
                   ),
@@ -3508,13 +3713,20 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
                           leafAccounts(app),
                         ),
                 ),
-                ItemRow(
-                  t('Currency'),
-                  value: accountCurrency(string(data['sourceAccountId'])),
-                  onTap: readOnly || type == 1 && data['id'] != null
-                      ? null
-                      : selectSourceCurrency,
-                ),
+                if (multiCurrencyCreditCard)
+                  ItemRow(
+                    t('Transaction Currency'),
+                    value: transactionCurrency,
+                    onTap: readOnly ? null : selectTransactionCurrency,
+                  )
+                else
+                  ItemRow(
+                    t('Currency'),
+                    value: accountCurrency(string(data['sourceAccountId'])),
+                    onTap: readOnly || type == 1 && data['id'] != null
+                        ? null
+                        : selectSourceCurrency,
+                  ),
                 if (type == 4)
                   ItemRow(
                     t('Destination Account'),

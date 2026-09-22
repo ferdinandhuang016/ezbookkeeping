@@ -6,6 +6,19 @@ import 'map_contract.dart';
 const _amapPrivacyAcceptedKey = 'amapLocationPrivacyAccepted';
 const _nativeChannel = MethodChannel('ezbookkeeping/native');
 
+Future<String> reverseGeocodeNative(double latitude, double longitude) async {
+  final name = await _nativeChannel
+      .invokeMethod<String>('reverseGeocode', {
+        'latitude': latitude,
+        'longitude': longitude,
+      })
+      .timeout(const Duration(seconds: 10));
+  final locationName = name?.trim() ?? '';
+  return locationName.length > 255
+      ? locationName.substring(0, 255)
+      : locationName;
+}
+
 Future<Map<String, dynamic>> getAmapCurrentLocation(
   BuildContext context,
   AppController app,
@@ -31,8 +44,9 @@ Future<Map<String, dynamic>> getAmapCurrentLocation(
     throw StateError(app.t('Unable to get current geographic location'));
   }
   final coordinate = gcj02ToWgs84(latitude, longitude);
-  final name = position?['name'];
-  final locationName = name is String ? name.trim() : '';
+  final locationName = position?['name'] is String
+      ? (position!['name'] as String).trim()
+      : '';
   return {
     ...coordinate,
     if (locationName.isNotEmpty)

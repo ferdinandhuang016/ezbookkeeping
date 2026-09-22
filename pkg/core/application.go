@@ -3,7 +3,7 @@ package core
 import "fmt"
 
 // ApplicationName represents the application name
-const ApplicationName = "ezBookkeeping"
+const ApplicationName = "Danggui Expense"
 
 // Version, CommitHash and BuildTime are set at build
 var (
@@ -14,8 +14,8 @@ var (
 
 func GetOutgoingUserAgent() string {
 	if Version == "" {
-		return ApplicationName
+		return "DangguiExpense"
 	}
 
-	return fmt.Sprintf("%s/%s", ApplicationName, Version)
+	return fmt.Sprintf("DangguiExpense/%s", Version)
 }

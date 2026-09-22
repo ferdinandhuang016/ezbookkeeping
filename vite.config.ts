@@ -169,12 +169,12 @@ export default defineConfig(() => {
                     prefer_related_applications: false,
                     icons: [
                         {
-                            src: 'img/danggui-expense-192.png',
+                            src: 'img/danggui-expense-192.png?v=3',
                             sizes: '192x192',
                             type: 'image/png'
                         },
                         {
-                            src: 'img/danggui-expense-512.png',
+                            src: 'img/danggui-expense-512.png?v=3',
                             sizes: '512x512',
                             type: 'image/png'
                         }

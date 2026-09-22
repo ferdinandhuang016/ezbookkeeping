@@ -183,8 +183,8 @@ class _EnrollmentQr extends StatelessWidget {
         : Uri(
             scheme: 'otpauth',
             host: 'totp',
-            path: '/ezBookkeeping:$username',
-            queryParameters: {'secret': secret, 'issuer': 'ezBookkeeping'},
+            path: '/Danggui Expense:$username',
+            queryParameters: {'secret': secret, 'issuer': 'Danggui Expense'},
           ).toString();
     return Container(
       color: CupertinoColors.white,

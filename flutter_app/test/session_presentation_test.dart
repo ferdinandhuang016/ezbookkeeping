@@ -17,14 +17,19 @@ void main() {
       expect(result.device.name, fixture['expected']['device']);
     });
   }
-  test('native Android session names app without exposing raw headers', () {
-    final result = presentSession({
-      'userAgent': 'ezBookkeeping/1.0.0 (Linux; Android; Mobile) Flutter',
-      'tokenType': 1,
-      'isCurrent': true,
-    });
-    expect(result.name, 'Current');
-    expect(result.device, SessionDevice.phone);
-    expect(result.details, 'Android (ezBookkeeping 1.0.0)');
+  test('native Android sessions show the current app name', () {
+    for (final agent in [
+      'ezBookkeeping/1.0.0 (Linux; Android; Mobile) Flutter',
+      'DangguiExpense/1.0.0 (Linux; Android; Mobile) Flutter',
+    ]) {
+      final result = presentSession({
+        'userAgent': agent,
+        'tokenType': 1,
+        'isCurrent': true,
+      });
+      expect(result.name, 'Current');
+      expect(result.device, SessionDevice.phone);
+      expect(result.details, 'Android (Danggui Expense 1.0.0)');
+    }
   });
 }

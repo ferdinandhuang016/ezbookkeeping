@@ -49,7 +49,7 @@
                     </p>
                     <hr/>
                     <p>
-                        <span>ezBookkeeping's codebase and localization translation rely on contributions from the community. The following people have contributed to ezBookkeeping:</span>
+                        <span>Danggui Expense is based on ezBookkeeping. Its codebase and translations rely on contributions from the following people:</span>
                     </p>
                     <div>
                         <strong>Project Maintainer</strong>
@@ -105,7 +105,7 @@
                         </tbody>
                     </table>
                     <p class="margin-top margin-bottom">
-                        <span>ezBookkeeping also contains additional third party software and illustration.</span><br/>
+                        <span>Danggui Expense also contains additional third party software and illustration.</span><br/>
                         <span>All the third party software / illustration included or linked is redistributed under the terms and conditions of their original licenses.</span>
                     </p>
                     <p :key="licenseInfo.name" v-for="licenseInfo in thirdPartyLicenses">
@@ -206,8 +206,8 @@ const documentUrl = computed<string>(() => {
 
 function updateDiagnosisInformation(supportsWebAuthn: boolean, hasClipboardPermission: boolean, hasGeolocationPermission: boolean): void {
     diagnosisInformation.value =
-        `ezBookkeeping Frontend Version: ${clientVersion}\n` +
-        `ezBookkeeping Backend Version: ${serverDisplayVersion.value}\n` +
+        `Danggui Expense Frontend Version: ${clientVersion}\n` +
+        `Danggui Expense Backend Version: ${serverDisplayVersion.value}\n` +
         `User Agent: ${navigator.userAgent}\n` +
         `Security Context: ${window.isSecureContext}\n` +
         `Standalone: ${isiOSHomeScreenMode()}\n` +
@@ -220,7 +220,7 @@ function updateDiagnosisInformation(supportsWebAuthn: boolean, hasClipboardPermi
         `Clipboard Permission Granted: ${hasClipboardPermission}\n` +
         `Geolocation API Supported: ${!!navigator.geolocation}\n` +
         `Geolocation Permission Granted: ${hasGeolocationPermission}\n` +
-        `ezBookkeeping Server Settings:\n${getStringifiedServerSetting()}`;
+        `Danggui Expense Server Settings:\n${getStringifiedServerSetting()}`;
 }
 
 function showDiagnosisInformation(): void {

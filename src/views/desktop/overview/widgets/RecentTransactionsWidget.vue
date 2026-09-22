@@ -121,8 +121,10 @@ function getDisplayDescription(transaction: TransactionInfoResponse): string {
 }
 
 function getDisplayTransactionAmount(transaction: TransactionInfoResponse): string {
-    const amount = !showAmountInHomePage.value || transaction.hideAmount ? DISPLAY_HIDDEN_AMOUNT : parseBigDecimal(transaction.sourceAmount);
-    return formatAmountToLocalizedNumeralsWithCurrency(amount, accountsStore.allAccountsMap[transaction.sourceAccountId]?.currency ?? '');
+    const currency = transaction.originalCurrency || accountsStore.allAccountsMap[transaction.sourceAccountId]?.currency || '';
+    const value = transaction.originalCurrency ? transaction.originalAmount ?? transaction.sourceAmount : transaction.sourceAmount;
+    const amount = !showAmountInHomePage.value || transaction.hideAmount ? DISPLAY_HIDDEN_AMOUNT : parseBigDecimal(value);
+    return formatAmountToLocalizedNumeralsWithCurrency(amount, currency);
 }
 
 function getTransactionCategory(transaction: TransactionInfoResponse): TransactionCategory | undefined {

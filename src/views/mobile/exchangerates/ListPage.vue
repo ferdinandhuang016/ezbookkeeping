@@ -8,6 +8,21 @@
             </f7-nav-right>
         </f7-navbar>
 
+        <f7-list strong inset dividers class="margin-vertical-half">
+            <f7-list-item
+                class="list-item-with-header-and-title"
+                link="#" no-chevron
+                :class="{ 'disabled': loading }"
+                :header="tt('Date')"
+                :title="formatGregorianTextualYearMonthDayToLongDate(exchangeRatesDate)"
+                @click="showExchangeRatesDateSheet = true"
+            >
+                <date-selection-sheet :model-value="exchangeRatesDate"
+                                      v-model:show="showExchangeRatesDateSheet"
+                                      @update:model-value="updateExchangeRatesDate" />
+            </f7-list-item>
+        </f7-list>
+
         <f7-list strong inset dividers class="margin-vertical-half" v-if="exchangeRatesData && exchangeRatesData.exchangeRates && exchangeRatesData.exchangeRates.length">
             <f7-list-item
                 class="list-item-with-header-and-title list-item-no-item-after"
@@ -127,7 +142,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import type { Router } from 'framework7/types';
 
 import { useI18n } from '@/locales/helpers.ts';
@@ -138,6 +153,7 @@ import { useExchangeRatesStore } from '@/stores/exchangeRates.ts';
 
 import { TextDirection } from '@/core/text.ts';
 import { NumeralSystem } from '@/core/numeral.ts';
+import type { TextualYearMonthDay } from '@/core/datetime.ts';
 import { AMOUNT_FACTOR } from '@/consts/numeral.ts';
 import { TRANSACTION_MIN_AMOUNT, TRANSACTION_MAX_AMOUNT } from '@/consts/transaction.ts';
 
@@ -156,7 +172,8 @@ const {
     getCurrentNumeralSystemType,
     getCurrencyName,
     formatAmountToLocalizedNumerals,
-    formatExchangeRateAmountToWesternArabicNumerals
+    formatExchangeRateAmountToWesternArabicNumerals,
+    formatGregorianTextualYearMonthDayToLongDate
 } = useI18n();
 
 const { showAlert, showToast, openExternalUrl } = useI18nUIComponents();
@@ -164,11 +181,15 @@ const { showAlert, showToast, openExternalUrl } = useI18nUIComponents();
 const {
     baseCurrency,
     baseAmount,
+    exchangeRatesDate,
+    historicalExchangeRatesData,
     defaultCurrency,
+    isCurrentExchangeRatesDate,
     exchangeRatesData,
     isUserCustomExchangeRates,
     exchangeRatesDataUpdateTime,
     availableExchangeRates,
+    exchangeRateMap,
     getConvertedAmount,
     setAsBaseline
 } = useExchangeRatesPageBase();
@@ -181,6 +202,7 @@ const settingBaseLine = ref<boolean>(false);
 const showMoreActionSheet = ref<boolean>(false);
 const showBaseCurrencyPopup = ref<boolean>(false);
 const showBaseAmountSheet = ref<boolean>(false);
+const showExchangeRatesDateSheet = ref<boolean>(false);
 const customExchangeRateToDelete = ref<LocalizedLatestExchangeRate | null>(null);
 const showDeleteActionSheet = ref<boolean>(false);
 
@@ -215,23 +237,31 @@ function reload(done?: () => void): void {
         showLoading();
     }
 
-    exchangeRatesStore.getLatestExchangeRates({
-        silent: false,
-        force: true
-    }).then(() => {
+    const request = isCurrentExchangeRatesDate.value
+        ? exchangeRatesStore.getLatestExchangeRates({ silent: false, force: true })
+        : exchangeRatesStore.getHistoricalExchangeRates(exchangeRatesDate.value).then(data => {
+            historicalExchangeRatesData.value = data ?? undefined;
+            return data;
+        });
+
+    request.then(() => {
         done?.();
 
         loading.value = false;
         hideLoading();
 
-        showToast('Exchange rates data has been updated');
+        if (isCurrentExchangeRatesDate.value) {
+            showToast('Exchange rates data has been updated');
+        }
     }).catch(error => {
         done?.();
 
         loading.value = false;
         hideLoading();
 
-        if (!error.processed) {
+        if (error?.isUpToDate) {
+            showToast('Exchange rates data is up to date');
+        } else if (!error.processed) {
             showToast(error.message || error);
         }
     });
@@ -278,7 +308,7 @@ function remove(customExchangeRate: LocalizedLatestExchangeRate | null, confirm:
 }
 
 function getFinalConvertedAmount(toExchangeRate: LocalizedLatestExchangeRate, displayLocalizedDigits: boolean): string {
-    const fromExchangeRate = exchangeRatesStore.latestExchangeRateMap[baseCurrency.value];
+    const fromExchangeRate = exchangeRateMap.value[baseCurrency.value];
     const exchangeRateAmount = getConvertedAmount(parseBigDecimal(baseAmount.value).divide(AMOUNT_FACTOR), fromExchangeRate, toExchangeRate);
 
     if (!exchangeRateAmount) {
@@ -303,9 +333,17 @@ function onExchangeRateSwipeoutClosed(): void {
     settingBaseLine.value = false;
 }
 
+function updateExchangeRatesDate(value: TextualYearMonthDay | ''): void {
+    if (value) {
+        exchangeRatesDate.value = value;
+    }
+}
+
+watch(exchangeRatesDate, () => reload());
+
 exchangeRatesStore.getLatestExchangeRates({
     silent: true,
-    force: false
+    force: true
 }).then(() => {
     if (exchangeRatesData.value && exchangeRatesData.value.exchangeRates) {
         const exchangeRates = exchangeRatesData.value.exchangeRates;

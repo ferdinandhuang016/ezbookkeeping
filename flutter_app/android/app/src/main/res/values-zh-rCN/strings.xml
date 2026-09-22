@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">归归账本</string>
+    <string name="app_name">当归账本</string>
     <string name="shortcut_add_transaction">记一笔</string>
     <string name="widget_quick_add">记一笔</string>
     <string name="widget_summary_name">当月概要</string>

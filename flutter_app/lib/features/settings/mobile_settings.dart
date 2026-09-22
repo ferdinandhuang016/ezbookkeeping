@@ -397,7 +397,7 @@ class _ProjectLicenseState extends NativeState<ProjectLicensePage> {
             ),
             gap(),
             text(
-              "ezBookkeeping's codebase and localization translation rely on contributions from the community. The following people have contributed to ezBookkeeping:",
+              "Danggui Expense is based on ezBookkeeping. Its codebase and translations rely on contributions from the following people:",
             ),
             gap(),
             text('Project Maintainer', bold: true),
@@ -447,7 +447,7 @@ class _ProjectLicenseState extends NativeState<ProjectLicensePage> {
             ]),
             gap(),
             text(
-              'ezBookkeeping also contains additional third party software and illustration.\nAll the third party software / illustration included or linked is redistributed under the terms and conditions of their original licenses.',
+              'Danggui Expense also contains additional third party software and illustration.\nAll the third party software / illustration included or linked is redistributed under the terms and conditions of their original licenses.',
             ),
             gap(),
             for (final item in licenses) ...[
@@ -469,7 +469,7 @@ class _ProjectLicenseState extends NativeState<ProjectLicensePage> {
                 nativeRoute(
                   context,
                   builder: (_) =>
-                      const LicensePage(applicationName: 'ezBookkeeping'),
+                      const LicensePage(applicationName: 'Danggui Expense'),
                 ),
               ),
             ),

@@ -44,6 +44,15 @@
                     <f7-toggle :checked="isAutoUpdateExchangeRatesData" @toggle:change="isAutoUpdateExchangeRatesData = $event"></f7-toggle>
                 </template>
             </f7-list-item>
+            <f7-list-item smart-select
+                          :smart-select-params="{ openIn: 'popup', searchbar: true, searchbarPlaceholder: tt('Currency') }"
+                          :title="tt('Enabled Currencies')">
+                <select name="enabled-currencies" multiple v-model="enabledCurrencyCodes">
+                    <option :value="currency.currencyCode" :key="currency.currencyCode" v-for="currency in allCurrencies">
+                        {{ currency.displayName }} ({{ currency.currencyCode }})
+                    </option>
+                </select>
+            </f7-list-item>
         </f7-list>
 
         <f7-block-title>{{ tt('Overview Page') }}</f7-block-title>
@@ -460,6 +469,7 @@ import { isDefaultMobileOverviewLayout, parseMobileOverviewLayout } from '@/lib/
 
 const {
     tt,
+    getAllCurrencies,
     getAllCreditCardAmountDisplayTypes,
     getAllTransactionQuickSaveButtonStyles,
     getAllTransactionQuickAddButtonActionTypes
@@ -509,6 +519,19 @@ const showReconciliationStatementDefaultDateRangePopup = ref<boolean>(false);
 const allTransactionQuickSaveButtonStyles = computed<TypeAndDisplayName[]>(() => getAllTransactionQuickSaveButtonStyles());
 const allTransactionQuickAddButtonActionTypes = computed<TypeAndDisplayName[]>(() => getAllTransactionQuickAddButtonActionTypes());
 const allCreditCardAmountDisplayTypes = computed<TypeAndDisplayName[]>(() => getAllCreditCardAmountDisplayTypes());
+const allCurrencies = computed(() => getAllCurrencies());
+const enabledCurrencyCodes = computed<string[]>({
+    get: () => Object.keys(settingsStore.appSettings.enabledCurrencies).filter(currency => settingsStore.appSettings.enabledCurrencies[currency]),
+    set: (currencies) => {
+        const enabledCurrencies: Record<string, boolean> = {};
+
+        for (const currency of allCurrencies.value) {
+            enabledCurrencies[currency.currencyCode] = currencies.includes(currency.currencyCode);
+        }
+
+        settingsStore.setEnabledCurrencies(enabledCurrencies);
+    }
+});
 
 const overviewPageLayoutDisplayContent = computed<string>(() => {
     try {

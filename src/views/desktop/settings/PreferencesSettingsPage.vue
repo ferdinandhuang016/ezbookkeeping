@@ -82,6 +82,20 @@
                                     v-model="isAutoUpdateExchangeRatesData"
                                 />
                             </v-col>
+
+                            <v-col cols="12" md="6">
+                                <v-autocomplete
+                                    item-title="displayName"
+                                    item-value="currencyCode"
+                                    multiple chips closable-chips
+                                    persistent-placeholder
+                                    :label="tt('Enabled Currencies')"
+                                    :placeholder="tt('Enabled Currencies')"
+                                    :items="allCurrencies"
+                                    :no-data-text="tt('No results')"
+                                    v-model="enabledCurrencyCodes"
+                                />
+                            </v-col>
                         </v-row>
                     </v-card-text>
                 </v-form>
@@ -518,7 +532,7 @@ type AccountCategoryDisplayOrderDialogType = InstanceType<typeof AccountCategory
 const theme = useTheme();
 const router = useRouter();
 
-const { tt, getAllEnableDisableOptions, getAllDateRanges, getTablePageOptions } = useI18n();
+const { tt, getAllCurrencies, getAllEnableDisableOptions, getAllDateRanges, getTablePageOptions } = useI18n();
 const {
     loadingAccounts,
     loadingTransactionCategories,
@@ -571,6 +585,19 @@ const showAccountsIncludedInTotalDialog = ref<boolean>(false);
 const enableDisableOptions = computed<LocalizedSwitchOption[]>(() => getAllEnableDisableOptions());
 const allPageCounts = computed<NameNumeralValue[]>(() => getTablePageOptions(DEFAULT_PAGE_COUNTS, undefined, false, true));
 const allInsightsExplorerDefaultDateRanges = computed<LocalizedDateRange[]>(() => getAllDateRanges(DateRangeScene.InsightsExplorer, {}));
+const allCurrencies = computed(() => getAllCurrencies());
+const enabledCurrencyCodes = computed<string[]>({
+    get: () => Object.keys(settingsStore.appSettings.enabledCurrencies).filter(currency => settingsStore.appSettings.enabledCurrencies[currency]),
+    set: (currencies) => {
+        const enabledCurrencies: Record<string, boolean> = {};
+
+        for (const currency of allCurrencies.value) {
+            enabledCurrencies[currency.currencyCode] = currencies.includes(currency.currencyCode);
+        }
+
+        settingsStore.setEnabledCurrencies(enabledCurrencies);
+    }
+});
 
 const currentTheme = computed<string>({
     get: () => settingsStore.appSettings.theme,

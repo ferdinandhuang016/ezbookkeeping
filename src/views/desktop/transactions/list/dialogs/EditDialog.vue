@@ -32,15 +32,7 @@
                             <v-list-item :prepend-icon="mdiSwapHorizontal"
                                          :title="tt('Swap Account')"
                                          v-if="transaction.type === TransactionType.Transfer"
-                                         @click="swapTransactionData(true, false)"></v-list-item>
-                            <v-list-item :prepend-icon="mdiSwapHorizontal"
-                                         :title="tt('Swap Amount')"
-                                         v-if="transaction.type === TransactionType.Transfer"
-                                         @click="swapTransactionData(false, true)"></v-list-item>
-                            <v-list-item :prepend-icon="mdiSwapHorizontal"
-                                         :title="tt('Swap Account and Amount')"
-                                         v-if="transaction.type === TransactionType.Transfer"
-                                         @click="swapTransactionData(true, true)"></v-list-item>
+                                         @click="swapTransactionData()"></v-list-item>
                             <v-divider v-if="transaction.type === TransactionType.Transfer" />
                             <v-list-item :prepend-icon="mdiEyeOutline"
                                          :title="tt('Show Amount')"
@@ -116,6 +108,41 @@
                                         v-model="transaction.name"
                                     />
                                 </v-col>
+                                <v-col cols="12" md="6" v-if="transaction instanceof Transaction && isMultiCurrencyCreditCardTransaction">
+                                    <v-autocomplete item-title="displayName" item-value="currencyCode"
+                                                    persistent-placeholder
+                                                    :readonly="mode === TransactionEditPageMode.View"
+                                                    :disabled="loading || submitting || recognizing"
+                                                    :label="tt('Transaction Currency')"
+                                                    :placeholder="tt('Currency')"
+                                                    :items="effectiveCurrencies"
+                                                    :no-data-text="tt('No results')"
+                                                    v-model="transactionCurrency" />
+                                </v-col>
+                                <v-col cols="12" md="6" v-else>
+                                    <v-autocomplete item-title="displayName" item-value="currencyCode"
+                                                    persistent-placeholder
+                                                    :readonly="mode === TransactionEditPageMode.View"
+                                                    :disabled="loading || submitting || recognizing"
+                                                    :label="tt('Currency')"
+                                                    :placeholder="tt('Currency')"
+                                                    :items="selectableAccountCurrencies"
+                                                    :no-data-text="tt('No results')"
+                                                    v-model="sourceAccountCurrencySelection" />
+                                </v-col>
+                                <v-col cols="12" md="6" v-if="transaction instanceof Transaction && isMultiCurrencyCreditCardTransaction && transaction.originalCurrency">
+                                    <amount-input class="transaction-edit-amount font-weight-bold"
+                                                  :currency="transaction.originalCurrency"
+                                                  :show-currency="true"
+                                                  :readonly="mode === TransactionEditPageMode.View"
+                                                  :disabled="loading || submitting || recognizing"
+                                                  :persistent-placeholder="true"
+                                                  :hide="transaction.hideAmount"
+                                                  :label="tt('Original Amount')"
+                                                  :placeholder="tt('Original Amount')"
+                                                  :enable-formula="mode !== TransactionEditPageMode.View"
+                                                  v-model="transaction.originalAmount"/>
+                                </v-col>
                                 <v-col cols="12" :md="transaction.type === TransactionType.Transfer ? 6 : 12">
                                     <amount-input class="transaction-edit-amount font-weight-bold"
                                                   :color="sourceAmountColor"
@@ -132,16 +159,16 @@
                                 </v-col>
                                 <v-col cols="12" :md="6" v-if="transaction.type === TransactionType.Transfer">
                                     <amount-input class="transaction-edit-amount font-weight-bold" color="primary"
-                                                  :currency="destinationAccountCurrency"
+                                                  :currency="sourceAccountCurrency"
                                                   :show-currency="true"
                                                   :readonly="mode === TransactionEditPageMode.View"
                                                   :disabled="loading || submitting || recognizing"
                                                   :persistent-placeholder="true"
                                                   :hide="transaction.hideAmount"
-                                                  :label="transferInAmountTitle"
-                                                  :placeholder="tt('Transfer In Amount')"
+                                                  :label="tt('Service Charge')"
+                                                  :placeholder="tt('Service Charge')"
                                                   :enable-formula="mode !== TransactionEditPageMode.View"
-                                                  v-model="transaction.destinationAmount"/>
+                                                  v-model="transaction.serviceCharge"/>
                                 </v-col>
                                 <v-col cols="12" md="12" v-if="transaction.type === TransactionType.Expense">
                                     <v-tooltip :disabled="hasVisibleExpenseCategories" :text="hasVisibleExpenseCategories ? '' : tt('No secondary expense categories are available')">
@@ -625,6 +652,8 @@ const {
     imageUploadQualityType,
     allTimezones,
     allVisibleAccounts,
+    effectiveCurrencies,
+    selectableAccountCurrencies,
     allVisibleCategorizedAccounts,
     allCategories,
     firstVisibleAccountId,
@@ -638,17 +667,18 @@ const {
     sourceAmountName,
     sourceAmountTitle,
     sourceAccountTitle,
-    transferInAmountTitle,
     sourceAccountName,
     destinationAccountName,
     sourceAccountCurrency,
-    destinationAccountCurrency,
+    isMultiCurrencyCreditCardTransaction,
+    sourceAccountCurrencySelection,
     transactionDisplayTimezone,
     transactionTimezoneTimeDifference,
     geoLocationStatusInfo,
     transactionDescriptionTitle,
     inputEmptyProblemMessage,
     inputIsEmpty,
+    prepareTransferDestinationAmount,
     createNewTransactionModel,
     setTransactionModel,
     updateTransactionModelFromRecognizedResponse,
@@ -671,6 +701,26 @@ const map = useTemplateRef<MapViewType>('map');
 const confirmDialog = useTemplateRef<ConfirmDialogType>('confirmDialog');
 const snackbar = useTemplateRef<SnackBarType>('snackbar');
 const pictureInput = useTemplateRef<HTMLInputElement>('pictureInput');
+
+const transactionCurrency = computed<string>({
+    get: () => transaction.value instanceof Transaction && transaction.value.originalCurrency
+        ? transaction.value.originalCurrency
+        : sourceAccountCurrency.value,
+    set: (value: string) => {
+        if (!(transaction.value instanceof Transaction)) {
+            return;
+        }
+
+        const oldOriginalCurrency = transaction.value.originalCurrency;
+        transaction.value.originalCurrency = value === sourceAccountCurrency.value ? '' : value;
+
+        if (!transaction.value.originalCurrency) {
+            transaction.value.originalAmount = 0;
+        } else if (!oldOriginalCurrency && !transaction.value.originalAmount) {
+            transaction.value.originalAmount = transaction.value.sourceAmount;
+        }
+    }
+});
 
 let resolveFunc: ((response?: TransactionEditResponse) => void) | null = null;
 let rejectFunc: ((reason?: unknown) => void) | null = null;
@@ -891,12 +941,23 @@ function open(options: TransactionEditOptions): Promise<TransactionEditResponse 
     });
 }
 
-function save(afterAction: AfterSaveAction): void {
+async function save(afterAction: AfterSaveAction): Promise<void> {
     const problemMessage = inputEmptyProblemMessage.value;
 
     if (problemMessage) {
         snackbar.value?.showMessage(problemMessage);
         return;
+    }
+
+    if (transaction.value.type === TransactionType.Transfer) {
+        if (transaction.value.serviceCharge < 0 || transaction.value.sourceAmount + transaction.value.serviceCharge > 999999999999999) {
+            snackbar.value?.showMessage('Amount is too large');
+            return;
+        }
+        if (!await prepareTransferDestinationAmount()) {
+            snackbar.value?.showMessage('Unable to retrieve exchange rates data');
+            return;
+        }
     }
 
     if (props.type === TransactionEditPageType.Transaction && (mode.value === TransactionEditPageMode.Add || mode.value === TransactionEditPageMode.Edit)) {

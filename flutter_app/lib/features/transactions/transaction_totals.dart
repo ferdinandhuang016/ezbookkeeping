@@ -32,6 +32,9 @@ Map<int, AccountDisplayBalance> transactionTotals({
       final destination = selected('${item['destinationAccountId']}');
       if (source == destination) continue;
       type = source ? 3 : 2;
+      if (source) {
+        amount += int.tryParse('${item['serviceCharge']}') ?? 0;
+      }
       if (destination) {
         accountId = '${item['destinationAccountId']}';
         amount = int.tryParse('${item['destinationAmount']}') ?? 0;

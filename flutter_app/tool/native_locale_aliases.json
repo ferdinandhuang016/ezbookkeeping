@@ -78,5 +78,8 @@
   "Wednesday": "datetime.Wednesday.long",
   "Thursday": "datetime.Thursday.long",
   "Friday": "datetime.Friday.long",
-  "Saturday": "datetime.Saturday.long"
+  "Saturday": "datetime.Saturday.long",
+  "Exchange rate unavailable for home widget": "Exchange rate unavailable",
+  "Destination Amount": "parameter.destinationAmount",
+  "Location services disabled": "Location service is disabled"
 }

@@ -51,6 +51,7 @@ export class TransactionTemplate extends Transaction implements TransactionTempl
             sourceAccountId: this.sourceAccountId,
             destinationAccountId: this.type === TransactionType.Transfer ? this.destinationAccountId : '0',
             sourceAmount: this.sourceAmount,
+            serviceCharge: this.type === TransactionType.Transfer ? this.serviceCharge : 0,
             destinationAmount: this.type === TransactionType.Transfer ? this.destinationAmount : 0,
             hideAmount: this.hideAmount,
             tagIds: this.tagIds,
@@ -73,6 +74,7 @@ export class TransactionTemplate extends Transaction implements TransactionTempl
             sourceAccountId: this.sourceAccountId,
             destinationAccountId: this.type === TransactionType.Transfer ? this.destinationAccountId : '0',
             sourceAmount: this.sourceAmount,
+            serviceCharge: this.type === TransactionType.Transfer ? this.serviceCharge : 0,
             destinationAmount: this.type === TransactionType.Transfer ? this.destinationAmount : 0,
             hideAmount: this.hideAmount,
             tagIds: this.tagIds,
@@ -86,7 +88,7 @@ export class TransactionTemplate extends Transaction implements TransactionTempl
     }
 
     public static createNewTransactionTemplate(transaction: Transaction): TransactionTemplate {
-        return new TransactionTemplate(
+        const template = new TransactionTemplate(
             transaction.id,
             0, // templateType
             '', // name
@@ -110,10 +112,12 @@ export class TransactionTemplate extends Transaction implements TransactionTempl
             0,
             false
         );
+        template.serviceCharge = transaction.serviceCharge;
+        return template;
     }
 
     public static ofTemplate(templateResponse: TransactionTemplateInfoResponse): TransactionTemplate {
-        return new TransactionTemplate(
+        const template = new TransactionTemplate(
             templateResponse.id,
             templateResponse.templateType,
             templateResponse.name,
@@ -137,6 +141,8 @@ export class TransactionTemplate extends Transaction implements TransactionTempl
             templateResponse.displayOrder,
             templateResponse.hidden
         );
+        template.serviceCharge = templateResponse.serviceCharge ?? 0;
+        return template;
     }
 
     public static ofMultiTemplates(templateResponses: TransactionTemplateInfoResponse[]): TransactionTemplate[] {
@@ -158,6 +164,7 @@ export interface TransactionTemplateCreateRequest {
     readonly sourceAccountId: string;
     readonly destinationAccountId: string;
     readonly sourceAmount: number;
+    readonly serviceCharge: number;
     readonly destinationAmount: number;
     readonly hideAmount: boolean;
     readonly tagIds: string[];
@@ -178,6 +185,7 @@ export interface TransactionTemplateModifyRequest {
     readonly sourceAccountId: string;
     readonly destinationAccountId: string;
     readonly sourceAmount: number;
+    readonly serviceCharge: number;
     readonly destinationAmount: number;
     readonly hideAmount: boolean;
     readonly tagIds: string[];

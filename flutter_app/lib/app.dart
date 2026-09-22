@@ -92,6 +92,10 @@ class _EzBookkeepingAppState extends ConsumerState<EzBookkeepingApp> {
                 '/login' => const AuthPage(),
                 '/signup' => const AuthPage(signup: true),
                 '/unlock' => const UnlockPage(),
+                '/' => PrimaryShell(
+                  key: ValueKey(state.uri.queryParameters['homeLaunch']),
+                  initialIndex: 2,
+                ),
                 _ => mobilePage(path, state.uri.queryParameters),
               };
               return _NativePage(
@@ -117,7 +121,7 @@ class _EzBookkeepingAppState extends ConsumerState<EzBookkeepingApp> {
   void _refreshRouting() {
     // Ordinary ledger notifications must not enqueue a stale route parse just
     // before a successful editor save pops its page. Only redirects need one.
-    if (_controller.pendingNativeRoute != null) {
+    if (_controller.pendingNativeRoute != null && !_controller.pendingQuickAdd) {
       _rootNavigatorKey.currentState?.popUntil((route) => route.isFirst);
     }
     _routeRefresh.value = _redirectState;

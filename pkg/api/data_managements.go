@@ -33,6 +33,7 @@ type DataManagementsApi struct {
 	templates               *services.TransactionTemplateService
 	userCustomIcons         *services.UserCustomIconService
 	userCustomExchangeRates *services.UserCustomExchangeRatesService
+	exchangeRateHistory     *services.ExchangeRateHistoryService
 	insightsExploreres      *services.InsightsExplorerService
 }
 
@@ -53,6 +54,7 @@ var (
 		templates:               services.TransactionTemplates,
 		userCustomIcons:         services.UserCustomIcons,
 		userCustomExchangeRates: services.UserCustomExchangeRates,
+		exchangeRateHistory:     services.ExchangeRateHistory,
 		insightsExploreres:      services.InsightsExplorers,
 	}
 )
@@ -223,6 +225,13 @@ func (a *DataManagementsApi) ClearAllDataHandler(c *core.WebContext) (any, *errs
 
 	if err != nil {
 		log.Errorf(c, "[data_managements.ClearAllDataHandler] failed to delete all user custom exchange rates, because %s", err.Error())
+		return nil, errs.Or(err, errs.ErrOperationFailed)
+	}
+
+	err = a.exchangeRateHistory.DeleteAllExchangeRates(c, uid)
+
+	if err != nil {
+		log.Errorf(c, "[data_managements.ClearAllDataHandler] failed to delete exchange rate history, because %s", err.Error())
 		return nil, errs.Or(err, errs.ErrOperationFailed)
 	}
 

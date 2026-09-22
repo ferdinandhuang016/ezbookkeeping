@@ -11,3 +11,8 @@ type ExchangeRatesDataProvider interface {
 	// GetLatestExchangeRates returns the common response entities
 	GetLatestExchangeRates(c core.Context, uid int64, currentConfig *settings.Config) (*models.LatestExchangeRateResponse, error)
 }
+
+// HistoricalExchangeRatesDataProvider defines an exchange-rate provider that can query a specified date.
+type HistoricalExchangeRatesDataProvider interface {
+	GetExchangeRatesByDate(c core.Context, uid int64, currentConfig *settings.Config, date string) (*models.LatestExchangeRateResponse, error)
+}

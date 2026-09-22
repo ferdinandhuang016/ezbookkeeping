@@ -17,7 +17,7 @@ import (
 // UserData represents the data command
 var UserData = &cli.Command{
 	Name:  "userdata",
-	Usage: "ezBookkeeping user data maintenance",
+	Usage: "Danggui Expense user data maintenance",
 	Commands: []*cli.Command{
 		{
 			Name:   "user-add",

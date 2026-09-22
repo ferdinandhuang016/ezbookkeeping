@@ -297,13 +297,23 @@ void main() {
     () async {
       await repo.saveTransaction({
         ...transaction(id: 'local:x', type: 4, amount: 250)..remove('id'),
+        'serviceCharge': 10,
       });
-      expect(repo.metadata['accounts']!.first['balance'], 750);
+      expect(repo.metadata['accounts']!.first['balance'], 740);
       expect(repo.metadata['accounts']!.last['balance'], 3500);
       expect(repo.transactions.length, 2);
       expect((await db.operations()).length, 1);
     },
   );
+  test('rejects a transfer fee larger than the allowed debit', () async {
+    await expectLater(
+      repo.saveTransaction({
+        ...transaction(id: 'local:x', type: 4, amount: 250)..remove('id'),
+        'serviceCharge': -1,
+      }),
+      throwsFormatException,
+    );
+  });
   test(
     'editing and deleting an existing transaction projects the difference only',
     () async {

@@ -1,4 +1,5 @@
 import '../../core/application_settings.dart';
+import '../../core/currency_selection.dart';
 import '../../core/formatting.dart';
 import '../../core/list_settings.dart';
 import '../../ui/common.dart';
@@ -15,6 +16,36 @@ class PreferencesPage extends ConsumerStatefulWidget {
 }
 
 class _PreferencesPageState extends SettingsState<PreferencesPage> {
+  List<String> get enabledCurrencyCodes {
+    final configured = preference(app, 'enabledCurrencies');
+    final result = configured is Map
+        ? configured.entries
+              .where((entry) => entry.value == true)
+              .map((entry) => '${entry.key}')
+              .toList()
+        : <String>['CNY', 'USD'];
+    result.sort();
+    return result;
+  }
+
+  Future<void> selectEnabledCurrencies() async {
+    final choices = await currencyChoices();
+    if (!mounted) return;
+    final selected = await selectMany(
+      context,
+      t('Enabled Currencies'),
+      choices,
+      enabledCurrencyCodes,
+    );
+    if (selected == null) return;
+    await run(
+      () => writePreference(app, 'enabledCurrencies', {
+        for (final choice in choices)
+          '${choice['id']}': selected.contains('${choice['id']}'),
+      }),
+    );
+  }
+
   @override
   Widget buildPage(BuildContext context) => NativePage(
     title: t('Preferences'),
@@ -32,6 +63,11 @@ class _PreferencesPageState extends SettingsState<PreferencesPage> {
           toggle(
             'autoUpdateExchangeRatesData',
             'Auto-update Exchange Rates Data',
+          ),
+          ItemRow(
+            t('Enabled Currencies'),
+            value: enabledCurrencyCodes.join(', '),
+            onTap: selectEnabledCurrencies,
           ),
         ],
       ),
@@ -207,7 +243,7 @@ class _TextSizeState extends NativeState<TextSizePage> {
               ItemRow(t('Income'), subtitle: t('Transaction Categories')),
               InputRow(
                 t('Description'),
-                value: 'ezBookkeeping',
+                value: 'Danggui Expense',
                 readOnly: true,
                 onChanged: (_) {},
               ),

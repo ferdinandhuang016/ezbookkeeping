@@ -1,7 +1,7 @@
 {
     "global": {
         "app": {
-            "title": "归归账本"
+            "title": "当归账本"
         }
     },
     "language": {
@@ -165,23 +165,23 @@
             "ruleIndex": "规则 #{index}",
             "accountActivationAndResendValidationEmailTip": "账号激活链接已经发送到您的邮箱地址：{email}，如果您没有收到邮件，请再次输入密码并点击下方的按钮重新发送验证邮件。",
             "resendValidationEmailTip": "如果您没有收到邮件，请再次输入密码并点击下方的按钮重新发送验证邮件到：{email}",
-            "oauth2bindTip": "您正在使用 {providerName} 登录 \"{userName}\" 用户，请输入你的 ezBookkeeping 的密码进行验证。"
+            "oauth2bindTip": "您正在使用 {providerName} 登录 \"{userName}\" 用户，请输入您的当归账本密码进行验证。"
         }
     },
     "dataExport": {
-        "defaultExportFilename": "ezBookkeeping_导出数据",
-        "exportFilename": "ezBookkeeping_{nickname}_导出数据",
-        "defaultExportStatisticsFileName": "ezBookkeeping_统计数据",
-        "exportStatisticsFileName": "ezBookkeeping_{nickname}_统计数据",
-        "defaultExportReconciliationStatementsFileName": "ezBookkeeping_对账单",
-        "exportReconciliationStatementsFileName": "ezBookkeeping_{nickname}_对账单",
-        "defaultInsightsExplorerQueryFileName": "ezBookkeeping_洞察探索查询",
-        "insightsExplorerQueryFileName": "ezBookkeeping_{nickname}_洞察探索查询",
-        "defaultImportDataMappingFileName": "ezBookkeeping_导入数据映射文件",
-        "defaultImportHandlingScript": "ezBookkeeping_导入处理脚本",
-        "defaultImportReplaceRuleFileName": "ezBookkeeping_导入替换规则文件",
-        "defaultImportCheckResultFileName": "ezBookkeeping_导入检查结果",
-        "defaultOverviewLayoutFileName": "ezBookkeeping_总览布局"
+        "defaultExportFilename": "当归账本_导出数据",
+        "exportFilename": "当归账本_{nickname}_导出数据",
+        "defaultExportStatisticsFileName": "当归账本_统计数据",
+        "exportStatisticsFileName": "当归账本_{nickname}_统计数据",
+        "defaultExportReconciliationStatementsFileName": "当归账本_对账单",
+        "exportReconciliationStatementsFileName": "当归账本_{nickname}_对账单",
+        "defaultInsightsExplorerQueryFileName": "当归账本_洞察探索查询",
+        "insightsExplorerQueryFileName": "当归账本_{nickname}_洞察探索查询",
+        "defaultImportDataMappingFileName": "当归账本_导入数据映射文件",
+        "defaultImportHandlingScript": "当归账本_导入处理脚本",
+        "defaultImportReplaceRuleFileName": "当归账本_导入替换规则文件",
+        "defaultImportCheckResultFileName": "当归账本_导入检查结果",
+        "defaultOverviewLayoutFileName": "当归账本_总览布局"
     },
     "calendar": {
         "Gregorian": "公历",
@@ -1779,8 +1779,8 @@
     "Change Language": "修改语言",
     "Date is too early": "日期过早",
     "User Canceled": "用户已取消",
-    "Welcome to ezBookkeeping": "欢迎使用 ezBookkeeping",
-    "Please log in with your ezBookkeeping account": "请使用您的 ezBookkeeping 账号登录",
+    "Welcome to ezBookkeeping": "欢迎使用当归账本",
+    "Please log in with your ezBookkeeping account": "请使用您的当归账本账号登录",
     "Unlock Application": "解锁应用",
     "Please enter your PIN code or use WebAuthn to unlock application": "请输入您的 PIN 码，或使用 WebAuthn 解锁应用",
     "Please enter your PIN code to unlock application": "请输入您的 PIN 码解锁应用",
@@ -2080,6 +2080,8 @@
     "Account Color": "账户颜色",
     "Sub-account Color": "子账户颜色",
     "Currency": "货币",
+    "Enabled Currencies": "已启用货币",
+    "Transaction Currency": "交易货币",
     "Account Balance": "账户余额",
     "Account Outstanding Balance": "账户未清余额",
     "Sub-account Balance": "子账户余额",
@@ -2140,7 +2142,7 @@
     "Modify Balance": "修改余额",
     "Expense Amount": "支出金额",
     "Income Amount": "收入金额",
-    "Transfer Out Amount": "转出金额",
+    "Transfer Out Amount": "转账金额",
     "Transfer In Amount": "转入金额",
     "Transfer In Account Name": "转入账户名",
     "Transfer In Currency": "转入货币",
@@ -2226,13 +2228,13 @@
     "Filter Description": "过滤描述",
     "How to import this file?": "如何导入该文件？",
     "How to export this file?": "如何导出该文件？",
-    "ezBookkeeping File Format": "ezBookkeeping 文件格式",
+    "ezBookkeeping File Format": "当归账本 文件格式",
     "Custom File Format": "自定义文件格式",
     "General Data Exchange Format": "通用数据交换格式",
     "General Bank Statement Format": "通用银行对账单格式",
     "Other Bank/Payment App Statement File": "其他银行/支付应用对账单文件",
     "Other Finance App File Format": "其他金融应用文件格式",
-    "ezbookkeeping Data Export File": "ezbookkeeping 数据导出文件",
+    "ezbookkeeping Data Export File": "当归账本 数据导出文件",
     "Excel Workbook File": "Excel 工作簿文件",
     "Excel Workbook File (.xlsx)": "Excel 工作簿文件 (.xlsx)",
     "Excel 97-2003 Workbook File (.xls)": "Excel 97-2003 工作簿文件 (.xls)",
@@ -2457,6 +2459,8 @@
     "Default Sort Order": "默认排序方式",
     "Timezone Used for Date Range": "时间范围使用的时区",
     "Amount": "金额",
+    "Original Amount": "原始金额",
+    "Account Amount": "账户货币金额",
     "Minimum Amount": "最小金额",
     "Maximum Amount": "最大金额",
     "Display Order": "显示顺序",
