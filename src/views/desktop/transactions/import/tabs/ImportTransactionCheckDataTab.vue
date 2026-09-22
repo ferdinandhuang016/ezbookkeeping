@@ -17,6 +17,7 @@
             :no-data-text="tt('No data to import')"
             v-model:items-per-page="countPerPage"
             v-model:page="currentPage"
+            @click="focusTableScrollContainerWhenNonEditing"
         >
             <template #header.data-table-select>
                 <v-checkbox readonly class="always-cursor-pointer"
@@ -474,6 +475,7 @@ import {
 } from '@/lib/category.ts';
 import { applyImportTransactionReplaceRules } from '@/lib/rule.ts';
 import { startDownloadFile } from '@/lib/ui/common.ts';
+import { focusTableScrollContainer } from '@/lib/ui/desktop.ts';
 
 import {
     extendMdiSemicolon
@@ -836,15 +838,8 @@ const filterMenus = computed<ImportTransactionCheckDataMenuGroup[]>(() => [
 const toolMenus = computed<ImportTransactionCheckDataMenu[]>(() => [
     {
         prependIcon: mdiTextBoxEditOutline,
-        title: tt('Batch Apply Rules'),
-        disabled: isEditing.value,
-        onClick: showBatchApplyRulesDialog
-    },
-    {
-        prependIcon: mdiTextBoxEditOutline,
         title: tt('Batch Replace Selected Expense Categories'),
         disabled: isEditing.value || selectedExpenseTransactionCount.value < 1,
-        divider: true,
         onClick: () => showBatchReplaceDialog('expenseCategory')
     },
     {
@@ -1795,7 +1790,9 @@ function showBatchReplaceDialog(type: BatchReplaceDialogDataType, allSourceTagIt
                         updated = true;
                     }
                 } else if (type === 'timezone') {
+                    const oldUtcOffset = importTransaction.utcOffset;
                     importTransaction.utcOffset = getTimezoneOffsetMinutes(importTransaction.time, result.targetItem as string);
+                    importTransaction.time = importTransaction.time - (importTransaction.utcOffset - oldUtcOffset) * 60;
                     updated = true;
                 } else if (type === 'tag') {
                     const removeIndex: number[] = [];
@@ -2201,6 +2198,14 @@ function exportData(fileType: KnownFileType): void {
     startDownloadFile(fileType.formatFileName(tt('dataExport.defaultImportCheckResultFileName')), fileType.createBlob(header + rows.join('\n')));
 }
 
+function focusTableScrollContainerWhenNonEditing(event: MouseEvent): void {
+    if (isEditing.value) {
+        return;
+    }
+
+    focusTableScrollContainer(event);
+}
+
 function onShowDateRangeError(message: string): void {
     snackbar.value?.showError(message);
 }
@@ -2235,6 +2240,7 @@ defineExpose({
     toolMenus,
     isEditing,
     canImport,
+    showBatchApplyRulesDialog,
     updateAllTransactionsIsValid,
     reset,
     setCountPerPage

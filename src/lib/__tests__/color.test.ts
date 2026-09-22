@@ -4,7 +4,7 @@ import { getContrastTextColor, getContrastIconColor } from '@/lib/color.ts';
 
 describe('getContrastTextColor', () => {
     it('returns black for a light background', () => {
-        expect(getContrastTextColor('ffcc00')).toBe('000000');
+        expect(getContrastTextColor('edddcd')).toBe('000000');
     });
 
     it('returns white for a dark background', () => {

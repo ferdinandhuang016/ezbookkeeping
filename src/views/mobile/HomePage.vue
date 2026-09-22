@@ -7,12 +7,12 @@
         <overview-dashboard :layout="layout" :loading="loading" @navigate="onNavigate" />
 
         <f7-toolbar tabbar icons bottom class="main-tabbar">
-            <f7-link class="link" href="/transaction/list">
-                <f7-icon f7="square_list"></f7-icon>
+            <f7-link class="link" href="/transaction/list" :aria-label="tt('Details')">
+                <f7-icon f7="square_list" aria-hidden="true"></f7-icon>
                 <span class="tabbar-label">{{ tt('Details') }}</span>
             </f7-link>
-            <f7-link class="link" href="/account/list">
-                <f7-icon f7="creditcard"></f7-icon>
+            <f7-link class="link" href="/account/list" :aria-label="tt('Accounts')">
+                <f7-icon f7="creditcard" aria-hidden="true"></f7-icon>
                 <span class="tabbar-label">{{ tt('Accounts') }}</span>
             </f7-link>
             <!-- "homepage-add-button" must have the "dragenabled" class, otherwise the popover disappears immediately after the second long press -->
@@ -20,21 +20,21 @@
                      href="/transaction/add"
                      :aria-label="tt('Add Transaction')"
                      @taphold="openTransactionTemplatePopover">
-                <f7-icon f7="plus_square" class="ebk-tarbar-big-icon"></f7-icon>
+                <f7-icon f7="plus_square" class="ebk-tarbar-big-icon" aria-hidden="true"></f7-icon>
             </f7-link>
-            <f7-link class="link" href="/statistic/transaction">
-                <f7-icon f7="chart_pie"></f7-icon>
+            <f7-link class="link" href="/statistic/transaction" :aria-label="tt('Statistics')">
+                <f7-icon f7="chart_pie" aria-hidden="true"></f7-icon>
                 <span class="tabbar-label">{{ tt('Statistics') }}</span>
             </f7-link>
-            <f7-link class="link" href="/settings">
-                <f7-icon f7="gear_alt"></f7-icon>
+            <f7-link class="link" href="/settings" :aria-label="tt('Settings')">
+                <f7-icon f7="gear_alt" aria-hidden="true"></f7-icon>
                 <span class="tabbar-label">{{ tt('Settings') }}</span>
             </f7-link>
         </f7-toolbar>
 
         <f7-popover class="template-popover-menu" target-el="#homepage-add-button"
                     v-model:opened="showTransactionTemplatePopover">
-            <f7-list dividers v-if="isTransactionFromAITextRecognitionEnabled() || isTransactionFromAIImageRecognitionEnabled() || (allTransactionTemplates && allTransactionTemplates.length)">
+            <f7-list dividers v-if="hasTransactionAddMenuItems">
                 <f7-list-item key="AIClipboardTextRecognition" link="#" no-chevron popover-close
                               :title="tt('AI Clipboard Text Recognition')"
                               @click="addByRecognizingClipboardText"
@@ -83,7 +83,11 @@ import { useTransactionCategoriesStore } from '@/stores/transactionCategory.ts';
 import { useTransactionTemplatesStore } from '@/stores/transactionTemplate.ts';
 import { useOverviewStore } from '@/stores/overview.ts';
 
-import { type MobileOverviewLayout, OverviewWidgetDataRequirement } from '@/core/overview_layout.ts';
+import {
+    type MobileOverviewLayout,
+    OverviewWidgetDataRequirement,
+    MobileOverviewWidgetNavigationType
+} from '@/core/overview_layout.ts';
 import { TemplateType } from '@/core/template.ts';
 import { MOBILE_OVERVIEW_WIDGET_DEFINITIONS, DEFAULT_MOBILE_OVERVIEW_LAYOUT } from '@/consts/overview_layout.ts';
 
@@ -142,8 +146,10 @@ const allTransactionTemplates = computed<TransactionTemplate[]>(() => {
     return allTemplates[TemplateType.Normal.type] || [];
 });
 
+const hasTransactionAddMenuItems = computed<boolean>(() => isTransactionFromAITextRecognitionEnabled() || isTransactionFromAIImageRecognitionEnabled() || (allTransactionTemplates.value && allTransactionTemplates.value.length > 0));
+
 function openTransactionTemplatePopover(): void {
-    if (isTransactionFromAIImageRecognitionEnabled() || (allTransactionTemplates.value && allTransactionTemplates.value.length)) {
+    if (hasTransactionAddMenuItems.value) {
         showTransactionTemplatePopover.value = true;
     }
 }
@@ -327,9 +333,13 @@ function onReceiptRecognitionChanged(result: AIImageRecognitionResult): void {
     });
 }
 
-function onNavigate(path: string): void {
-    if (path) {
+function onNavigate(type: MobileOverviewWidgetNavigationType, path?: string): void {
+    if (type === MobileOverviewWidgetNavigationType.Url && path) {
         props.f7router.navigate(path);
+    } else if (type === MobileOverviewWidgetNavigationType.AIClipboardTextRecognition) {
+        addByRecognizingClipboardText();
+    } else if (type === MobileOverviewWidgetNavigationType.AIImageRecognition) {
+        showAIReceiptImageRecognitionSheet.value = true;
     }
 }
 
