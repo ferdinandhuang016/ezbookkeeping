@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">当归账本</string>
     <string name="shortcut_add_transaction">記一筆</string>
+    <string name="shortcut_recognize_receipt">識圖記帳</string>
     <string name="widget_quick_add">記一筆</string>
     <string name="widget_summary_name">當月概要</string>
     <string name="widget_summary_description">顯示當月收入、支出、總計和同比變化</string>

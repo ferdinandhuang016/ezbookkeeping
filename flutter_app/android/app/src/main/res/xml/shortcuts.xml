@@ -10,4 +10,14 @@
             android:action="android.intent.action.VIEW"
             android:data="net.ezbookkeeping.app://transaction/add" />
     </shortcut>
+    <shortcut
+        android:shortcutId="recognize_receipt"
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/shortcut_recognize_receipt"
+        android:shortcutLongLabel="@string/shortcut_recognize_receipt">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="net.ezbookkeeping.app://ai/image/camera" />
+    </shortcut>
 </shortcuts>

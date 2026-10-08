@@ -19,9 +19,9 @@
 | R04 | `/unlock` · UnlockPage | UnlockPage | Android 安全存储／生物识别 | 错误／正确 PIN、进程重启、后台恢复、生物识别取消／失败 | API36 PIN 通过；API24 无生物硬件提示通过；其它生物识别待验 |
 | R05 | `/transaction/list` · transactions/ListPage | `transactions/transactions.dart` · TransactionListPage | S、L | 月份切换、分页、全文／日期／账户／分类／标签／金额过滤、滑动删除、复制、编辑 | E38 一级详情常驻导航及单一浮动新增通过；E44 紧凑记录、长按复制／删除和复制预填通过；E46 长按震动通过；E47 详情滚动到底自动续载通过，图库共用逻辑但图片数据未实测；E13/E14/E29–E31 三视图、筛选和滑动部分通过；其余筛选待验 |
 | R06 | `/transaction/filter/amount` · AmountFilterPage | TransactionFilterPage(amountOnly) | L | 六种金额关系、负数、整数上限、取消与清除 | E30：大于5.00应用返回3笔/59.34、反向范围拒绝、取消保留通过；其它关系/边界/清除待验 |
-| R07 | `/transaction/add` · transactions/EditPage | TransactionEditPage | S、`v1/transaction/pictures/upload.json` | 收／支／转账金额及手续费、跨币种按交易日期换算、零金额提示、草稿、图片、位置、快速保存 | 旧版离线支出/跨币种转账及重启通过；E48 新表单字段 API36 可见，手续费余额规则有业务测试；新版保存与跨币种设备操作待验；E43 自动定位与金额键盘通过；其余分支待验 |
+| R07 | `/transaction/add` · transactions/EditPage | TransactionEditPage | S、`v1/transaction/pictures/upload.json` | 收／支／转账金额及手续费、跨币种按交易日期换算、零金额提示、草稿、图片、位置、快速保存 | 旧版离线支出/跨币种转账及重启通过；E48 新表单字段 API36 可见，手续费余额规则有业务测试；E52 顶部相机按钮、底部来源选择、拍照与相册各附一张图片通过；E53 图片缩略图、放大、删除确认及离线保存重启通过；E54 顶部相机按钮移除，通过更多展开照片区并使用拍照／相册入口；服务端上传待验；E43 自动定位与金额键盘通过；E57 API36 快捷入口冷启动默认选中支出且键盘连续显示；E58 API36 312dp 键盘与启用币种先选通过；E59 键盘金额左侧代码切换 CNY／USD 且保留输入金额；E60 新增交易三个类型移除普通币种行，保留多币种信用卡的独立交易币种；E61 币种选项改为键盘内下拉框，重复点击可收起；其余分支待验 |
 | R08 | `/transaction/edit` · transactions/EditPage | TransactionEditPage | S；余额调整用 `v1/transactions/modify.json` | 编辑时间范围、附件保留、离线连续修改、远端冲突、删除后编辑 | 离线转账连续编辑/删除、并发本地采用及返回详情通过；其余待验 |
-| R09 | `/transaction/detail` · transactions/EditPage | TransactionEditPage | S、`v1/transactions/get.json` | 只读状态、编辑／删除、统一复制并重取当前时间／地点、原始与默认时区、图像预览 | E44 编辑 More 移除草稿／保存新建／模板化入口，统一复制预填及当前时间通过；保存后最新详情、相册进入和离线图片预览通过；其它操作待验 |
+| R09 | `/transaction/detail` · transactions/EditPage | TransactionEditPage | S、`v1/transactions/get.json` | 只读状态、编辑／删除、统一复制并重取当前时间／地点、原始与默认时区、图像预览 | E44 编辑 More 移除草稿／保存新建／模板化入口，统一复制预填及当前时间通过；保存后最新详情、相册进入和离线图片预览通过；E53 新缩略图已在待同步交易编辑页复验，已同步只读详情页待验；其它操作待验 |
 | R10 | `/account/list` · accounts/ListPage | `catalogs/catalogs.dart` · AccountListPage | S、`v1/accounts/move.json`、hide/delete | 单／多子账户、资产与负债、隐藏、排序、信用卡两种余额、进入明细 | E38 一级账户常驻导航与返回首页通过；API24 双子账户/隐藏部分及 API36 转账双方余额通过；E42 三列资产摘要、紧凑账户行与深浅色通过；E46 账户行长按震动及进入排序页通过；完整待验 |
 | R11 | `/account/add` · accounts/EditPage | AccountEditPage / SubAccountPage | `v1/accounts/add.json` | 分类、账户类型、图标／颜色／币种、初始余额与时间、子账户、信用卡属性 | API36 创建返回、API24 双子账户创建通过；信用卡等待验 |
 | R12 | `/account/edit` · accounts/EditPage | AccountEditPage / SubAccountPage | `v1/accounts/modify.json`、hide/delete、sub_account/delete | 更名不覆盖旧余额、已有余额只读、隐藏／删除、子账户排序、最后对账时间；余额修正进入对账 | API24 子账户隐藏/对账部分通过；完整排序/修改待验 |
@@ -76,9 +76,9 @@
 | D10 | WidgetSettingsPopup / LayoutEditorPage | OverviewLayoutPage / 组件设置 | L、C | 高度、日期范围、可见行数、账户／分类筛选、保存／取消／重置 |
 | D11 | 九种 overview/widgets | `overview/home.dart` | S、L、汇率 | 月支出／期间收支／净收入储蓄率／资产／支出进度／分类排行／账户余额／交易日历／最近交易 |
 | D12 | PieChart / TrendsBarChart / AccountBalanceTrendsBarChart | fl_chart 与原生余额条形列表 | S、对账 API | 金额／百分比、负数／零、颜色、图例隐藏、点击筛选、聚合与时区 |
-| D13 | AITextRecognitionSheet / AIImageRecognitionSheet | `system/native_features.dart` | `v1/llm/transactions/recognize_text.json`、recognize_receipt_image | 输入／剪贴板／拍照／选图、确认、取消请求、错误重试、识别后复核 |
+| D13 | AITextRecognitionSheet / AIImageRecognitionSheet | `system/native_features.dart` | `v1/llm/transactions/recognize_text.json`、recognize_receipt_image | 输入／剪贴板／拍照／选图、确认、取消请求、错误重试、识别后复核；E55 长按“识图记账”快捷项注册和禁用提示通过；E56 文字／图片识别改为提交后立即打开可编辑草稿，后台成功回填且不覆盖手改字段，离页后继续并可从长按新增菜单找回；完成态设备验收待启用 AI 的隔离服务 |
 | D14 | MapSheet | LocationPage + 同源 `/native-map` | 原地图提供商与代理 | 冷加载提示／慢加载重试、只读／点选、GPS／权限拒绝、坐标转换／显示、拒绝外域导航与非法桥消息；E43 API24/36 自动定位地点名称回填通过 |
-| D15 | ImageBox / 图片浏览器 | PicturePage / showNativeImage | 图片 upload、picture download、本地图片 | 拍照／选图／接收分享、上传质量、预览缩放、取消／删除、离线持久及重试 |
+| D15 | ImageBox / 图片浏览器 | PicturePage / showNativeImage | 图片 upload、picture download、本地图片 | 拍照／选图／接收分享、上传质量、预览缩放、取消／删除、离线持久及重试；E52 顶部相机入口和两种来源附图通过；E53 缩略图、放大、删除确认及离线重启通过；E54 顶部入口移除，更多菜单仍可展开照片区；服务端上传待验 |
 | D16 | OIDC 浏览器流程 | 系统浏览器 + app_links | oauth2/native start/exchange、oauth2/authorize | 成功、取消、错误verifier、超时、重复兑换、回调不含登录令牌 |
 | D17 | InformationSheet / 通知／确认／loading | inform / confirm / NativePage | L、认证刷新 | 后端通知、错误翻译、取消／重试、长任务加载、动画／返回设置 |
 | D18 | 浏览器导出／切换桌面／剪贴板 | FilePicker / url_launcher / Clipboard | export、服务器desktop | 文件保存成功与取消、正确前缀、剪贴板被拒、外部返回仍锁定 |
@@ -116,7 +116,7 @@
 
 | 原生入口 | Flutter 目标／数据 | 验收场景 | 状态 |
 |---|---|---|---|
-| API25+ 应用图标长按“记一笔” | `/transaction/add`；继续经过登录、重新认证和应用锁重定向 | 冷启动、已运行、锁定时点击，Activity 重建不得重复打开 | E34：API36 长按显示并进入应用锁；API24 深链冷／热启动进入编辑器；E43：API24/36 首帧与正式编辑器共用同一 352dp 金额键盘几何；E51：API36 从后台设置子页通过静态快捷项 Intent 进入时旧页未闪现，API24／实体 Launcher 待验 |
+| API25+ 应用图标长按“记一笔” | `/transaction/add`；继续经过登录、重新认证和应用锁重定向 | 冷启动、已运行、锁定时点击，Activity 重建不得重复打开 | E34：API36 长按显示并进入应用锁；API24 深链冷／热启动进入编辑器；E43：旧版 API24/36 首帧与正式编辑器共用 352dp 金额键盘几何；E51：API36 从后台设置子页通过静态快捷项 Intent 进入时旧页未闪现；E57：API36 冷启动占位与正式表单均选中支出且键盘连续显示；E58：API36 新版 312dp 键盘与数字顺序通过；E59：API36 从金额键盘左侧代码切换币种并保留金额；E60：API36 三个交易类型移除表单普通币种行；E61：API36 币种代码下方下拉框重复点击展开／收起；新版 API24／实体 Launcher 待验 |
 | 1×1“记一笔”组件 | `/transaction/add`；与快捷入口共用原生命令 | 桌面添加、点击、锁定、API24/36 尺寸 | E34：两平台注册/添加通过；API24 点击进入编辑器，API36 锁定门控通过 |
 | 4×1“本月概要”组件 | 本地有效交易；首页统计时区；默认币种换汇；收入、支出、收入减支出 | 三 Tab、截至今日的上年同期同比、方向与红绿颜色、同比增减金额、总计三等分、无基期、待同步交易、退出清空、明暗主题；主体进入首页 | E36：4×1、无品牌文字、主体进入首页及 Tab 原地切换；E37：同比截止日、四种收入／支出涨跌样式、总计三等分及 API36 深色中文标签通过；E39：固定“本月”、同比增减金额、放大总计标签与金额，并通过 API24/36 |
 | 外部“当归记账”入口 | 原生 `OPEN_HOME` 动作打开账本首页 | 已运行时从账户页、新增交易页切回首页；冷启动、应用锁、API24/实体机 | E50：API36 从“当归之家”入口将账户页与空白新增交易页切回首页；其余场景待验 |

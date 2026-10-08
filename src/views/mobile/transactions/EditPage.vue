@@ -397,6 +397,41 @@
 
             <f7-list-item
                 link="#" no-chevron
+                :header="tt('Pictures')"
+                v-if="showTransactionPictures || (transaction.pictures && transaction.pictures.length > 0)"
+            >
+                <template #footer>
+                    <f7-block class="margin-top-half no-padding no-margin" :class="{ 'readonly': submitting || uploadingPicture || removingPictureId }">
+                        <swiper-container :pagination="false" :space-between="10" :slides-per-view="'auto'" class="transaction-pictures">
+                            <swiper-slide class="transaction-picture-container" :key="picIdx"
+                                          v-for="(pictureInfo, picIdx) in transaction.pictures" @click="viewPicture(picIdx)">
+                                <div class="transaction-picture">
+                                    <image-box style="height: 100%" alt="picture" :src="getTransactionPictureUrl(pictureInfo)">
+                                        <template #error>
+                                            {{ tt('Failed to load image, please check whether the config "domain" and "root_url" are set correctly.') }}
+                                        </template>
+                                    </image-box>
+                                    <button class="picture-remove-button" type="button" :aria-label="tt('Remove Picture')"
+                                            v-if="mode === TransactionEditPageMode.Add || mode === TransactionEditPageMode.Edit"
+                                            @click.stop="removePicture(pictureInfo)">
+                                        <f7-icon f7="xmark" v-if="pictureInfo.pictureId !== removingPictureId"></f7-icon>
+                                        <f7-preloader color="white" :size="20" v-else />
+                                    </button>
+                                </div>
+                            </swiper-slide>
+                            <swiper-slide @click="showOpenPictureDialog" v-if="isTransactionPicturesEnabled() && canAddTransactionPicture">
+                                <div class="display-flex justify-content-center align-items-center transaction-picture transaction-picture-add">
+                                    <f7-icon class="picture-control-icon" f7="plus" :aria-label="tt('Add Picture')" v-if="!uploadingPicture"></f7-icon>
+                                    <f7-preloader :size="28" v-if="uploadingPicture" />
+                                </div>
+                            </swiper-slide>
+                        </swiper-container>
+                    </f7-block>
+                </template>
+            </f7-list-item>
+
+            <f7-list-item
+                link="#" no-chevron
                 class="list-item-with-header-and-title list-item-title-hide-overflow"
                 :class="{ 'readonly': mode === TransactionEditPageMode.View && !transaction.geoLocation }"
                 :header="tt('Geographic Location')"
@@ -443,46 +478,6 @@
                     <f7-block class="margin-top-half no-padding no-margin" v-else-if="!transaction.tagIds || !transaction.tagIds.length">
                         <f7-chip class="transaction-edit-tag" :text="tt('None')">
                         </f7-chip>
-                    </f7-block>
-                </template>
-            </f7-list-item>
-
-            <f7-list-item
-                link="#" no-chevron
-                :header="tt('Pictures')"
-                v-if="showTransactionPictures || (transaction.pictures && transaction.pictures.length > 0)"
-            >
-                <template #footer>
-                    <f7-block class="margin-top-half no-padding no-margin" :class="{ 'readonly': submitting || uploadingPicture || removingPictureId }">
-                        <swiper-container
-                            :pagination="false"
-                            :space-between="10"
-                            :slides-per-view="'auto'"
-                            class="transaction-pictures"
-                        >
-                            <swiper-slide class="transaction-picture-container" :key="picIdx"
-                                          v-for="(pictureInfo, picIdx) in transaction.pictures"
-                                          @click="viewOrRemovePicture(pictureInfo)">
-                                <div class="transaction-picture">
-                                    <div class="display-flex justify-content-center align-items-center transaction-picture-control-backdrop"
-                                         v-if="mode === TransactionEditPageMode.Add || mode === TransactionEditPageMode.Edit">
-                                        <f7-icon class="picture-control-icon picture-remove-icon" f7="trash" :aria-label="tt('Remove Picture')" v-if="pictureInfo.pictureId !== removingPictureId"></f7-icon>
-                                        <f7-preloader color="white" :size="28" v-if="pictureInfo.pictureId === removingPictureId" />
-                                    </div>
-                                    <image-box style="height: 100%" alt="picture" :src="getTransactionPictureUrl(pictureInfo)">
-                                        <template #error>
-                                            {{ tt('Failed to load image, please check whether the config "domain" and "root_url" are set correctly.') }}
-                                        </template>
-                                    </image-box>
-                                </div>
-                            </swiper-slide>
-                            <swiper-slide @click="showOpenPictureDialog" v-if="canAddTransactionPicture">
-                                <div class="display-flex justify-content-center align-items-center transaction-picture transaction-picture-add">
-                                    <f7-icon class="picture-control-icon" f7="plus" :aria-label="tt('Add Picture')" v-if="!uploadingPicture"></f7-icon>
-                                    <f7-preloader :size="28" v-if="uploadingPicture" />
-                                </div>
-                            </swiper-slide>
-                        </swiper-container>
                     </f7-block>
                 </template>
             </f7-list-item>
@@ -1463,12 +1458,11 @@ function uploadPicture(file: File): void {
     });
 }
 
-function viewOrRemovePicture(pictureInfo: TransactionPictureInfoBasicResponse): void {
-    if (mode.value !== TransactionEditPageMode.Add && mode.value !== TransactionEditPageMode.Edit && transaction.value.pictures && transaction.value.pictures.length) {
-        pictureBrowser.value?.open();
-        return;
-    }
+function viewPicture(index: number): void {
+    pictureBrowser.value?.open(index);
+}
 
+function removePicture(pictureInfo: TransactionPictureInfoBasicResponse): void {
     showConfirm('Are you sure you want to remove this transaction picture?', () => {
         removingPictureId.value = pictureInfo.pictureId;
         submitting.value = true;
@@ -1620,28 +1614,26 @@ init();
 }
 
 .transaction-pictures .transaction-picture-container .transaction-picture {
+    position: relative;
     width: 100%;
     height: 100%;
 }
 
-.transaction-pictures .transaction-picture-container .transaction-picture .transaction-picture-control-backdrop {
-    width: 100%;
-    height: 100%;
+.transaction-pictures .transaction-picture-container .transaction-picture .picture-remove-button {
     position: absolute;
     z-index: 10;
-    background-color: rgba(0, 0, 0, 0.4);
-    border-radius: 8px;
+    top: 4px;
+    right: 4px;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.65);
+    color: white;
 }
 
-.transaction-pictures .transaction-picture-container .transaction-picture .picture-control-icon {
-    z-index: 15;
-    font-size: var(--ebk-transaction-picture-add-icon-size);
-}
-
-.transaction-pictures .transaction-picture-container .transaction-picture .picture-remove-icon {
-    background-color: transparent;
-    color: rgba(255, 255, 255, 0.8);
-    font-size: var(--ebk-transaction-picture-remove-icon-size);
+.transaction-pictures .transaction-picture-container .transaction-picture .picture-remove-button .icon {
+    font-size: 18px;
 }
 
 .transaction-pictures .transaction-picture-container .transaction-picture img {

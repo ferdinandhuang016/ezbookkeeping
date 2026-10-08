@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show Factory, compute;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
@@ -16,19 +15,22 @@ import '../../ui/common.dart';
 import 'amap_location.dart';
 import 'map_contract.dart';
 import 'recognition_contract.dart';
+import 'recognition_draft.dart';
 
-Future<RecordData?> recognizeTransaction(
+Future<RecognitionDraft?> recognizeTransaction(
   BuildContext context, {
   String? imagePath,
   bool clipboard = false,
   bool imageRecognition = false,
-}) => Navigator.of(context).push<RecordData>(
+  bool autoPickCamera = false,
+}) => Navigator.of(context).push<RecognitionDraft>(
   nativeRoute(
     context,
     builder: (_) => _RecognitionPage(
       imagePath: imagePath,
       clipboard: clipboard,
       imageRecognition: imageRecognition || imagePath != null,
+      autoPickCamera: autoPickCamera,
     ),
   ),
 );
@@ -38,10 +40,12 @@ class _RecognitionPage extends ConsumerStatefulWidget {
     this.imagePath,
     required this.clipboard,
     required this.imageRecognition,
+    this.autoPickCamera = false,
   });
   final String? imagePath;
   final bool clipboard;
   final bool imageRecognition;
+  final bool autoPickCamera;
   @override
   ConsumerState<_RecognitionPage> createState() => _RecognitionState();
 }
@@ -50,8 +54,6 @@ class _RecognitionState extends NativeState<_RecognitionPage> {
   String text = '';
   String? imagePath;
   bool loaded = false;
-  CancelToken? cancel;
-  RecordData? result;
   final preparedImages = <File>[];
   @override
   void initState() {
@@ -70,6 +72,10 @@ class _RecognitionState extends NativeState<_RecognitionPage> {
             loaded = true;
           }).then((_) async {
             if (!mounted) return;
+            if (widget.autoPickCamera &&
+                app.config['transactionFromAIImageRecognition'] == true) {
+              await pick(ImageSource.camera);
+            }
             if (widget.clipboard &&
                 app.settings['alwaysRequireConfirmationOfClipboardContentBeforeSubmission'] ==
                     false &&
@@ -82,7 +88,6 @@ class _RecognitionState extends NativeState<_RecognitionPage> {
 
   @override
   void dispose() {
-    cancel?.cancel();
     for (final image in preparedImages) {
       unawaited(image.delete().catchError((_) => image));
     }
@@ -94,7 +99,6 @@ class _RecognitionState extends NativeState<_RecognitionPage> {
       final image = await ImagePicker().pickImage(source: source);
       if (image != null) {
         imagePath = await prepareImage(image.path);
-        result = null;
       }
     });
   }
@@ -119,63 +123,27 @@ class _RecognitionState extends NativeState<_RecognitionPage> {
 
   Future<void> recognize() async {
     FocusManager.instance.primaryFocus?.unfocus();
-    await run(() async {
-      final image = widget.imageRecognition;
-      if (app.config[image
-              ? 'transactionFromAIImageRecognition'
-              : 'transactionFromAITextRecognition'] !=
-          true) {
-        throw StateError(t('This feature is not enabled on the server'));
-      }
-      if (!image && text.trim().isEmpty) {
-        throw StateError(t('Text cannot be blank'));
-      }
-      if (image && imagePath == null) return;
-      cancel = CancelToken();
-      result = null;
-      final timeZone = app.api.timeZone;
-      dynamic response;
-      try {
-        response = await app.api.post(
-          image
-              ? 'v1/llm/transactions/recognize_receipt_image.json'
-              : 'v1/llm/transactions/recognize_text.json',
-          image
-              ? FormData.fromMap({
-                  'image': await MultipartFile.fromFile(imagePath!),
-                })
-              : {'text': text},
-          receiveTimeout: const Duration(minutes: 5),
-          cancelToken: cancel,
-        );
-      } on DioException catch (error) {
-        if (!CancelToken.isCancel(error)) rethrow;
-        if (mounted) await inform(context, t('User Canceled'));
-        return;
-      } finally {
-        cancel = null;
-      }
-      if (!mounted) return;
-      result = recognizedTransaction(
-        Map<String, dynamic>.from(response),
-        timeZone,
-      );
-    });
-  }
-
-  Future<void> useResult() async {
-    await run(() async {
-      final data = {...result!};
-      if (imagePath != null &&
-          app.config['enableTransactionPictures'] == true &&
-          app.settings['autoUploadTransactionPictureForAIRecognition'] ==
-              true) {
-        final picture = await app.stagePicture(imagePath!);
-        data['pictures'] = [picture];
-        data['pictureIds'] = [picture['pictureId']];
-      }
-      if (mounted) Navigator.pop(context, data);
-    });
+    if (app.config[widget.imageRecognition
+            ? 'transactionFromAIImageRecognition'
+            : 'transactionFromAITextRecognition'] !=
+        true) {
+      await inform(context, t('This feature is not enabled on the server'));
+      return;
+    }
+    if (!widget.imageRecognition && text.trim().isEmpty) {
+      await inform(context, t('Text cannot be blank'));
+      return;
+    }
+    if (widget.imageRecognition && imagePath == null) return;
+    final task = RecognitionDraft(
+      app: app,
+      imageRecognition: widget.imageRecognition,
+      imagePath: imagePath,
+      text: text,
+    );
+    preparedImages.removeWhere((image) => image.path == imagePath);
+    task.start();
+    if (mounted) Navigator.pop(context, task);
   }
 
   @override
@@ -216,7 +184,6 @@ class _RecognitionState extends NativeState<_RecognitionPage> {
               readOnly: busy,
               onChanged: (v) => setState(() {
                 text = v;
-                result = null;
               }),
             ),
           if (!busy && !widget.imageRecognition)
@@ -225,7 +192,6 @@ class _RecognitionState extends NativeState<_RecognitionPage> {
               if (mounted && (clipboard?.text?.trim().isNotEmpty ?? false)) {
                 setState(() {
                   text = clipboard!.text!;
-                  result = null;
                 });
               }
             }),
@@ -240,86 +206,12 @@ class _RecognitionState extends NativeState<_RecognitionPage> {
               t('Remove Image'),
               () => setState(() {
                 imagePath = null;
-                result = null;
               }),
             ),
           if (!busy && (!widget.imageRecognition || imagePath != null))
             actionButton(t('Recognize'), recognize),
-          if (busy && cancel != null)
-            actionButton(t('Cancel Recognition'), () => cancel?.cancel()),
         ],
       ),
-      if (result != null)
-        Section(
-          title: t('Recognition Result'),
-          footer: t('Review the transaction before saving.'),
-          children: [
-            ItemRow(
-              t('Type'),
-              value: t(transactionType(number(result!['type']))),
-            ),
-            ItemRow(
-              t('Amount'),
-              value: amount(
-                result!['sourceAmount'],
-                string(
-                  lookup(
-                    flatten(app.accounts, 'subAccounts'),
-                    result!['sourceAccountId'],
-                  )['currency'],
-                ),
-              ),
-            ),
-            ItemRow(
-              t('Account'),
-              value: recordName(
-                flatten(app.accounts, 'subAccounts'),
-                result!['sourceAccountId'],
-              ),
-            ),
-            ItemRow(
-              t('Category'),
-              value: recordName(
-                flatten(app.categories, 'subCategories'),
-                result!['categoryId'],
-              ),
-            ),
-            if (number(result!['type']) == 4) ...[
-              ItemRow(
-                t('Destination Account'),
-                value: recordName(
-                  flatten(app.accounts, 'subAccounts'),
-                  result!['destinationAccountId'],
-                ),
-              ),
-              ItemRow(
-                t('Destination Amount'),
-                value: amount(
-                  result!['destinationAmount'],
-                  string(
-                    lookup(
-                      flatten(app.accounts, 'subAccounts'),
-                      result!['destinationAccountId'],
-                    )['currency'],
-                  ),
-                ),
-              ),
-            ],
-            ItemRow(
-              t('Time'),
-              value: dateText(transactionDate(result!), time: true),
-            ),
-            if ((result!['tagIds'] as List? ?? []).isNotEmpty)
-              ItemRow(
-                t('Tags'),
-                subtitle: (result!['tagIds'] as List)
-                    .map((id) => recordName(app.tags, id))
-                    .join(', '),
-              ),
-            ItemRow(t('Description'), subtitle: string(result!['comment'])),
-            actionButton(t('Continue'), useResult),
-          ],
-        ),
     ],
   );
 }

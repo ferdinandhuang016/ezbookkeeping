@@ -1857,10 +1857,23 @@ Widget embeddedAmountPad(
   required ValueChanged<int> onChanged,
   required ValueChanged<int> onDone,
   bool compact = false,
+  String? currencyCode,
+  VoidCallback? onCurrencyTap,
+  List<String>? currencyCodes,
+  ValueChanged<String>? onCurrencySelected,
 }) =>
-    _AmountPad(initial, onChanged: onChanged, onDone: onDone, compact: compact);
+    _AmountPad(
+      initial,
+      onChanged: onChanged,
+      onDone: onDone,
+      compact: compact,
+      currencyCode: currencyCode,
+      onCurrencyTap: onCurrencyTap,
+      currencyCodes: currencyCodes,
+      onCurrencySelected: onCurrencySelected,
+    );
 
-const double amountPadHeight = 352;
+const double amountPadHeight = 312;
 
 class _InstantCupertinoModalPopupRoute<T> extends CupertinoModalPopupRoute<T> {
   _InstantCupertinoModalPopupRoute({
@@ -1878,11 +1891,19 @@ class _AmountPad extends StatefulWidget {
     this.onChanged,
     this.onDone,
     this.compact = false,
+    this.currencyCode,
+    this.onCurrencyTap,
+    this.currencyCodes,
+    this.onCurrencySelected,
   });
   final int initial;
   final ValueChanged<int>? onChanged;
   final ValueChanged<int>? onDone;
   final bool compact;
+  final String? currencyCode;
+  final VoidCallback? onCurrencyTap;
+  final List<String>? currencyCodes;
+  final ValueChanged<String>? onCurrencySelected;
   @override
   State<_AmountPad> createState() => _AmountPadState();
 }
@@ -1897,6 +1918,15 @@ class _AmountPadState extends State<_AmountPad> {
   String? operator;
   bool replace = true;
   String? error;
+  bool currencyMenuOpen = false;
+
+  void toggleCurrencyMenu() {
+    if (widget.currencyCodes == null || widget.onCurrencySelected == null) {
+      widget.onCurrencyTap?.call();
+      return;
+    }
+    setState(() => currencyMenuOpen = !currencyMenuOpen);
+  }
 
   int value() => accumulator != null && operator != null && !replace
       ? Money.calculate('${Money.format(accumulator!)}$operator$input')
@@ -1994,71 +2024,163 @@ class _AmountPadState extends State<_AmountPad> {
             ),
       child: Padding(
         padding: EdgeInsets.all(widget.compact ? 6 : 12),
-        child: Column(
+        child: Stack(
           children: [
-            if (!widget.compact)
-              Expanded(
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    reverse: true,
-                    child: Text(
-                      app.formatter.digits(
-                        input.replaceAll('.', app.formatter.decimalSeparator),
-                      ),
-                      style: const TextStyle(fontSize: 34, color: brand),
+            Column(
+              children: [
+                if (!widget.compact || widget.currencyCode != null)
+                  SizedBox(
+                    height: 42,
+                    child: Row(
+                      children: [
+                        if (widget.currencyCode != null)
+                          CupertinoButton(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            minimumSize: const Size(48, 42),
+                            onPressed: toggleCurrencyMenu,
+                            child: Row(
+                              children: [
+                                Text(
+                                  widget.currencyCode!,
+                                  style: const TextStyle(fontSize: 18, color: brand),
+                                ),
+                                const SizedBox(width: 3),
+                                Icon(
+                                  currencyMenuOpen
+                                      ? CupertinoIcons.chevron_up
+                                      : CupertinoIcons.chevron_down,
+                                  size: 14,
+                                  color: brand,
+                                ),
+                              ],
+                            ),
+                          ),
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              reverse: true,
+                              child: Text(
+                                app.formatter.digits(
+                                  input.replaceAll(
+                                    '.',
+                                    app.formatter.decimalSeparator,
+                                  ),
+                                ),
+                                style: const TextStyle(fontSize: 34, color: brand),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+                if (error != null)
+                  Text(
+                    app.errorText(FormatException(error!)),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(color: CupertinoColors.destructiveRed),
+                  ),
+                for (final row in [
+                  ['C', '÷', '×', '⌫'],
+                  ['7', '8', '9', '±'],
+                  ['4', '5', '6', '−'],
+                  ['1', '2', '3', '+'],
+                  ['00', '0', '.', 'Done'],
+                ])
+                  Expanded(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        for (final key in row)
+                          Expanded(
+                            child: CupertinoButton(
+                              color: key == 'Done' ? brand : null,
+                              padding: EdgeInsets.zero,
+                              minimumSize: const Size(48, 48),
+                              onPressed: () => press(key),
+                              child: key == 'Done'
+                                  ? Icon(
+                                      CupertinoIcons.check_mark,
+                                      semanticLabel: app.t('Done'),
+                                      color: CupertinoColors.white,
+                                    )
+                                  : Text(
+                                      key == '.'
+                                          ? app.formatter.decimalSeparator
+                                          : app.formatter.digits(key),
+                                      style: TextStyle(
+                                        fontSize: math.min(
+                                          key.length == 1 ? 26 : 18,
+                                          26,
+                                        ),
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+            if (currencyMenuOpen)
+              Positioned.fill(
+                top: 42,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => setState(() => currencyMenuOpen = false),
                 ),
               ),
-            if (error != null)
-              Text(
-                app.errorText(FormatException(error!)),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(color: CupertinoColors.destructiveRed),
-              ),
-            for (final row in [
-              ['C', '÷', '×', '⌫'],
-              ['1', '2', '3', '±'],
-              ['4', '5', '6', '−'],
-              ['7', '8', '9', '+'],
-              ['00', '0', '.', 'Done'],
-            ])
-              Expanded(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    for (final key in row)
-                      Expanded(
-                        child: CupertinoButton(
-                          color: key == 'Done' ? brand : null,
-                          padding: EdgeInsets.zero,
-                          minimumSize: const Size(48, 48),
-                          onPressed: () => press(key),
-                          child: key == 'Done'
-                              ? Icon(
-                                  CupertinoIcons.check_mark,
-                                  semanticLabel: app.t('Done'),
-                                  color: CupertinoColors.white,
-                                )
-                              : Text(
-                                  key == '.'
-                                      ? app.formatter.decimalSeparator
-                                      : app.formatter.digits(key),
-                                  style: TextStyle(
-                                    fontSize: math.min(
-                                      key.length == 1 ? 26 : 18,
-                                      26,
-                                    ),
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                        ),
+            if (currencyMenuOpen)
+              Positioned(
+                top: 42,
+                left: 0,
+                child: Container(
+                  width: 180,
+                  constraints: const BoxConstraints(maxHeight: 176),
+                  decoration: BoxDecoration(
+                    color: CupertinoColors.systemBackground.resolveFrom(context),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: CupertinoColors.separator.resolveFrom(context),
+                    ),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color(0x26000000),
+                        blurRadius: 12,
+                        offset: Offset(0, 4),
                       ),
-                  ],
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: ListView(
+                      shrinkWrap: true,
+                      padding: EdgeInsets.zero,
+                      children: [
+                        for (final code in widget.currencyCodes!)
+                          CupertinoButton(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            minimumSize: const Size(180, 44),
+                            onPressed: () {
+                              setState(() => currencyMenuOpen = false);
+                              widget.onCurrencySelected!(code);
+                            },
+                            child: Row(
+                              children: [
+                                Expanded(child: Text(code)),
+                                if (code == widget.currencyCode)
+                                  const Icon(CupertinoIcons.check_mark, size: 18),
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
           ],

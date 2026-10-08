@@ -85,7 +85,7 @@
                         <v-tab value="map" :disabled="!transaction.geoLocation" v-if="type === TransactionEditPageType.Transaction && !!getMapProvider()">
                             <span>{{ tt('Location on Map') }}</span>
                         </v-tab>
-                        <v-tab value="pictures" :disabled="mode !== TransactionEditPageMode.Add && mode !== TransactionEditPageMode.Edit && (!transaction.pictures || !transaction.pictures.length)" v-if="type === TransactionEditPageType.Transaction && isTransactionPicturesEnabled()">
+                        <v-tab value="pictures" :disabled="mode !== TransactionEditPageMode.Add && mode !== TransactionEditPageMode.Edit && !transaction.pictures?.length" v-if="type === TransactionEditPageType.Transaction && (isTransactionPicturesEnabled() || transaction.pictures?.length)">
                             <span>{{ tt('Pictures') }}</span>
                         </v-tab>
                     </v-tabs>
@@ -409,10 +409,9 @@
                     </v-window-item>
                     <v-window-item value="pictures">
                         <v-row class="transaction-pictures align-content-start ma-0 pt-3" :class="{ 'readonly': submitting || uploadingPicture || removingPictureId }">
-                            <v-col :key="picIdx" cols="6" md="3" v-for="(pictureInfo, picIdx) in transaction.pictures">
-                                <v-avatar rounded="lg" variant="tonal" size="160"
-                                          class="cursor-pointer transaction-picture"
-                                          color="rgba(0,0,0,0)" @click="viewOrRemovePicture(pictureInfo)">
+                            <v-col :key="pictureInfo.pictureId" cols="6" md="3" v-for="pictureInfo in transaction.pictures">
+                                <v-avatar rounded="lg" variant="tonal" size="160" class="cursor-pointer transaction-picture"
+                                          color="rgba(0,0,0,0)" :aria-label="tt('View')" @click="viewPicture(pictureInfo)">
                                     <v-img :src="getTransactionPictureUrl(pictureInfo)">
                                         <template #placeholder>
                                             <div class="d-flex align-center justify-center bg-light-primary">
@@ -426,13 +425,13 @@
                                         </template>
                                     </v-img>
                                     <div class="picture-control-icon" :class="{ 'show-control-icon': pictureInfo.pictureId === removingPictureId }">
-                                        <v-icon size="64" :icon="mdiTrashCanOutline" :aria-label="tt('Remove Picture')" v-if="(mode === TransactionEditPageMode.Add || mode === TransactionEditPageMode.Edit) && pictureInfo.pictureId !== removingPictureId"/>
+                                        <v-icon size="64" :icon="mdiTrashCanOutline" :aria-label="tt('Remove Picture')" v-if="(mode === TransactionEditPageMode.Add || mode === TransactionEditPageMode.Edit) && pictureInfo.pictureId !== removingPictureId" @click.stop="removePicture(pictureInfo)"/>
                                         <v-progress-circular color="grey-500" indeterminate size="48" v-if="(mode === TransactionEditPageMode.Add || mode === TransactionEditPageMode.Edit) && pictureInfo.pictureId === removingPictureId"></v-progress-circular>
                                         <v-icon size="64" :icon="mdiFullscreen" :aria-label="tt('View')" v-if="mode !== TransactionEditPageMode.Add && mode !== TransactionEditPageMode.Edit"/>
                                     </div>
                                 </v-avatar>
                             </v-col>
-                            <v-col cols="6" md="3" v-if="canAddTransactionPicture">
+                            <v-col cols="6" md="3" v-if="isTransactionPicturesEnabled() && canAddTransactionPicture">
                                 <v-avatar rounded="lg" variant="tonal" size="160"
                                           class="transaction-picture transaction-picture-add"
                                           :class="{ 'enabled': !submitting, 'cursor-pointer': !submitting }"
@@ -1290,12 +1289,11 @@ function uploadPicture(file: File): void {
     });
 }
 
-function viewOrRemovePicture(pictureInfo: TransactionPictureInfoBasicResponse): void {
-    if (mode.value !== TransactionEditPageMode.Add && mode.value !== TransactionEditPageMode.Edit) {
-        window.open(getTransactionPictureUrl(pictureInfo), '_blank');
-        return;
-    }
+function viewPicture(pictureInfo: TransactionPictureInfoBasicResponse): void {
+    window.open(getTransactionPictureUrl(pictureInfo), '_blank');
+}
 
+function removePicture(pictureInfo: TransactionPictureInfoBasicResponse): void {
     confirmDialog.value?.open('Are you sure you want to remove this transaction picture?').then(() => {
         removingPictureId.value = pictureInfo.pictureId;
         submitting.value = true;
@@ -1404,11 +1402,13 @@ defineExpose({
     width: 100% !important;
     height: 100% !important;
     background-color: rgba(0, 0, 0, 0.4);
+    pointer-events: none;
 }
 
 .transaction-picture .picture-control-icon > i.v-icon {
     background-color: transparent;
     color: rgba(255, 255, 255, 0.8);
+    pointer-events: auto;
 }
 
 .transaction-picture:hover .picture-control-icon,

@@ -74,6 +74,7 @@ class AppController extends ChangeNotifier with WidgetsBindingObserver {
   bool _nativeLaunchPrepared = false;
   String? _pendingNativeRoute;
   int _homeLaunchId = 0;
+  int _aiImageLaunchId = 0;
   JsonMap _translations = {};
   JsonMap _englishTranslations = {};
   JsonMap _formattingReference = {};
@@ -245,6 +246,10 @@ class AppController extends ChangeNotifier with WidgetsBindingObserver {
       notifyListeners();
     } else if (route == '/') {
       _pendingNativeRoute = '/?homeLaunch=${++_homeLaunchId}';
+      notifyListeners();
+    } else if (route == '/ai/image/camera') {
+      _pendingNativeRoute =
+          '/ai/image/camera?launcher=true&launchId=${++_aiImageLaunchId}';
       notifyListeners();
     }
   }

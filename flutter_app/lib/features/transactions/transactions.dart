@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart' show Colors, IconButton;
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,6 +13,7 @@ import '../../core/formatting.dart';
 import '../../ui/common.dart';
 import '../../ui/quick_add_startup.dart';
 import '../system/native_features.dart';
+import '../system/recognition_draft.dart';
 import '../system/amap_location.dart';
 import '../system/map_contract.dart';
 import 'transaction_totals.dart';
@@ -2322,10 +2324,12 @@ class TransactionEditPage extends ConsumerStatefulWidget {
     required this.route,
     this.query = const {},
     this.initialData,
+    this.recognitionDraft,
   });
   final String route;
   final Map<String, String> query;
   final RecordData? initialData;
+  final RecognitionDraft? recognitionDraft;
   @override
   ConsumerState<TransactionEditPage> createState() => _TransactionEditState();
 }
@@ -2407,10 +2411,17 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
   String gpsStatus = '';
   bool consumingShares = false;
   bool shareReadFailed = false;
+  String? selectedSourceCurrency;
+  String? appliedRecognitionStatus;
+  Future<void> draftWrites = Future<void>.value();
+  final picturePaths = <String, Future<String?>>{};
   final descriptionFocusNode = FocusNode();
   bool get template => widget.route.startsWith('/template');
   bool get embeddedAmountPadEnabled =>
-      !template && data['id'] == null && widget.route.endsWith('/add');
+      !template &&
+      recognitionDraftId == null &&
+      data['id'] == null &&
+      widget.route.endsWith('/add');
   bool get readOnly =>
       widget.route.endsWith('/detail') ||
       !template &&
@@ -2424,13 +2435,24 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
   bool get scheduled => template && number(data['templateType']) == 2;
   bool get autoDraftAllowed =>
       !template &&
+      recognitionDraftId == null &&
       widget.route.endsWith('/add') &&
       widget.query['noTransactionDraft'] != 'true' &&
       widget.initialData == null &&
       widget.query['id'] == null &&
       widget.query['templateId'] == null;
-  String get draftKey =>
-      'transactionDraft:${widget.route}:${widget.initialData != null ? 'recognized' : widget.query['id'] ?? 'new'}';
+  String? get recognitionDraftId =>
+      widget.recognitionDraft?.id ?? widget.query['aiDraftId'];
+  String get draftKey => recognitionDraftId == null
+      ? 'transactionDraft:${widget.route}:${widget.initialData != null ? 'recognized' : widget.query['id'] ?? 'new'}'
+      : RecognitionDraft.dataKey(recognitionDraftId!);
+  Map<String, dynamic> get recognitionMeta => recognitionDraftId == null
+      ? {}
+      : Map<String, dynamic>.from(
+          app.settings[RecognitionDraft.metaKey(recognitionDraftId!)] as Map? ??
+              {},
+        );
+  bool get recognizing => recognitionMeta['status'] == 'recognizing';
   @override
   void initState() {
     super.initState();
@@ -2459,6 +2481,7 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
       'scheduledFrequency': '',
     };
     applyQuery();
+    amountPadOpen = widget.query['launcher'] == 'true' && embeddedAmountPadEnabled;
     picturesExpanded =
         app.settings['alwaysShowTransactionPicturesInMobileTransactionEditPage'] ==
         true;
@@ -2475,9 +2498,16 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
     final id = widget.query['id'];
     final templateId = widget.query['templateId'];
     Future<void> loadData() async {
-      if (widget.initialData != null) {
+      if (recognitionDraftId != null &&
+          app.settings[draftKey] is String &&
+          string(app.settings[draftKey]).isNotEmpty) {
+        data = {
+          ...data,
+          ...Map<String, dynamic>.from(jsonDecode(app.settings[draftKey] as String)),
+        };
+      } else if (widget.initialData != null) {
         data = {...data, ...widget.initialData!};
-        data.remove('id');
+        if (widget.route.endsWith('/add')) data.remove('id');
         if (!widget.initialData!.containsKey('utcOffset')) {
           data['utcOffset'] = app.formatter
               .localDate(
@@ -2534,6 +2564,17 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
       data['pictureIds'] = records(data['pictures'])
           .map((picture) => string(picture['pictureId']))
           .toList();
+      if (widget.recognitionDraft != null) {
+        await widget.recognitionDraft!.initialize(data, widget.route);
+      } else if (recognitionDraftId != null &&
+          recognizing &&
+          !RecognitionDraft.active.containsKey(recognitionDraftId)) {
+        await app.setPreference(RecognitionDraft.metaKey(recognitionDraftId!), {
+          ...recognitionMeta,
+          'status': 'failed',
+          'error': t('Recognition failed'),
+        });
+      }
       if (mounted) setState(() => ready = true);
     }
 
@@ -2546,6 +2587,8 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
         mounted &&
         !template &&
         widget.route.endsWith('/add') &&
+        recognitionDraftId == null &&
+        !amountPadOpen &&
         widget.query['quickAmount'] != 'true' &&
         !launcherAmountEntered;
     final shouldAutoLocate =
@@ -2706,6 +2749,26 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
         app.settings['autoSaveTransactionDraft'] == 'enabled') {
       app.setPreference(draftKey, jsonEncode(data));
     }
+    if (recognitionDraftId != null) {
+      final task = RecognitionDraft.active[recognitionDraftId];
+      if (task != null) {
+        unawaited(task.recordEdit(key, value));
+      } else {
+        final snapshot = jsonEncode(data);
+        draftWrites = draftWrites.then((_) async {
+          final meta = recognitionMeta;
+          final edited =
+              (meta['editedFields'] as List? ?? []).cast<String>().toSet()
+                ..add(key);
+          await app.setPreference(RecognitionDraft.metaKey(recognitionDraftId!), {
+            ...meta,
+            'editedFields': edited.toList(),
+          });
+          await app.setPreference(draftKey, snapshot);
+        });
+        unawaited(draftWrites);
+      }
+    }
     if (type == 4 &&
         {'sourceAmount', 'sourceAccountId', 'destinationAccountId', 'time', 'utcOffset', 'type'}.contains(key)) {
       unawaited(recalculateTransferDestinationAmount());
@@ -2790,7 +2853,10 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
     recalculateAccountAmount();
   }
 
-  Future<void> editSourceAmount({bool instant = false}) async {
+  Future<void> editSourceAmount({
+    bool instant = false,
+    bool openCategoryAfter = false,
+  }) async {
     if (!mounted || !ready || readOnly || amountPadOpen) return;
     if (embeddedAmountPadEnabled) {
       setState(() => amountPadOpen = true);
@@ -2803,7 +2869,12 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
         number(data['sourceAmount']),
         instant: instant,
       );
-      if (value != null && mounted) change('sourceAmount', value);
+      if (value != null && mounted) {
+        change('sourceAmount', value);
+        if (openCategoryAfter && type != 1) {
+          await selectCategory(openAccountAfter: true);
+        }
+      }
     } finally {
       amountPadOpen = false;
     }
@@ -2934,6 +3005,29 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
   String accountCurrency(String id) =>
       string(lookup(flatten(app.accounts, 'subAccounts'), id)['currency']);
 
+  String get sourceCurrency {
+    final currency = accountCurrency(string(data['sourceAccountId']));
+    return currency.isNotEmpty
+        ? currency
+        : selectedSourceCurrency ?? app.formatter.defaultCurrency;
+  }
+
+  List<String> get sourceCurrencyCodes => effectiveCurrencyCodes(
+    settings: app.settings,
+    user: app.user,
+    accounts: app.accounts,
+    extra: [sourceCurrency],
+  ).toList()..sort();
+
+  List<RecordData> sourceAccountChoices() {
+    final accounts = leafAccounts(app);
+    return selectedSourceCurrency == null
+        ? accounts
+        : accounts
+              .where((item) => string(item['currency']) == selectedSourceCurrency)
+              .toList();
+  }
+
   RecordData get sourceAccount =>
       lookup(flatten(app.accounts, 'subAccounts'), data['sourceAccountId']);
 
@@ -3037,31 +3131,40 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
   }
 
   Future<void> selectSourceCurrency() async {
-    final currencies =
-        leafAccounts(app)
-            .map((item) => string(item['currency']))
-            .where((currency) => currency.isNotEmpty && currency != '---')
-            .toSet()
-            .toList()
-          ..sort();
-    if (currencies.isEmpty) return;
-    final current = accountCurrency(string(data['sourceAccountId']));
+    final choices = {
+      for (final item in await currencyChoices(allowed: sourceCurrencyCodes.toSet()))
+        string(item['id']): string(item['name']),
+    };
+    if (!mounted) return;
     final selected = await openSelector(
       (nonBlocking) => choose<String>(
         context,
         t('Currency'),
-        {for (final currency in currencies) currency: currency},
-        selected: current,
+        choices,
+        selected: sourceCurrency,
         nonBlocking: nonBlocking,
       ),
     );
-    if (!mounted || selected == null || selected == current) return;
+    if (selected != null) await applySourceCurrency(selected);
+  }
+
+  Future<void> applySourceCurrency(String selected) async {
+    if (!mounted ||
+        selected == sourceCurrency && string(data['sourceAccountId']) != '0') {
+      return;
+    }
+    setState(() => selectedSourceCurrency = selected);
     final compatible = leafAccounts(app)
         .where((item) => string(item['currency']) == selected)
         .toList();
+    if (accountCurrency(string(data['sourceAccountId'])) != selected) {
+      change('sourceAccountId', '0');
+      await recalculateAccountAmount();
+    }
     if (compatible.length == 1) {
       change('sourceAccountId', compatible.single['id']);
-    } else {
+      await recalculateAccountAmount();
+    } else if (compatible.isNotEmpty) {
       await selectAccount('sourceAccountId', 'Account', compatible);
     }
   }
@@ -3084,9 +3187,20 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
       final selected = await selectAccount(
         'sourceAccountId',
         'Account',
-        leafAccounts(app),
+        sourceAccountChoices(),
       );
-      if (selected) await focusDescription();
+      if (selected && type == 4) {
+        final destinationSelected = await selectAccount(
+          'destinationAccountId',
+          'Destination Account',
+          leafAccounts(app)
+              .where((item) => item['id'] != data['sourceAccountId'])
+              .toList(),
+        );
+        if (destinationSelected) await focusDescription();
+      } else if (selected) {
+        await focusDescription();
+      }
     }
   }
 
@@ -3107,6 +3221,9 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
       ),
     );
     if (chosen == null || !mounted) return false;
+    if (key == 'sourceAccountId') {
+      selectedSourceCurrency = accountCurrency(chosen);
+    }
     change(key, chosen);
     if (key == 'sourceAccountId') await recalculateAccountAmount();
     return true;
@@ -3120,7 +3237,16 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
   }
 
   Future<void> save({bool again = false, bool keepData = false}) async {
-    if (busy || closing) return;
+    if (busy || closing || recognizing) return;
+    if (recognitionDraftId != null) {
+      final task = RecognitionDraft.active[recognitionDraftId];
+      if (task != null) {
+        await task.persistEdited(data);
+      } else {
+        await draftWrites;
+      }
+      if (!mounted) return;
+    }
     if (!template &&
         number(data['sourceAmount']) == 0 &&
         !await confirm(
@@ -3188,10 +3314,31 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
         await app.saveTransaction(body);
       }
       await app.setPreference(draftKey, '');
+      if (recognitionDraftId != null) {
+        await app.setPreference(RecognitionDraft.metaKey(recognitionDraftId!), null);
+        RecognitionDraft.active[recognitionDraftId!]?.dispose();
+      }
       saved = true;
       dirty = false;
     });
     if (result && mounted) {
+      if (recognitionDraftId != null && (again || keepData)) {
+        Navigator.of(context).pushReplacement(
+          nativeRoute(
+            context,
+            builder: (_) => TransactionEditPage(
+              route: '/transaction/add',
+              initialData: keepData
+                  ? duplicateTransactionData(
+                      data,
+                      now: app.formatter.localDate(DateTime.now()),
+                    )
+                  : null,
+            ),
+          ),
+        );
+        return;
+      }
       if (again || keepData) {
         setState(() {
           data.remove('id');
@@ -3218,6 +3365,7 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
               'timeZone': app.settings['timeZone'],
             });
             applyQuery();
+            selectedSourceCurrency = null;
             gpsAttempted = false;
           }
           saved = false;
@@ -3268,6 +3416,84 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
     });
   }
 
+  Future<void> removePicture(RecordData picture) async {
+    if (!await confirm(
+      context,
+      t('Are you sure you want to remove this transaction picture?'),
+      destructive: true,
+    ) || !mounted) {
+      return;
+    }
+    final id = picture['pictureId'];
+    change(
+      'pictures',
+      records(data['pictures']).where((item) => item['pictureId'] != id).toList(),
+    );
+    change(
+      'pictureIds',
+      (data['pictureIds'] as List? ?? []).where((value) => value != id).toList(),
+    );
+    picturePaths.remove(string(id));
+  }
+
+  Widget pictureThumbnail(RecordData picture) {
+    final id = string(picture['pictureId']);
+    final localPath = string(picture['localPath']);
+    return SizedBox(
+      width: 88,
+      height: 88,
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: () => Navigator.of(context).push(
+                nativeRoute(
+                  context,
+                  builder: (_) => PicturePage(picture: picture),
+                ),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: FutureBuilder<String?>(
+                  future: picturePaths.putIfAbsent(
+                    id,
+                    () => localPath.isNotEmpty
+                        ? Future.value(localPath)
+                        : app.picturePath(id),
+                  ),
+                  builder: (context, snapshot) => snapshot.data != null
+                      ? Image.file(
+                          File(snapshot.data!),
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, _, _) =>
+                              const Icon(CupertinoIcons.photo),
+                        )
+                      : snapshot.connectionState == ConnectionState.done
+                          ? const Icon(CupertinoIcons.photo)
+                          : const Center(child: CupertinoActivityIndicator()),
+                ),
+              ),
+            ),
+          ),
+          if (!readOnly)
+            Positioned(
+              top: 0,
+              right: 0,
+              child: IconButton(
+                tooltip: t('Remove Picture'),
+                onPressed: () => removePicture(picture),
+                icon: const Icon(CupertinoIcons.xmark, size: 16),
+                style: IconButton.styleFrom(
+                  backgroundColor: Colors.black54,
+                  foregroundColor: Colors.white,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
   Future<void> location() async {
     final selected = await chooseLocation(
       context,
@@ -3307,7 +3533,9 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
           !picturesExpanded)
         'pictures': t('Add Picture'),
       if (!template && data['id'] != null) 'copy': t('Copy'),
-      if (data['id'] != null && (template || app.canEditTransaction(data)))
+      if (!recognizing &&
+          data['id'] != null &&
+          (template || app.canEditTransaction(data)))
         'delete': t('Delete'),
     });
     if (!mounted || action == null) return;
@@ -3338,11 +3566,27 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
       return;
     }
     if (action == 'recognize') {
-      final result = await recognizeTransaction(context, clipboard: true);
-      if (result != null && mounted) {
-        for (final entry in result.entries) {
-          change(entry.key, entry.value);
+      final draft = await recognizeTransaction(context, clipboard: true);
+      if (draft != null && !mounted) {
+        draft.dispose();
+        return;
+      }
+      if (draft != null) {
+        if (autoDraftAllowed) await app.setPreference(draftKey, '');
+        if (!mounted) {
+          draft.dispose();
+          return;
         }
+        Navigator.of(context).pushReplacement(
+          nativeRoute(
+            context,
+            builder: (_) => TransactionEditPage(
+              route: widget.route,
+              initialData: {...data},
+              recognitionDraft: draft,
+            ),
+          ),
+        );
       }
       return;
     }
@@ -3382,7 +3626,14 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
           await app.deleteTransaction(string(data['id']));
         }
       });
-      if (result && mounted) await finishAndClose();
+      if (result && mounted) {
+        if (recognitionDraftId != null) {
+          await app.setPreference(draftKey, '');
+          await app.setPreference(RecognitionDraft.metaKey(recognitionDraftId!), null);
+          RecognitionDraft.active[recognitionDraftId!]?.dispose();
+        }
+        await finishAndClose();
+      }
     }
   }
 
@@ -3408,6 +3659,17 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
 
   Future<void> leavePage() async {
     if (closing) return;
+    if (recognitionDraftId != null) {
+      final task = RecognitionDraft.active[recognitionDraftId];
+      if (task != null) {
+        await task.persistEdited(data);
+      } else {
+        await draftWrites;
+        await app.setPreference(draftKey, jsonEncode(data));
+      }
+      await finishAndClose();
+      return;
+    }
     final mode = string(app.settings['autoSaveTransactionDraft']);
     if (autoDraftAllowed && mode == 'enabled') {
       await app.setPreference(draftKey, jsonEncode(data));
@@ -3469,6 +3731,21 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
             .toList();
       }
     }
+    final aiMeta = recognitionMeta;
+    final aiStatus = string(aiMeta['status']);
+    if (ready &&
+        aiStatus == 'ready' &&
+        appliedRecognitionStatus != aiStatus &&
+        app.settings[draftKey] is String) {
+      final updated = Map<String, dynamic>.from(
+        jsonDecode(app.settings[draftKey] as String),
+      );
+      for (final field in (aiMeta['editedFields'] as List? ?? []).cast<String>()) {
+        updated[field] = data[field];
+      }
+      data = updated;
+    }
+    appliedRecognitionStatus = aiStatus;
     if (app.hasSharedPictures &&
         !consumingShares &&
         !shareReadFailed &&
@@ -3502,7 +3779,7 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
       color: brand,
       borderRadius: BorderRadius.circular(24),
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 13),
-      onPressed: busy || closing || !ready ? null : quickSave,
+      onPressed: busy || closing || !ready || recognizing ? null : quickSave,
       child: Text(
         quickTitle,
         style: const TextStyle(color: CupertinoColors.white),
@@ -3537,6 +3814,9 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
                 number(data['sourceAmount']),
                 onChanged: updateEmbeddedAmount,
                 onDone: completeEmbeddedAmount,
+                currencyCode: sourceCurrency,
+                currencyCodes: sourceCurrencyCodes,
+                onCurrencySelected: applySourceCurrency,
               )
             : !readOnly && quickStyle == 1
             ? SizedBox(
@@ -3550,6 +3830,9 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
                 onChanged: updateEmbeddedAmount,
                 onDone: completeEmbeddedAmount,
                 compact: true,
+                currencyCode: sourceCurrency,
+                currencyCodes: sourceCurrencyCodes,
+                onCurrencySelected: applySourceCurrency,
               )
             : null,
         floating: embeddedAmountPadEnabled && amountPadOpen
@@ -3572,10 +3855,42 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
           children: [
             iconButton(CupertinoIcons.ellipsis, t('More'), more),
             if (!readOnly)
-              iconButton(CupertinoIcons.check_mark, t('Save'), save),
+              iconButton(
+                CupertinoIcons.check_mark,
+                t('Save'),
+                recognizing ? null : save,
+              ),
           ],
         ),
         children: [
+          if (aiStatus == 'recognizing')
+            Section(
+              children: [
+                ItemRow(
+                  t('Recognizing'),
+                  trailing: const CupertinoActivityIndicator(),
+                ),
+                if (RecognitionDraft.active[recognitionDraftId] != null)
+                  ItemRow(
+                    t('Cancel Recognition'),
+                    onTap: () => RecognitionDraft.active[recognitionDraftId]!
+                        .cancelRecognition(),
+                  ),
+              ],
+            ),
+          if (aiStatus == 'failed')
+            Section(
+              footer: string(aiMeta['error']),
+              children: [
+                ItemRow(t('Recognition failed')),
+                if (RecognitionDraft.active[recognitionDraftId] != null)
+                  ItemRow(
+                    t('Retry'),
+                    onTap: () => RecognitionDraft.active[recognitionDraftId]!
+                        .retry(),
+                  ),
+              ],
+            ),
           if (shareReadFailed)
             Section(
               children: [
@@ -3613,7 +3928,7 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
                         child: Text(t(transactionType(value))),
                       ),
                   },
-                  onValueChanged: (value) {
+                  onValueChanged: (value) async {
                     if (!readOnly && value != null) {
                       change('type', value);
                       change(
@@ -3621,6 +3936,7 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
                         leafCategories(app, value).firstOrNull?['id'] ?? '0',
                       );
                       recalculateAccountAmount();
+                      await editSourceAmount(openCategoryAfter: true);
                     }
                   },
                 ),
@@ -3657,12 +3973,7 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
                       ? '••••'
                       : amount(
                           data['sourceAmount'],
-                          string(
-                            lookup(
-                              accounts,
-                              data['sourceAccountId'],
-                            )['currency'],
-                          ),
+                          sourceCurrency,
                         ),
                   color: amountColor(app, type, context),
                   onTap: readOnly ? null : () => editSourceAmount(),
@@ -3672,12 +3983,7 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
                     t('Service Charge'),
                     value: amount(
                       data['serviceCharge'],
-                      string(
-                        lookup(
-                          accounts,
-                          data['sourceAccountId'],
-                        )['currency'],
-                      ),
+                      sourceCurrency,
                     ),
                     color: brand,
                     onTap: readOnly
@@ -3710,7 +4016,7 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
                       : () => selectAccount(
                           'sourceAccountId',
                           'Account',
-                          leafAccounts(app),
+                          sourceAccountChoices(),
                         ),
                 ),
                 if (multiCurrencyCreditCard)
@@ -3719,10 +4025,10 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
                     value: transactionCurrency,
                     onTap: readOnly ? null : selectTransactionCurrency,
                   )
-                else
+                else if (!embeddedAmountPadEnabled)
                   ItemRow(
                     t('Currency'),
-                    value: accountCurrency(string(data['sourceAccountId'])),
+                    value: sourceCurrency,
                     onTap: readOnly || type == 1 && data['id'] != null
                         ? null
                         : selectSourceCurrency,
@@ -3833,6 +4139,39 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
                   ),
               ],
             ),
+            if (!template &&
+                (app.config['enableTransactionPictures'] == true &&
+                        picturesExpanded ||
+                    records(data['pictures']).isNotEmpty))
+              Section(
+                title: t('Pictures'),
+                children: [
+                  if (records(data['pictures']).isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          for (final picture in records(data['pictures']))
+                            pictureThumbnail(picture),
+                        ],
+                      ),
+                    ),
+                  if (!readOnly && app.config['enableTransactionPictures'] == true)
+                    ItemRow(
+                      t('Take Photo'),
+                      leading: const Icon(CupertinoIcons.camera),
+                      onTap: () => picture(ImageSource.camera),
+                    ),
+                  if (!readOnly && app.config['enableTransactionPictures'] == true)
+                    ItemRow(
+                      t('Choose Photo'),
+                      leading: const Icon(CupertinoIcons.photo_on_rectangle),
+                      onTap: () => picture(ImageSource.gallery),
+                    ),
+                ],
+              ),
             if (!template)
               Section(
                 title: t('Geographic Location'),
@@ -3868,66 +4207,6 @@ class _TransactionEditState extends NativeState<TransactionEditPage> {
                         change('geoLocation', null);
                         change('geoLocationName', null);
                       },
-                    ),
-                ],
-              ),
-            if (!template &&
-                (app.config['enableTransactionPictures'] == true &&
-                        picturesExpanded ||
-                    records(data['pictures']).isNotEmpty))
-              Section(
-                title: t('Pictures'),
-                children: [
-                  for (final picture in records(data['pictures']))
-                    ItemRow(
-                      t('Picture'),
-                      subtitle:
-                          string(picture['pictureId']).startsWith('local:')
-                          ? t('Pending upload')
-                          : null,
-                      leading: const Icon(CupertinoIcons.photo),
-                      onTap: () => Navigator.of(context).push(
-                        nativeRoute(
-                          context,
-                          builder: (_) => PicturePage(picture: picture),
-                        ),
-                      ),
-                      trailing: readOnly
-                          ? null
-                          : iconButton(
-                              CupertinoIcons.minus_circle,
-                              t('Remove'),
-                              () {
-                                change(
-                                  'pictures',
-                                  records(data['pictures'])
-                                      .where(
-                                        (item) =>
-                                            item['pictureId'] !=
-                                            picture['pictureId'],
-                                      )
-                                      .toList(),
-                                );
-                                change(
-                                  'pictureIds',
-                                  (data['pictureIds'] as List? ?? [])
-                                      .where((id) => id != picture['pictureId'])
-                                      .toList(),
-                                );
-                              },
-                            ),
-                    ),
-                  if (!readOnly)
-                    ItemRow(
-                      t('Take Photo'),
-                      leading: const Icon(CupertinoIcons.camera),
-                      onTap: () => picture(ImageSource.camera),
-                    ),
-                  if (!readOnly)
-                    ItemRow(
-                      t('Choose Photo'),
-                      leading: const Icon(CupertinoIcons.photo_on_rectangle),
-                      onTap: () => picture(ImageSource.gallery),
                     ),
                 ],
               ),

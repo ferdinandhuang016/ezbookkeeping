@@ -1,9 +1,10 @@
 param(
     [string]$ImageName = "ezbookkeeping",
-    [string]$Version = "2.0.0-danggui",
+    [string]$Version = "",
     [string]$OutputDirectory = "tmp",
     [string]$Platform = "linux/amd64",
-    [string]$SkipTests = "TestGenerateUuids_30TimesIn3Seconds"
+    [string]$SkipTests = "TestGenerateUuids_30TimesIn3Seconds",
+    [string]$GoProxy = ""
 )
 
 Set-StrictMode -Version Latest
@@ -32,6 +33,10 @@ if (-not (Test-Path -LiteralPath $sourceDockerfile) -or -not (Test-Path -Literal
 }
 
 $applicationVersion = (Get-Content -LiteralPath $packageJson -Raw | ConvertFrom-Json).version
+
+if (-not $Version) {
+    $Version = "$applicationVersion-danggui"
+}
 
 if (-not $Version.StartsWith("$applicationVersion-")) {
     throw "Image version '$Version' must retain application version '$applicationVersion'."
@@ -73,6 +78,16 @@ try {
         "RUN sed -i 's/\r$//' /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh"
     )
 
+    if ($GoProxy) {
+        $backendCommand = "RUN ./build.sh backend"
+
+        if (-not $dockerfileContent.Contains($backendCommand)) {
+            throw "Expected backend build command was not found in Dockerfile."
+        }
+
+        $dockerfileContent = $dockerfileContent.Replace($backendCommand, "ARG GOPROXY`n$backendCommand")
+    }
+
     $ignoreContent = @(
         "node_modules"
         "flutter_app"
@@ -105,6 +120,10 @@ try {
 
     if ($SkipTests) {
         $buildArguments += @("--build-arg", "SKIP_TESTS=$SkipTests")
+    }
+
+    if ($GoProxy) {
+        $buildArguments += @("--build-arg", "GOPROXY=$GoProxy")
     }
 
     $buildArguments += $repoRoot

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/services.dart';
 
 import '../ui/common.dart';
@@ -5,10 +7,12 @@ import 'catalogs/catalogs.dart';
 import 'overview/home.dart';
 import 'settings/mobile_settings.dart';
 import 'statistics/statistics.dart';
+import 'system/native_features.dart';
 import 'transactions/transactions.dart';
 
 Widget mobilePage(String route, Map<String, String> query) => switch (route) {
   '/' => const PrimaryShell(initialIndex: 2),
+  '/ai/image/camera' => _AIImageShortcutPage(key: ValueKey(query['launchId'])),
   '/transaction/list' =>
     query.isEmpty
         ? const PrimaryShell(initialIndex: 0)
@@ -44,6 +48,60 @@ Widget mobilePage(String route, Map<String, String> query) => switch (route) {
   '/settings' => const PrimaryShell(initialIndex: 4),
   _ => settingsPage(route, query),
 };
+
+class _AIImageShortcutPage extends ConsumerStatefulWidget {
+  const _AIImageShortcutPage({super.key});
+
+  @override
+  ConsumerState<_AIImageShortcutPage> createState() => _AIImageShortcutState();
+}
+
+class _AIImageShortcutState extends ConsumerState<_AIImageShortcutPage> {
+  bool started = false;
+
+  Future<void> openCamera() async {
+    final app = ref.read(appControllerProvider);
+    if (app.config['transactionFromAIImageRecognition'] != true) {
+      await inform(context, app.t('This feature is not enabled on the server'));
+      if (mounted) context.go('/');
+      return;
+    }
+    final draft = await recognizeTransaction(
+      context,
+      imageRecognition: true,
+      autoPickCamera: true,
+    );
+    if (!mounted) {
+      draft?.dispose();
+      return;
+    }
+    if (draft == null) {
+      context.go('/');
+    } else {
+      Navigator.of(context).push(
+        nativeRoute(
+          context,
+          builder: (_) => TransactionEditPage(
+            route: '/transaction/add',
+            recognitionDraft: draft,
+          ),
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final app = ref.watch(appControllerProvider);
+    if (!started && !app.locked) {
+      started = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) unawaited(openCamera());
+      });
+    }
+    return const PrimaryShell(initialIndex: 2);
+  }
+}
 
 class PrimaryShell extends StatefulWidget {
   const PrimaryShell({super.key, required this.initialIndex});

@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">Danggui Expense</string>
     <string name="shortcut_add_transaction">Add transaction</string>
+    <string name="shortcut_recognize_receipt">Scan receipt</string>
     <string name="widget_quick_add">Add transaction</string>
     <string name="widget_summary_name">Monthly overview</string>
     <string name="widget_summary_description">Monthly income, expense, net total and year-over-year change</string>

@@ -388,6 +388,7 @@ const _paths = [
   '/transaction/list',
   '/transaction/filter/amount',
   '/transaction/add',
+  '/ai/image/camera',
   '/transaction/edit',
   '/transaction/detail',
   '/account/list',

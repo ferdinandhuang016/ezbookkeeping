@@ -14,6 +14,7 @@ import '../statistics/statistics.dart';
 import '../statistics/statistics_bars.dart';
 import '../transactions/transactions.dart';
 import '../system/native_features.dart';
+import '../system/recognition_draft.dart';
 import 'layout_format.dart';
 
 part 'layout_editor.dart';
@@ -31,6 +32,9 @@ Future<void> openTransactionTemplates(BuildContext context) async {
     listen: false,
   ).read(appControllerProvider);
   final value = await choose(context, app.t('Transaction Templates'), {
+    for (final id in RecognitionDraft.savedIds(app))
+      'ai-draft:$id':
+          '${app.t((app.settings[RecognitionDraft.metaKey(id)] as Map)['kind'] == 'image' ? 'AI Image Recognition' : 'AI Text Recognition')} · ${app.t('Save Draft')} · ${app.formatter.date(DateTime.fromMicrosecondsSinceEpoch(int.parse(id)), withTime: true)}',
     if (app.config['transactionFromAITextRecognition'] == true)
       'ai-text': app.t('Create Transaction from Text'),
     if (app.config['transactionFromAITextRecognition'] == true)
@@ -43,6 +47,12 @@ Future<void> openTransactionTemplates(BuildContext context) async {
       string(item['id']): string(item['name']),
   });
   if (value == null || !context.mounted) return;
+  if (value.startsWith('ai-draft:')) {
+    final id = value.substring('ai-draft:'.length);
+    final meta = app.settings[RecognitionDraft.metaKey(id)] as Map;
+    context.push('${meta['route']}?aiDraftId=$id');
+    return;
+  }
   if (value.startsWith('ai-')) {
     String? path;
     if (value == 'ai-image') {
@@ -54,19 +64,20 @@ Future<void> openTransactionTemplates(BuildContext context) async {
       path = (await ImagePicker().pickImage(source: source))?.path;
       if (path == null || !context.mounted) return;
     }
-    final recognized = await recognizeTransaction(
+    final draft = await recognizeTransaction(
       context,
       clipboard: value == 'ai-clipboard',
       imageRecognition: value == 'ai-image',
       imagePath: path,
     );
-    if (recognized != null && context.mounted) {
+    if (draft != null && !context.mounted) draft.dispose();
+    if (draft != null && context.mounted) {
       Navigator.of(context).push(
         nativeRoute(
           context,
           builder: (_) => TransactionEditPage(
             route: '/transaction/add',
-            initialData: recognized,
+            recognitionDraft: draft,
           ),
         ),
       );

@@ -246,6 +246,10 @@ class MainActivity : FlutterFragmentActivity() {
                 intent.data?.path == "/add")
         return when {
             quickAdd -> "/transaction/add"
+            intent?.action == Intent.ACTION_VIEW &&
+                intent.data?.scheme == "net.ezbookkeeping.app" &&
+                intent.data?.host == "ai" &&
+                intent.data?.path == "/image/camera" -> "/ai/image/camera"
             intent?.action == ACTION_OPEN_HOME -> "/"
             else -> null
         }
