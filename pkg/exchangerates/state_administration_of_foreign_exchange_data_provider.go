@@ -199,6 +199,6 @@ func parseStateAdministrationOfForeignExchangeTable(c core.Context, table datata
 
 func newStateAdministrationOfForeignExchangeDataProvider(config *settings.Config) *StateAdministrationOfForeignExchangeDataProvider {
 	return &StateAdministrationOfForeignExchangeDataProvider{
-		httpClient: httpclient.NewHttpClient(config.ExchangeRatesRequestTimeout, config.ExchangeRatesProxy, config.ExchangeRatesSkipTLSVerify, core.GetOutgoingUserAgent(), config.EnableDebugLog),
+		httpClient: httpclient.NewHttpClient(config.ExchangeRatesRequestTimeout, config.ExchangeRatesProxy, config.ExchangeRatesSkipTLSVerify, core.GetOutgoingUserAgent(), config.EnableDebugLog, nil),
 	}
 }

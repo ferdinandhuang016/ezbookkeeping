@@ -413,6 +413,7 @@ func startWebServer(c *core.CliContext) error {
 			apiV1Route.GET("/transactions/list/by_month.json", bindApi(api.Transactions.TransactionMonthListHandler, config))
 			apiV1Route.GET("/transactions/list/all.json", bindApi(api.Transactions.TransactionListAllHandler, config))
 			apiV1Route.GET("/transactions/reconciliation_statements.json", bindApi(api.Transactions.TransactionReconciliationStatementHandler, config))
+			apiV1Route.GET("/transactions/unreconciled_transaction_counts.json", bindApi(api.Transactions.TransactionUnreconciledTransactionCountsHandler, config))
 			apiV1Route.GET("/transactions/statistics.json", bindApi(api.Transactions.TransactionStatisticsHandler, config))
 			apiV1Route.GET("/transactions/statistics/trends.json", bindApi(api.Transactions.TransactionStatisticsTrendsHandler, config))
 			apiV1Route.GET("/transactions/statistics/asset_trends.json", bindApi(api.Transactions.TransactionStatisticsAssetTrendsHandler, config))
@@ -499,6 +500,12 @@ func startWebServer(c *core.CliContext) error {
 			if config.ReceiptImageRecognitionLLMConfig != nil && config.ReceiptImageRecognitionLLMConfig.LLMProvider != "" {
 				if config.TransactionFromAIImageRecognition {
 					apiV1Route.POST("/llm/transactions/recognize_receipt_image.json", bindApi(api.LargeLanguageModels.RecognizeReceiptImageHandler, config))
+				}
+			}
+
+			if config.CodingAssistantLLMConfig != nil && config.CodingAssistantLLMConfig.LLMProvider != "" {
+				if config.InsightsExplorerCodingAssistant {
+					apiV1Route.POST("/llm/code/generate.json", bindApi(api.LargeLanguageModels.GenerateCodeHandler, config))
 				}
 			}
 

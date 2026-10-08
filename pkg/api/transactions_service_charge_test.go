@@ -3,6 +3,7 @@ package api
 import (
 	"testing"
 
+	"github.com/mayswind/ezbookkeeping/pkg/core"
 	"github.com/mayswind/ezbookkeeping/pkg/models"
 )
 
@@ -29,7 +30,7 @@ func TestTransferRequestAddsServiceChargeToSourceDebit(t *testing.T) {
 		SourceAccountId:      1,
 		DestinationAccountId: 2,
 	}
-	template, err := TransactionTemplates.createNewTemplateModel(1, templateRequest, 0)
+	template, err := TransactionTemplates.createNewTemplateModel(&core.WebContext{}, 1, templateRequest, 0)
 	if err != nil {
 		t.Fatal(err)
 	}

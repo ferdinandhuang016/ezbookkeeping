@@ -138,7 +138,7 @@
                                 </v-btn>
                                 <v-spacer/>
                                 <div class="transaction-keyword-filter ms-2">
-                                    <v-text-field density="compact" :disabled="loading"
+                                    <v-text-field autocomplete="off" density="compact" :disabled="loading"
                                                   :prepend-inner-icon="mdiMagnify"
                                                   :append-inner-icon="filterKeyword !== query.keyword ? mdiCheck : undefined"
                                                   :placeholder="tt('Filter transaction description')"
@@ -574,6 +574,7 @@ const {
     getAllCategoricalChartTypes,
     getAllTrendChartTypes,
     formatAmountToWesternArabicNumeralsWithoutDigitGrouping,
+    formatBigDecimalToWesternArabicNumeralsWithoutDigitGrouping,
     formatPercentToLocalizedNumerals
 } = useI18n();
 
@@ -1243,7 +1244,7 @@ function exportResults(): void {
                 .map(item => [
                     item.name,
                     formatAmountToWesternArabicNumeralsWithoutDigitGrouping(item.value, defaultCurrency.value),
-                    item.percent.toFixed(4)
+                    formatBigDecimalToWesternArabicNumeralsWithoutDigitGrouping(parseBigDecimal(item.percent.toFixed(4)))
                 ]),
             supportedMermaidCharts: supportedMermaidCharts
         });

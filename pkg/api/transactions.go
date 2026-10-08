@@ -1,7 +1,7 @@
 package api
 
 import (
-	"encoding/json"
+	"encoding/json/v2"
 	"fmt"
 	"io"
 	"math"
@@ -534,6 +534,82 @@ func (a *TransactionsApi) TransactionReconciliationStatementHandler(c *core.WebC
 	return reconciliationStatementResp, nil
 }
 
+// TransactionUnreconciledTransactionCountsHandler returns unreconciled transaction counts of current user's accounts
+func (a *TransactionsApi) TransactionUnreconciledTransactionCountsHandler(c *core.WebContext) (any, *errs.Error) {
+	var unreconciledCountReq models.TransactionUnreconciledCountRequest
+	err := c.ShouldBindQuery(&unreconciledCountReq)
+
+	if err != nil {
+		log.Warnf(c, "[transactions.TransactionUnreconciledTransactionCountsHandler] parse request failed, because %s", err.Error())
+		return nil, errs.NewIncompleteOrIncorrectSubmissionError(err)
+	}
+
+	selectedAccountIds := make(map[int64]bool)
+
+	if unreconciledCountReq.AccountIds != "" {
+		accountIds, err := utils.StringArrayToInt64Array(strings.Split(unreconciledCountReq.AccountIds, ","))
+
+		if err != nil {
+			return nil, errs.ErrAccountIdInvalid
+		}
+
+		for _, accountId := range accountIds {
+			selectedAccountIds[accountId] = true
+		}
+	}
+
+	uid := c.GetCurrentUid()
+	user, err := a.users.GetUserById(c, uid)
+
+	if err != nil {
+		if !errs.IsCustomError(err) {
+			log.Errorf(c, "[transactions.TransactionUnreconciledTransactionCountsHandler] failed to get user, because %s", err.Error())
+		}
+
+		return nil, errs.ErrUserNotFound
+	}
+
+	if !user.UseLastReconciledTime {
+		return nil, errs.ErrLastReconciledTimeIsNotEnabled
+	}
+
+	accounts, err := a.accounts.GetAllAccountsByUid(c, uid)
+
+	if err != nil {
+		log.Errorf(c, "[transactions.TransactionUnreconciledTransactionCountsHandler] failed to get all accounts for user \"uid:%d\", because %s", uid, err.Error())
+		return nil, errs.Or(err, errs.ErrOperationFailed)
+	}
+
+	accountLastReconciledTimes := make(map[int64]int64, len(accounts))
+
+	for _, account := range accounts {
+		if account.Hidden || account.Type == models.ACCOUNT_TYPE_MULTI_SUB_ACCOUNTS {
+			continue
+		}
+
+		if len(selectedAccountIds) > 0 && !selectedAccountIds[account.AccountId] {
+			continue
+		}
+
+		if account.Extend != nil && account.Extend.LastReconciledTime != nil && *account.Extend.LastReconciledTime > 0 {
+			accountLastReconciledTimes[account.AccountId] = *account.Extend.LastReconciledTime
+		} else {
+			accountLastReconciledTimes[account.AccountId] = 0
+		}
+	}
+
+	counts, err := a.transactions.GetUnreconciledTransactionCounts(c, uid, accountLastReconciledTimes)
+
+	if err != nil {
+		log.Errorf(c, "[transactions.TransactionUnreconciledTransactionCountsHandler] failed to get unreconciled transaction counts for user \"uid:%d\", because %s", uid, err.Error())
+		return nil, errs.Or(err, errs.ErrOperationFailed)
+	}
+
+	return &models.TransactionUnreconciledCountResponse{
+		Items: counts,
+	}, nil
+}
+
 // TransactionStatisticsHandler returns transaction statistics of current user
 func (a *TransactionsApi) TransactionStatisticsHandler(c *core.WebContext) (any, *errs.Error) {
 	var statisticReq models.TransactionStatisticRequest
@@ -781,6 +857,13 @@ func (a *TransactionsApi) TransactionAmountsHandler(c *core.WebContext) (any, *e
 		}
 	}
 
+	tagFilters, err := models.ParseTransactionTagFilter(transactionAmountsReq.TagFilter)
+
+	if err != nil {
+		log.Warnf(c, "[transactions.TransactionAmountsHandler] parse transaction tag filters error, because %s", err.Error())
+		return nil, errs.Or(err, errs.ErrOperationFailed)
+	}
+
 	clientTimezone, err := c.GetClientTimezone()
 
 	if err != nil {
@@ -803,7 +886,7 @@ func (a *TransactionsApi) TransactionAmountsHandler(c *core.WebContext) (any, *e
 	for i := 0; i < len(requestItems); i++ {
 		requestItem := requestItems[i]
 
-		incomeAmounts, expenseAmounts, err := a.transactions.GetAccountsTotalIncomeAndExpense(c, uid, requestItem.StartTime, requestItem.EndTime, excludeAccountIds, excludeCategoryIds, clientTimezone, transactionAmountsReq.UseTransactionTimezone)
+		incomeAmounts, expenseAmounts, err := a.transactions.GetAccountsTotalIncomeAndExpense(c, uid, requestItem.StartTime, requestItem.EndTime, excludeAccountIds, excludeCategoryIds, tagFilters, clientTimezone, transactionAmountsReq.UseTransactionTimezone)
 
 		if err != nil {
 			log.Errorf(c, "[transactions.TransactionAmountsHandler] failed to get transaction amounts item for user \"uid:%d\", because %s", uid, err.Error())
@@ -911,6 +994,13 @@ func (a *TransactionsApi) TransactionDailyAmountsHandler(c *core.WebContext) (an
 		}
 	}
 
+	tagFilters, err := models.ParseTransactionTagFilter(transactionAmountsReq.TagFilter)
+
+	if err != nil {
+		log.Warnf(c, "[transactions.TransactionDailyAmountsHandler] parse transaction tag filters error, because %s", err.Error())
+		return nil, errs.Or(err, errs.ErrOperationFailed)
+	}
+
 	clientTimezone, err := c.GetClientTimezone()
 
 	if err != nil {
@@ -927,7 +1017,7 @@ func (a *TransactionsApi) TransactionDailyAmountsHandler(c *core.WebContext) (an
 		return nil, errs.Or(err, errs.ErrOperationFailed)
 	}
 
-	incomeAmounts, expenseAmounts, err := a.transactions.GetAccountsDailyIncomeAndExpense(c, uid, transactionAmountsReq.StartTime, transactionAmountsReq.EndTime, excludeAccountIds, excludeCategoryIds, clientTimezone, transactionAmountsReq.UseTransactionTimezone)
+	incomeAmounts, expenseAmounts, err := a.transactions.GetAccountsDailyIncomeAndExpense(c, uid, transactionAmountsReq.StartTime, transactionAmountsReq.EndTime, excludeAccountIds, excludeCategoryIds, tagFilters, clientTimezone, transactionAmountsReq.UseTransactionTimezone)
 
 	if err != nil {
 		log.Errorf(c, "[transactions.TransactionDailyAmountsHandler] failed to get daily amounts for user \"uid:%d\", because %s", uid, err.Error())
@@ -1094,7 +1184,7 @@ func (a *TransactionsApi) TransactionGetHandler(c *core.WebContext) (any, *errs.
 	var tagMap map[int64]*models.TransactionTag
 	var pictureInfos []*models.TransactionPictureInfo
 
-	if !transactionGetReq.TrimCategory {
+	if !transactionGetReq.TrimCategory && transaction.Type != models.TRANSACTION_DB_TYPE_MODIFY_BALANCE {
 		category, err = a.transactionCategories.GetCategoryByCategoryId(c, uid, transaction.CategoryId)
 
 		if err != nil {

@@ -4,19 +4,47 @@
             <div class="title-and-toolbar d-flex w-100 mb-1">
                 <v-btn density="compact" variant="tonal" :prepend-icon="mdiPlay"
                        :disabled="disabled || !sandboxLoaded || executingScript" :loading="executingScript"
-                       @click="executeCustomScript">
+                       @click="executeCustomScript"
+                       v-if="aiModeState === CustomChartAIState.Idle">
                     <template #loader>
-                        <v-progress-circular indeterminate size="18" class="me-1"/>
+                        <v-progress-circular indeterminate size="15" width="2" class="loading-icon-before-text" />
                         <span>{{ tt('Execute Custom Script') }}</span>
                     </template>
                     <span>{{ tt('Execute Custom Script') }}</span>
                 </v-btn>
+                <v-btn density="compact" variant="tonal" :prepend-icon="mdiCheck"
+                       :disabled="disabled || aiModeState === CustomChartAIState.Generating || !userPrompt || !userPrompt.trim()"
+                       :loading="aiModeState === CustomChartAIState.Generating"
+                       @click="generateAICode"
+                       v-if="aiModeState !== CustomChartAIState.Idle">
+                    <template #loader>
+                        <v-progress-circular indeterminate size="15" width="2" class="loading-icon-before-text" />
+                        <span>{{ tt('Generate') }}</span>
+                    </template>
+                    {{ tt('Generate') }}
+                </v-btn>
+                <v-btn class="ms-2" density="compact" color="secondary" variant="tonal"
+                       :prepend-icon="aiModeState === CustomChartAIState.Generating ? mdiStop : mdiClose"
+                       @click="aiModeState === CustomChartAIState.Generating ? cancelAIGeneration() : exitAIMode()"
+                       v-if="aiModeState !== CustomChartAIState.Idle">
+                    {{ aiModeState === CustomChartAIState.Generating ? tt('Cancel Generation') : tt('Cancel') }}
+                </v-btn>
             </div>
             <code-editor class="w-100" style="height: 620px" language="javascript"
                          :readonly="disabled" :rounded="true" :line-numbers="true"
-                         :extra-libs="customChartEditorExtraLibs" v-model="customScript" />
+                         :extra-libs="customChartEditorExtraLibs" v-model="customScript"
+                         v-if="aiModeState === CustomChartAIState.Idle" />
+            <v-textarea no-resize persistent-placeholder
+                        class="w-100 always-cursor-text" style="height: 620px"
+                        autocomplete="off" density="compact" variant="outlined"
+                        :disabled="disabled || aiModeState === CustomChartAIState.Generating"
+                        :placeholder="tt('Describe the chart you want')"
+                        v-model="userPrompt"
+                        v-if="aiModeState !== CustomChartAIState.Idle"></v-textarea>
         </v-col>
-        <v-col cols="12" :md="displayLayout.showCode ? 6 : 12" v-if="displayLayout.showChart">
+        <v-col cols="12" :md="displayLayout.showCode ? 6 : 12"
+               :class="{ 'readonly': disabled || aiModeState === CustomChartAIState.Generating }"
+               v-if="displayLayout.showChart">
             <div class="w-100 custom-chart-container">
                 <div class="w-100 h-100 d-flex align-center justify-content-center" v-if="executionError">
                     <v-alert class="mb-3" density="compact" type="error" variant="tonal" :text="executionError" />
@@ -25,7 +53,9 @@
                          v-if="!executionError && chartOptions" />
             </div>
         </v-col>
-        <v-col cols="12" :md="displayLayout.showCode ? 6 : 12" v-else-if="displayLayout.showChartData">
+        <v-col cols="12" :md="displayLayout.showCode ? 6 : 12"
+               :class="{ 'readonly': disabled || aiModeState === CustomChartAIState.Generating }"
+               v-else-if="displayLayout.showChartData">
             <div class="title-and-toolbar d-flex align-center w-100 mb-1">
                 <span class="text-body-large">{{ tt('Chart Data') }}</span>
             </div>
@@ -38,6 +68,7 @@
 
     <iframe id="sandbox" ref="sandbox" sandbox="allow-scripts" style="display: none;"></iframe>
     <snack-bar ref="snackbar" />
+    <snack-bar ref="snackbarForFailureReason" not-auto-hide color="warning" variant="outlined" location="top center" />
 </template>
 
 <script setup lang="ts">
@@ -50,19 +81,26 @@ import { useI18n } from '@/locales/helpers.ts';
 
 import { useSettingsStore } from '@/stores/setting.ts';
 import { useUserStore } from '@/stores/user.ts';
+import { useExplorersStore } from '@/stores/explorer.ts';
 import { useExchangeRatesStore } from '@/stores/exchangeRates.ts';
 
+import { itemAndIndex } from '@/core/base.ts';
 import type { BigDecimal } from '@/core/numeral.ts';
 import { TransactionType } from '@/core/transaction.ts';
 import { TransactionExplorerCustomChartDisplayLayout } from '@/core/explorer.ts';
-import type { TransactionInsightDataItem } from '@/models/transaction.ts';
+import type { TransactionInsightDataItemWithQueryIndexes } from '@/models/transaction.ts';
+import type { TransactionExplorerQuery } from '@/models/explorer.ts';
 
 import { parseBigDecimal } from '@/lib/numeral.ts';
 import { parseDateTimeFromUnixTimeWithTimezoneOffset } from '@/lib/datetime.ts';
+import { generateRandomUUID } from '@/lib/misc.ts';
 import logger from '@/lib/logger.ts';
 
 import {
-    mdiPlay
+    mdiPlay,
+    mdiCheck,
+    mdiStop,
+    mdiClose
 } from '@mdi/js';
 
 type SnackBarType = InstanceType<typeof SnackBar>;
@@ -78,6 +116,12 @@ type SandboxResponse = {
     knownError?: string;
     error?: string;
 };
+
+enum CustomChartAIState {
+    Idle = 'idle',
+    Prompting = 'prompting',
+    Generating = 'generating'
+}
 
 interface CustomChartTransaction {
     id: string;
@@ -107,12 +151,14 @@ interface CustomChartTransaction {
         longitude: number
     };
     comment: string;
+    inQueries: string[];
 }
 
 const props = defineProps<{
     disabled?: boolean;
     displayLayout: number;
-    transactions: TransactionInsightDataItem[];
+    transactions: TransactionInsightDataItemWithQueryIndexes[];
+    queries: TransactionExplorerQuery[];
     modelValue: string;
 }>();
 
@@ -121,11 +167,13 @@ const emit = defineEmits<{
 }>();
 
 const {
-    tt
+    tt,
+    formatNumberToLocalizedNumeralsWithoutDigitGrouping
 } = useI18n();
 
 const settingsStore = useSettingsStore();
 const userStore = useUserStore();
+const explorersStore = useExplorersStore();
 const exchangeRatesStore = useExchangeRatesStore();
 
 const sandboxMessageSignature: string = '#ezBookkeeping-sandbox-message#';
@@ -169,12 +217,16 @@ window.addEventListener('message', function (event) {
 
 const sandbox = useTemplateRef<HTMLIFrameElement>('sandbox');
 const snackbar = useTemplateRef<SnackBarType>('snackbar');
+const snackbarForFailureReason = useTemplateRef<SnackBarType>('snackbarForFailureReason');
 
 const sandboxLoaded = ref<boolean>(false);
 const customScript = ref<string>('');
 const chartOptions = ref<Record<string, unknown>>({});
 const executingScript = ref<boolean>(false);
 const executionError = ref<string>('');
+const aiModeState = ref<CustomChartAIState>(CustomChartAIState.Idle);
+const userPrompt = ref<string>('');
+const cancelAIGeneratingUuid = ref<string | undefined>(undefined);
 
 const displayLayout = computed<TransactionExplorerCustomChartDisplayLayout>(() => TransactionExplorerCustomChartDisplayLayout.valueOf(props.displayLayout) ?? TransactionExplorerCustomChartDisplayLayout.Default);
 
@@ -234,6 +286,8 @@ interface CustomChartTransaction {
     };
     /** ${tt('sample.insightsExplorerCustomChart.transactionField.comment')} */
     comment: string;
+    /** ${tt('sample.insightsExplorerCustomChart.transactionField.inQueries')} */
+    inQueries: string[];
 }
 
 /** ${tt('sample.insightsExplorerCustomChart.transactionTypeDescription')} */
@@ -435,6 +489,7 @@ function sumTransactionAmounts(transactions) {
  * {string[]} tagNames - ${tt('sample.insightsExplorerCustomChart.transactionField.tagNames')}
  * {string} geoLocation - ${tt('sample.insightsExplorerCustomChart.transactionField.geoLocation')}
  * {string} comment - ${tt('sample.insightsExplorerCustomChart.transactionField.comment')}
+ * {string[]} inQueries - ${tt('sample.insightsExplorerCustomChart.transactionField.inQueries')}
  */
 
 /**
@@ -456,6 +511,20 @@ const displayChartData = computed<string>(() => {
 });
 
 const customChartTransactions = computed<CustomChartTransaction[]>(() => {
+    const queryNamesMap: Record<number, string> = {};
+
+    if (props.queries) {
+        for (const [query, index] of itemAndIndex(props.queries)) {
+            let queryName = query.name;
+
+            if (!queryName) {
+                queryName = tt('format.misc.queryIndex', { index: formatNumberToLocalizedNumeralsWithoutDigitGrouping(index + 1) });
+            }
+
+            queryNamesMap[index] = queryName;
+        }
+    }
+
     return props.transactions.map(transaction => {
         const transactionTime = parseDateTimeFromUnixTimeWithTimezoneOffset(transaction.time, transaction.utcOffset);
         const defaultCurrency = userStore.currentUserDefaultCurrency;
@@ -510,12 +579,21 @@ const customChartTransactions = computed<CustomChartTransaction[]>(() => {
                 latitude: transaction.geoLocation.latitude,
                 longitude: transaction.geoLocation.longitude
             } : undefined,
-            comment: transaction.comment || ''
+            comment: transaction.comment || '',
+            inQueries: transaction.queryIndexes.map(index => queryNamesMap[index] ?? tt('format.misc.queryIndex', { index: formatNumberToLocalizedNumeralsWithoutDigitGrouping(index + 1) }))
         };
 
         return finalTransaction;
     });
 });
+
+function isInAIMode(): boolean {
+    return aiModeState.value !== CustomChartAIState.Idle;
+}
+
+function isAIGenerating(): boolean {
+    return aiModeState.value === CustomChartAIState.Generating;
+}
 
 function reloadSandbox(executeAfterLoaded: boolean): void {
     sandboxLoaded.value = false;
@@ -548,6 +626,75 @@ function executeCustomScript(): void {
     };
 
     sandbox.value?.contentWindow?.postMessage(JSON.stringify(sandboxRequest), '*');
+}
+
+function switchToAIChartMode(): void {
+    if (props.disabled || aiModeState.value !== CustomChartAIState.Idle) {
+        return;
+    }
+
+    userPrompt.value = '';
+    aiModeState.value = CustomChartAIState.Prompting;
+}
+
+function generateAICode(): void {
+    if (props.disabled || aiModeState.value !== CustomChartAIState.Prompting || !userPrompt.value) {
+        return;
+    }
+
+    const prompt = userPrompt.value.trim();
+
+    if (!prompt) {
+        return;
+    }
+
+    cancelAIGeneratingUuid.value = generateRandomUUID();
+    aiModeState.value = CustomChartAIState.Generating;
+
+    explorersStore.generateCustomChartCode({
+        userPrompt: prompt,
+        currentCode: customScript.value,
+        cancelableUuid: cancelAIGeneratingUuid.value
+    }).then(response => {
+        aiModeState.value = CustomChartAIState.Idle;
+        cancelAIGeneratingUuid.value = undefined;
+
+        if (response.code) {
+            customScript.value = response.code;
+            reloadSandbox(true);
+        } else if (response.failureReason) {
+            snackbarForFailureReason.value?.showError(response.failureReason);
+        }
+    }).catch(error => {
+        if (error.canceled) {
+            return;
+        }
+
+        aiModeState.value = CustomChartAIState.Prompting;
+        cancelAIGeneratingUuid.value = undefined;
+
+        if (!error.processed) {
+            snackbar.value?.showError(error);
+        }
+    });
+}
+
+function cancelAIGeneration(): void {
+    if (!cancelAIGeneratingUuid.value) {
+        return;
+    }
+
+    explorersStore.cancelGenerateCustomChartCode(cancelAIGeneratingUuid.value);
+    aiModeState.value = CustomChartAIState.Prompting;
+    cancelAIGeneratingUuid.value = undefined;
+
+    snackbar.value?.showMessage('User Canceled');
+}
+
+function exitAIMode(): void {
+    if (aiModeState.value == CustomChartAIState.Prompting) {
+        aiModeState.value = CustomChartAIState.Idle;
+    }
 }
 
 function onMessage(event: MessageEvent<SandboxResponse>): void {
@@ -607,7 +754,14 @@ watch(customScript, value => {
 watch(() => props.modelValue, value => {
     if (value !== customScript.value) {
         customScript.value = value;
+        reloadSandbox(true);
     }
+});
+
+defineExpose({
+    isInAIMode,
+    isAIGenerating,
+    switchToAIChartMode
 });
 </script>
 

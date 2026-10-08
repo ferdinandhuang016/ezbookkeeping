@@ -2,20 +2,20 @@
     <main-page-layout>
         <template #nav-items>
             <div class="mb-2">
-                <btn-vertical-group :disabled="loading || updating || isCurrentDataTableEditable" :buttons="allTabs" v-model="activeTab" />
+                <btn-vertical-group :disabled="loading || updating || isCustomChartAIGenerating || isCurrentDataTableEditable" :buttons="allTabs" v-model="activeTab" />
             </div>
             <v-divider class="my-2" />
             <div class="insights-explorer-list">
                 <li class="nav-link" key="new">
                     <a class="d-flex align-center cursor-pointer"
-                       :class="{ 'router-link-active router-link-exact-active': !currentExploration.id, 'disabled': loading || updating || isCurrentDataTableEditable }"
+                       :class="{ 'router-link-active router-link-exact-active': !currentExploration.id, 'disabled': loading || updating || isCustomChartAIGenerating || isCurrentDataTableEditable }"
                        @click="createNewExploration">
                         <span class="nav-item-title text-truncate">{{ tt('New Exploration') }}</span>
                     </a>
                 </li>
                 <li class="nav-link" :key="exploration.id" v-for="exploration in allVisibleExplorations">
                     <a class="d-flex align-center cursor-pointer"
-                       :class="{ 'router-link-active router-link-exact-active': currentExploration.id === exploration.id, 'disabled': loading || updating || isCurrentDataTableEditable }"
+                       :class="{ 'router-link-active router-link-exact-active': currentExploration.id === exploration.id, 'disabled': loading || updating || isCustomChartAIGenerating || isCurrentDataTableEditable }"
                        @click="loadExploration(exploration.id)">
                         <span class="nav-item-title text-truncate">{{ exploration.name || tt('Untitled Exploration') }}</span>
                     </a>
@@ -34,11 +34,11 @@
                         <span>{{ tt('Insights Explorer') }}</span>
                         <v-btn-group class="ms-4" color="default" density="comfortable" variant="outlined" divided>
                             <v-btn class="button-icon-with-direction" :icon="mdiArrowLeft"
-                                   :aria-label="tt('Previous Period')" :disabled="loading || updating || !canShiftDateRange || isCurrentDataTableEditable"
+                                   :aria-label="tt('Previous Period')" :disabled="loading || updating || isCustomChartAIGenerating || !canShiftDateRange || isCurrentDataTableEditable"
                                    @click="shiftDateRange(-1)"/>
                             <v-menu location="bottom" max-height="500">
                                 <template #activator="{ props }">
-                                    <v-btn :disabled="loading || updating || isCurrentDataTableEditable"
+                                    <v-btn :disabled="loading || updating || isCustomChartAIGenerating || isCurrentDataTableEditable"
                                            v-bind="props">{{ displayQueryDateRangeName }}</v-btn>
                                 </template>
                                 <v-list :selected="[currentFilter.dateRangeType]">
@@ -61,23 +61,30 @@
                                 </v-list>
                             </v-menu>
                             <v-btn class="button-icon-with-direction" :icon="mdiArrowRight"
-                                   :aria-label="tt('Next Period')" :disabled="loading || updating || !canShiftDateRange || isCurrentDataTableEditable"
+                                   :aria-label="tt('Next Period')" :disabled="loading || updating || isCustomChartAIGenerating || !canShiftDateRange || isCurrentDataTableEditable"
                                    @click="shiftDateRange(1)"/>
                         </v-btn-group>
 
                         <v-btn density="compact" color="default" variant="text" class="ms-2"
-                               :aria-label="tt('Refresh')" :icon="true" :loading="loading" :disabled="updating" @click="reload(true)">
+                               :aria-label="tt('Refresh')" :icon="true" :loading="loading" :disabled="updating || isCustomChartAIGenerating" @click="reload(true)">
                             <template #loader>
                                 <v-progress-circular indeterminate size="20"/>
                             </template>
                             <v-icon :icon="mdiRefresh" size="24" />
                             <v-tooltip activator="parent">{{ tt('Refresh') }}</v-tooltip>
                         </v-btn>
+                        <v-btn density="compact" color="default" variant="text" class="ms-2"
+                               :aria-label="tt('AI Generate Chart Code')" :icon="true" :disabled="loading || updating || isCustomChartInAIMode"
+                               v-if="activeTab === 'chart' && currentExploration.chartType === TransactionExplorerChartTypeValue.Custom && isInsightsExplorerCodingAssistantEnabled()"
+                               @click="explorerChartTab?.switchToAIChartMode()">
+                            <v-icon :icon="mdiMagicStaff" size="20" />
+                            <v-tooltip activator="parent">{{ tt('AI Generate Chart Code') }}</v-tooltip>
+                        </v-btn>
                         <v-spacer/>
                         <v-btn class="ms-3"
                                :color="isCurrentExplorationModified ? 'primary' : 'default'"
                                :variant="isCurrentExplorationModified ? 'elevated' : 'outlined'"
-                               :disabled="loading || updating || isCurrentDataTableEditable" @click="saveExploration(false)">
+                               :disabled="loading || updating || isCustomChartAIGenerating || isCurrentDataTableEditable" @click="saveExploration(false)">
                             {{ tt('Save Exploration') }}
                             <v-progress-circular indeterminate size="22" class="ms-2" v-if="updating"></v-progress-circular>
                             <v-menu activator="parent" :open-on-hover="true">
@@ -92,62 +99,69 @@
                             </v-menu>
                         </v-btn>
                         <v-btn density="comfortable" color="default" variant="text" class="ms-2"
-                               :aria-label="tt('More')" :disabled="loading || updating" :icon="true">
+                               :aria-label="tt('More')" :disabled="loading || updating || isCustomChartAIGenerating" :icon="true">
                             <v-icon :icon="mdiDotsVertical" />
                             <v-menu activator="parent">
                                 <v-list>
-                                    <v-list-subheader class="text-body-small"
-                                                      :title="tt('Timezone Used for Date Range')"
-                                                      v-if="activeTab === 'query'"/>
                                     <template v-if="activeTab === 'query'">
+                                        <v-list-subheader class="text-body-small"
+                                                          :title="tt('Timezone Used for Date Range')"/>
                                         <v-list-item :key="timezoneType.type" :value="timezoneType.type"
                                                      :prepend-icon="timezoneTypeIconMap[timezoneType.type]"
                                                      :append-icon="(currentExploration.timezoneUsedForDateRange === timezoneType.type ? mdiCheck : undefined)"
                                                      :title="timezoneType.displayName"
                                                      v-for="timezoneType in allTimezoneTypesUsedForDateRange"
                                                      @click="currentExploration.timezoneUsedForDateRange = timezoneType.type"></v-list-item>
+                                        <v-divider class="my-2"/>
+                                        <v-list-item :prepend-icon="mdiApplicationImport"
+                                                     :title="tt('Import Queries')"
+                                                     :disabled="loading || updating"
+                                                     @click="importQueries"></v-list-item>
+                                        <v-list-item :prepend-icon="mdiApplicationExport"
+                                                     :title="tt('Export Queries')"
+                                                     :disabled="loading || updating"
+                                                     @click="exportQueries"></v-list-item>
+                                        <v-divider class="my-2"/>
                                     </template>
-                                    <v-divider class="my-2" v-if="activeTab === 'query'"/>
-                                    <v-list-item :prepend-icon="mdiApplicationImport"
-                                                 :title="tt('Import Queries')"
-                                                 :disabled="loading || updating"
-                                                 @click="importQueries"
-                                                 v-if="activeTab === 'query'"></v-list-item>
-                                    <v-list-item :prepend-icon="mdiApplicationExport"
-                                                 :title="tt('Export Queries')"
-                                                 :disabled="loading || updating"
-                                                 @click="exportQueries"
-                                                 v-if="activeTab === 'query'"></v-list-item>
-                                    <v-list-item :prepend-icon="mdiTableEdit"
-                                                 :title="tt('Enter Edit Mode')"
-                                                 :disabled="loading || updating || filteredTransactionsInDataTable.length < 1"
-                                                 @click="isCurrentDataTableEditable = true"
-                                                 v-if="activeTab === 'table' && !isCurrentDataTableEditable"></v-list-item>
-                                    <v-list-item :prepend-icon="mdiTableCheck"
-                                                 :title="tt('Exit Edit Mode')"
-                                                 :disabled="loading || updating"
-                                                 @click="isCurrentDataTableEditable = false"
-                                                 v-if="activeTab === 'table' && isCurrentDataTableEditable"></v-list-item>
-                                    <v-divider class="my-2" v-if="activeTab === 'table' && !isCurrentDataTableEditable"/>
-                                    <v-list-item :prepend-icon="mdiExport"
-                                                 :title="tt('Export Results')"
-                                                 :disabled="loading || updating || (activeTab === 'table' && (!filteredTransactionsInDataTable || filteredTransactionsInDataTable.length < 1))"
-                                                 @click="exportResults"
-                                                 v-if="(activeTab === 'table' || activeTab === 'chart') && !isCurrentDataTableEditable"></v-list-item>
-                                    <v-divider class="my-2" v-if="currentExploration.id && !isCurrentDataTableEditable" />
-                                    <v-list-item :prepend-icon="mdiPencilOutline" @click="setExplorationName" v-if="currentExploration.id && !isCurrentDataTableEditable">
-                                        <v-list-item-title>{{ tt('Rename Exploration') }}</v-list-item-title>
-                                    </v-list-item>
-                                    <v-list-item :prepend-icon="mdiEyeOffOutline" @click="hideExploration(true)" v-if="currentExploration.id && !currentExploration.hidden && !isCurrentDataTableEditable">
-                                        <v-list-item-title>{{ tt('Hide Exploration') }}</v-list-item-title>
-                                    </v-list-item>
-                                    <v-list-item :prepend-icon="mdiEyeOutline" @click="hideExploration(false)" v-if="currentExploration.id && currentExploration.hidden && !isCurrentDataTableEditable">
-                                        <v-list-item-title>{{ tt('Unhide Exploration') }}</v-list-item-title>
-                                    </v-list-item>
-                                    <v-list-item :prepend-icon="mdiDeleteOutline" @click="removeExploration" v-if="currentExploration.id && !isCurrentDataTableEditable">
-                                        <v-list-item-title>{{ tt('Delete Exploration') }}</v-list-item-title>
-                                    </v-list-item>
-                                    <v-divider class="my-2" v-if="!isCurrentDataTableEditable"/>
+
+                                    <template v-if="activeTab === 'table'">
+                                        <v-list-item :prepend-icon="mdiTableEdit"
+                                                     :title="tt('Enter Edit Mode')"
+                                                     :disabled="loading || updating || filteredTransactionsInDataTable.length < 1"
+                                                     @click="isCurrentDataTableEditable = true"
+                                                     v-if="!isCurrentDataTableEditable"></v-list-item>
+                                        <v-list-item :prepend-icon="mdiTableCheck"
+                                                     :title="tt('Exit Edit Mode')"
+                                                     :disabled="loading || updating"
+                                                     @click="isCurrentDataTableEditable = false"
+                                                     v-if="isCurrentDataTableEditable"></v-list-item>
+                                        <v-divider class="my-2" v-if="!isCurrentDataTableEditable"/>
+                                    </template>
+
+                                    <template v-if="(activeTab === 'table' && !isCurrentDataTableEditable) || (activeTab === 'chart' && currentExploration.chartType !== TransactionExplorerChartTypeValue.Custom)">
+                                        <v-list-item :prepend-icon="mdiExport"
+                                                     :title="tt('Export Results')"
+                                                     :disabled="loading || updating || (activeTab === 'table' && (!filteredTransactionsInDataTable || filteredTransactionsInDataTable.length < 1))"
+                                                     @click="exportResults"></v-list-item>
+                                        <v-divider class="my-2" />
+                                    </template>
+
+                                    <template v-if="currentExploration.id && !isCurrentDataTableEditable">
+                                        <v-list-item :prepend-icon="mdiPencilOutline" @click="setExplorationName">
+                                            <v-list-item-title>{{ tt('Rename Exploration') }}</v-list-item-title>
+                                        </v-list-item>
+                                        <v-list-item :prepend-icon="mdiEyeOffOutline" @click="hideExploration(true)" v-if="!currentExploration.hidden">
+                                            <v-list-item-title>{{ tt('Hide Exploration') }}</v-list-item-title>
+                                        </v-list-item>
+                                        <v-list-item :prepend-icon="mdiEyeOutline" @click="hideExploration(false)" v-if="currentExploration.hidden">
+                                            <v-list-item-title>{{ tt('Unhide Exploration') }}</v-list-item-title>
+                                        </v-list-item>
+                                        <v-list-item :prepend-icon="mdiDeleteOutline" @click="removeExploration">
+                                            <v-list-item-title>{{ tt('Delete Exploration') }}</v-list-item-title>
+                                        </v-list-item>
+                                        <v-divider class="my-2"/>
+                                    </template>
+
                                     <v-list-item :prepend-icon="mdiSort"
                                                  :disabled="!allExplorations || allExplorations.length < 2"
                                                  :title="tt('Change Exploration Display Order')"
@@ -161,15 +175,15 @@
 
                 <v-window class="d-flex flex-grow-1 disable-tab-transition w-100-window-container" v-model="activeTab">
                     <v-window-item value="query">
-                        <explorer-query-tab :loading="loading" :disabled="loading || updating" />
+                        <explorer-query-tab :loading="loading" :disabled="loading || updating || isCustomChartAIGenerating" />
                     </v-window-item>
                     <v-window-item value="table">
                         <explorer-data-table-tab ref="explorerDataTableTab"
-                                                 :loading="loading" :disabled="loading || updating"
+                                                 :loading="loading" :disabled="loading || updating || isCustomChartAIGenerating"
                                                  @click:transaction="onShowTransaction"
                                                  v-if="!isCurrentDataTableEditable" />
                         <explorer-editable-data-table-tab ref="explorerEditableDataTableTab"
-                                                          :loading="loading" :disabled="loading || updating"
+                                                          :loading="loading" :disabled="loading || updating || isCustomChartAIGenerating"
                                                           @click:transaction="onShowTransaction"
                                                           @update:transactions="onUpdateTransactions"
                                                           v-if="isCurrentDataTableEditable" />
@@ -233,6 +247,7 @@ import { type TransactionExplorerPartialFilter, type TransactionExplorerFilter, 
 import type { TypeAndDisplayName } from '@/core/base.ts';
 import { type WeekDayValue, type LocalizedDateRange, DateRangeScene, DateRange } from '@/core/datetime.ts';
 import { TimezoneTypeForStatistics } from '@/core/timezone.ts';
+import { TransactionExplorerChartTypeValue } from '@/core/explorer.ts';
 import { KnownErrorCode } from '@/consts/api.ts';
 
 import { type TransactionInsightDataItem, Transaction } from '@/models/transaction.ts';
@@ -247,6 +262,7 @@ import {
 
 import { isObject, isArray, isEquals, isTextualUUID } from '@/lib/common.ts';
 import { generateRandomUUID } from '@/lib/misc.ts';
+import { isInsightsExplorerCodingAssistantEnabled } from '@/lib/server_settings.ts';
 import logger from '@/lib/logger.ts';
 
 import {
@@ -254,6 +270,7 @@ import {
     mdiArrowRight,
     mdiCheck,
     mdiRefresh,
+    mdiMagicStaff,
     mdiDotsVertical,
     mdiPencilOutline,
     mdiEyeOutline,
@@ -334,6 +351,9 @@ const showCustomDateRangeDialog = ref<boolean>(false);
 
 const firstDayOfWeek = computed<WeekDayValue>(() => userStore.currentUserFirstDayOfWeek);
 const fiscalYearStart = computed<number>(() => userStore.currentUserFiscalYearStart);
+
+const isCustomChartInAIMode = computed<boolean>(() => explorerChartTab.value?.isInAIMode() ?? false);
+const isCustomChartAIGenerating = computed<boolean>(() => explorerChartTab.value?.isAIGenerating() ?? false);
 
 const queryExportFileName = computed<string>(() => {
     const nickname = userStore.currentUserNickname;

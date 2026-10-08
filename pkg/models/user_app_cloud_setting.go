@@ -1,7 +1,7 @@
 package models
 
 import (
-	"encoding/json"
+	"encoding/json/v2"
 )
 
 type UserApplicationCloudSettingType string
@@ -29,9 +29,11 @@ var ALL_ALLOWED_CLOUD_SYNC_APP_SETTING_KEY_TYPES = map[string]UserApplicationClo
 	"timezoneUsedForStatisticsInHomePage":         USER_APPLICATION_CLOUD_SETTING_TYPE_NUMBER,
 	"overviewAccountFilterInHomePage":             USER_APPLICATION_CLOUD_SETTING_TYPE_STRING_BOOLEAN_MAP,
 	"overviewTransactionCategoryFilterInHomePage": USER_APPLICATION_CLOUD_SETTING_TYPE_STRING_BOOLEAN_MAP,
+	"overviewTransactionTagFilterInHomePage":      USER_APPLICATION_CLOUD_SETTING_TYPE_STRING,
 	// Transaction List Page
 	"itemsCountInTransactionListPage":              USER_APPLICATION_CLOUD_SETTING_TYPE_NUMBER,
 	"showTotalAmountInTransactionListPage":         USER_APPLICATION_CLOUD_SETTING_TYPE_BOOLEAN,
+	"totalAmountTypeInTransactionListPage":         USER_APPLICATION_CLOUD_SETTING_TYPE_NUMBER,
 	"showTagInTransactionListPage":                 USER_APPLICATION_CLOUD_SETTING_TYPE_BOOLEAN,
 	"defaultKeywordMatchModeInTransactionListPage": USER_APPLICATION_CLOUD_SETTING_TYPE_NUMBER,
 	// Transaction Edit Page

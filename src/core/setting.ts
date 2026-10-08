@@ -5,6 +5,7 @@ import { KeywordMatchMode } from './text.ts';
 import { ImageUploadQualityType } from './image.ts';
 import { CreditCardAmountDisplayType } from './account.ts';
 import {
+    TransactionAmountType,
     TransactionQuickSaveButtonStyle,
     TransactionQuickAddButtonActionType
 } from './transaction.ts';
@@ -56,11 +57,13 @@ export interface ApplicationSettings extends BaseApplicationSetting {
     timezoneUsedForStatisticsInHomePage: number;
     overviewAccountFilterInHomePage: Record<string, boolean>;
     overviewTransactionCategoryFilterInHomePage: Record<string, boolean>;
+    overviewTransactionTagFilterInHomePage: string;
     // Transaction List Page
     quickSaveButtonStyleInMobileTransactionListPage: number;
     quickAddButtonActionInMobileTransactionEditPage: number;
     itemsCountInTransactionListPage: number;
     showTotalAmountInTransactionListPage: boolean;
+    totalAmountTypeInTransactionListPage: number;
     showTagInTransactionListPage: boolean;
     defaultKeywordMatchModeInTransactionListPage: number;
     // Transaction Edit Page
@@ -148,9 +151,11 @@ export const ALL_ALLOWED_CLOUD_SYNC_APP_SETTING_KEY_TYPES: Record<string, UserAp
     'timezoneUsedForStatisticsInHomePage': UserApplicationCloudSettingType.Number,
     'overviewAccountFilterInHomePage': UserApplicationCloudSettingType.StringBooleanMap,
     'overviewTransactionCategoryFilterInHomePage': UserApplicationCloudSettingType.StringBooleanMap,
+    'overviewTransactionTagFilterInHomePage': UserApplicationCloudSettingType.String,
     // Transaction List Page
     'itemsCountInTransactionListPage': UserApplicationCloudSettingType.Number,
     'showTotalAmountInTransactionListPage': UserApplicationCloudSettingType.Boolean,
+    'totalAmountTypeInTransactionListPage': UserApplicationCloudSettingType.Number,
     'showTagInTransactionListPage': UserApplicationCloudSettingType.Boolean,
     'defaultKeywordMatchModeInTransactionListPage': UserApplicationCloudSettingType.Number,
     // Transaction Edit Page
@@ -225,9 +230,11 @@ export const DEFAULT_APPLICATION_SETTINGS: ApplicationSettings = {
     timezoneUsedForStatisticsInHomePage: TimezoneTypeForStatistics.Default.type,
     overviewAccountFilterInHomePage: {},
     overviewTransactionCategoryFilterInHomePage: {},
+    overviewTransactionTagFilterInHomePage: '',
     // Transaction List Page
     itemsCountInTransactionListPage: 15,
     showTotalAmountInTransactionListPage: true,
+    totalAmountTypeInTransactionListPage: TransactionAmountType.InflowsAndOutflows,
     showTagInTransactionListPage: true,
     defaultKeywordMatchModeInTransactionListPage: KeywordMatchMode.Default.type,
     // Transaction Edit Page

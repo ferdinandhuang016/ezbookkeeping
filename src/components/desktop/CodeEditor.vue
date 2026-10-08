@@ -1,10 +1,11 @@
 <template>
-    <div class="code-editor w-100 h-100"
+    <div class="code-editor w-100 h-100" dir="ltr"
          :class="{ 'code-editor-readonly': readonly, 'code-editor-rounded': !!rounded }">
         <v-textarea
             no-resize
             hide-details
             class="code-editor-fallback w-100 h-100 code-textarea ps-3"
+            autocomplete="off"
             variant="plain"
             :class="{ 'always-cursor-text': readonly }"
             :aria-label="ariaLabel"

@@ -75,19 +75,19 @@
                                          v-if="canUpdateAccountCloseBalance"></v-list-item>
                             <v-divider class="my-2"/>
                             <v-list-item :prepend-icon="mdiComma"
-                                         :disabled="!reconciliationStatements || !reconciliationStatements.transactions || reconciliationStatements.transactions.length < 1"
+                                         :disabled="!reconciliationStatements || !reconciliationStatements.transactions || reconciliationStatements.transactions.length < 1 || useCommaDecimalSeparator"
                                          @click="exportReconciliationStatements(KnownFileType.CSV)">
-                                <v-list-item-title>{{ tt('Export to CSV (Comma-separated values) File') }}</v-list-item-title>
+                                <v-list-item-title>{{ tt('Save as CSV (Comma-separated values) File') }}</v-list-item-title>
                             </v-list-item>
                             <v-list-item :prepend-icon="mdiKeyboardTab"
                                          :disabled="!reconciliationStatements || !reconciliationStatements.transactions || reconciliationStatements.transactions.length < 1"
                                          @click="exportReconciliationStatements(KnownFileType.TSV)">
-                                <v-list-item-title>{{ tt('Export to TSV (Tab-separated values) File') }}</v-list-item-title>
+                                <v-list-item-title>{{ tt('Save as TSV (Tab-separated values) File') }}</v-list-item-title>
                             </v-list-item>
                             <v-list-item :prepend-icon="extendMdiSemicolon"
                                          :disabled="!reconciliationStatements || !reconciliationStatements.transactions || reconciliationStatements.transactions.length < 1"
                                          @click="exportReconciliationStatements(KnownFileType.SSV)">
-                                <v-list-item-title>{{ tt('Export to SSV (Semicolon-separated values) File') }}</v-list-item-title>
+                                <v-list-item-title>{{ tt('Save as SSV (Semicolon-separated values) File') }}</v-list-item-title>
                             </v-list-item>
                         </v-list>
                     </v-menu>
@@ -216,7 +216,7 @@
                         <span v-if="item.type === TransactionType.Transfer && item.sourceAccountId !== item.destinationAccountId && getDisplaySourceAmount(item) !== getDisplayDestinationAmount(item)">{{ getDisplayDestinationAmount(item) }}</span>
                         <v-tooltip activator="parent" v-if="!item.hideAmount && ((item.type !== TransactionType.Transfer && item.sourceAccount?.currency !== defaultCurrency) || (item.type === TransactionType.Transfer && item.sourceAccount?.currency !== defaultCurrency && item.destinationAccount?.currency !== defaultCurrency))">
                             <span>{{ getDisplaySourceAmount(item, true) }}</span>
-                            <v-icon class="ms-1" size="13" :icon="mdiArrowRight" v-if="item.type === TransactionType.Transfer && item.sourceAccount?.id !== item.destinationAccount?.id && item.sourceAccount?.currency !== item.destinationAccount?.currency && item.sourceAmount !== item.destinationAmount"></v-icon>
+                            <v-icon class="icon-with-direction mx-1" size="13" :icon="mdiArrowRight" v-if="item.type === TransactionType.Transfer && item.sourceAccount?.id !== item.destinationAccount?.id && item.sourceAccount?.currency !== item.destinationAccount?.currency && item.sourceAmount !== item.destinationAmount"></v-icon>
                             <span v-if="item.type === TransactionType.Transfer && item.sourceAccount?.id !== item.destinationAccount?.id && item.sourceAccount?.currency !== item.destinationAccount?.currency && item.sourceAmount !== item.destinationAmount">{{ getDisplayDestinationAmount(item, true) }}</span>
                         </v-tooltip>
                     </template>
@@ -335,7 +335,7 @@ import { useTransactionCategoriesStore } from '@/stores/transactionCategory.ts';
 import { useTransactionsStore } from '@/stores/transaction.ts';
 
 import type { NameNumeralValue } from '@/core/base.ts';
-import type { BigDecimal } from '@/core/numeral.ts';
+import { type BigDecimal, DecimalSeparator } from '@/core/numeral.ts';
 import { TimezoneTypeForStatistics } from '@/core/timezone.ts';
 import { TransactionType } from '@/core/transaction.ts';
 import { AccountBalanceTrendChartType, ChartDateAggregationType } from '@/core/statistics.ts';
@@ -383,12 +383,14 @@ type AmountInputDialogType = InstanceType<typeof AmountInputDialog>;
 type EditDialogType = InstanceType<typeof EditDialog>;
 
 const emit = defineEmits<{
+    (e: 'update:last-reconciled-time', newLastReconciledTime: number): void;
     (e: 'error', message: string): void;
 }>();
 
 const {
     tt,
     formatRange,
+    getCurrentDecimalSeparator,
     formatNumberToLocalizedNumerals,
     getTablePageOptions
 } = useI18n();
@@ -464,6 +466,8 @@ const timezoneTypeIconMap = {
     [TimezoneTypeForStatistics.TransactionTimezone.type]: mdiInvoiceTextClockOutline
 };
 
+let rejectFunc: ((reason?: unknown) => void) | null = null;
+
 const dialogLayout = useTemplateRef<OneColumnDialogLayoutType>('dialogLayout');
 const amountInputDialog = useTemplateRef<AmountInputDialogType>('amountInputDialog');
 const snackbar = useTemplateRef<SnackBarType>('snackbar');
@@ -478,8 +482,7 @@ const showAccountBalanceTrendsCharts = ref<boolean>(false);
 const chartType = ref<number>(AccountBalanceTrendChartType.Default.type);
 const transactionListDialogHeight = ref<number>(0);
 
-let rejectFunc: ((reason?: unknown) => void) | null = null;
-
+const useCommaDecimalSeparator = computed<boolean>(() => getCurrentDecimalSeparator() === DecimalSeparator.Comma.symbol);
 const reconciliationStatementsTablePageOptions = computed<NameNumeralValue[]>(() => getTablePageOptions(DEFAULT_PAGE_COUNTS, reconciliationStatements.value?.transactions.length, true, false));
 const preserveDialogHeight = computed<boolean>(() => showAccountBalanceTrendsCharts.value && transactionListDialogHeight.value > 0);
 
@@ -706,11 +709,13 @@ function updateLastReconciledTime(): void {
         return;
     }
 
+    const reconciledTime: number = newLastReconciledTime.value;
     updatingLastReconciledTime.value = true;
 
-    accountsStore.updateAccountLastReconciledTime(accountId.value, newLastReconciledTime.value).then(() => {
+    accountsStore.updateAccountLastReconciledTime(accountId.value, reconciledTime).then(() => {
         updatingLastReconciledTime.value = false;
         snackbar.value?.showMessage('Last reconciled time have been updated');
+        emit('update:last-reconciled-time', reconciledTime);
     }).catch(error => {
         updatingLastReconciledTime.value = false;
 

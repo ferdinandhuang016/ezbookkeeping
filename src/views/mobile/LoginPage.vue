@@ -132,6 +132,7 @@
                             @keyup.enter="verify"
                         ></f7-list-input>
                         <f7-list-input
+                            autocomplete="off"
                             outline
                             clear-button
                             class="no-margin no-padding-bottom"

@@ -13,6 +13,14 @@
                                  :show-available-credit-for-credit-card="widget.settings['showAvailableCreditForCreditCard'] as boolean"
                                  v-else-if="widget.type === OverviewWidgetType.AccountBalanceList" />
 
+    <account-unreconciled-transactions-widget :loading="loading" :editing="editing" :title="widgetTitle"
+                                              :hide-when-empty="widget.settings['hideWhenEmpty'] as boolean"
+                                              :show-title="widget.settings['showTitle'] as boolean"
+                                              :account-ids="widget.settings['accountIds'] as string[]"
+                                              :item-count="widget.settings['itemCount'] as number"
+                                              :sort-by="widget.settings['sortBy'] as string"
+                                              v-else-if="widget.type === OverviewWidgetType.AccountUnreconciledTransactions" />
+
     <monthly-expense-overview-widget :loading="loading" :height="widget.settings['height'] as number"
                                      :light-background-color="widget.settings['lightBackgroundColor'] as ColorValue"
                                      :dark-background-color="widget.settings['darkBackgroundColor'] as ColorValue"
@@ -48,6 +56,7 @@
                                 v-else-if="widget.type === OverviewWidgetType.RecentTransactions" />
 
     <transaction-calendar-widget :loading="loading" :editing="editing"
+                                 :total-amount-type="widget.settings['totalAmountType'] as number"
                                  :transaction-types="widget.settings['transactionTypes'] as number[]"
                                  :show-alternate-date="widget.settings['showAlternateDate'] as boolean"
                                  :show-amount="widget.settings['showAmount'] as boolean"
@@ -55,6 +64,9 @@
                                  v-else-if="widget.type === OverviewWidgetType.TransactionCalendar" />
 
     <add-transaction-button-widget :widget-id="widget.id" @navigate="onNavigate"
+                                   :default-action="widget.settings['defaultAction'] as AddTransactionButtonDefaultAction"
+                                   :light-background-color="widget.settings['lightBackgroundColor'] as ColorValue"
+                                   :dark-background-color="widget.settings['darkBackgroundColor'] as ColorValue"
                                    v-else-if="widget.type === OverviewWidgetType.AddTransactionButton" />
 </template>
 
@@ -63,6 +75,7 @@ import { computed } from 'vue';
 
 import AssetSummaryWidget from './widgets/AssetSummaryWidget.vue';
 import AccountBalanceListWidget from './widgets/AccountBalanceListWidget.vue';
+import AccountUnreconciledTransactionsWidget from './widgets/AccountUnreconciledTransactionsWidget.vue';
 import MonthlyExpenseOverviewWidget from './widgets/MonthlyExpenseOverviewWidget.vue';
 import MonthlyExpenseProgressWidget from './widgets/MonthlyExpenseProgressWidget.vue';
 import PeriodIncomeExpenseWidget from './widgets/PeriodIncomeExpenseWidget.vue';
@@ -76,7 +89,8 @@ import type { ColorValue } from '@/core/color.ts';
 import {
     type MobileOverviewWidgetLayout,
     OverviewWidgetType,
-    MobileOverviewWidgetNavigationType
+    MobileOverviewWidgetNavigationType,
+    AddTransactionButtonDefaultAction
 } from '@/core/overview_layout.ts';
 
 const props = defineProps<{

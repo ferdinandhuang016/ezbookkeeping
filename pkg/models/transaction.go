@@ -333,6 +333,7 @@ type TransactionAmountsRequest struct {
 	Query                  string `form:"query"`
 	ExcludeAccountIds      string `form:"exclude_account_ids"`
 	ExcludeCategoryIds     string `form:"exclude_category_ids"`
+	TagFilter              string `form:"tag_filter"`
 	UseTransactionTimezone bool   `form:"use_transaction_timezone"`
 }
 
@@ -342,6 +343,7 @@ type TransactionDailyAmountsRequest struct {
 	EndTime                int64  `form:"end_time" binding:"required,min=1"`
 	ExcludeAccountIds      string `form:"exclude_account_ids"`
 	ExcludeCategoryIds     string `form:"exclude_category_ids"`
+	TagFilter              string `form:"tag_filter"`
 	UseTransactionTimezone bool   `form:"use_transaction_timezone"`
 }
 
@@ -481,6 +483,22 @@ type TransactionReconciliationStatementResponse struct {
 	TotalOutflows  string                                            `json:"totalOutflows"`
 	OpeningBalance string                                            `json:"openingBalance"`
 	ClosingBalance string                                            `json:"closingBalance"`
+}
+
+// TransactionUnreconciledCountRequest represents the request for unreconciled transaction counts
+type TransactionUnreconciledCountRequest struct {
+	AccountIds string `form:"account_ids"`
+}
+
+// TransactionUnreconciledCountItem represents the unreconciled transaction count of an account
+type TransactionUnreconciledCountItem struct {
+	AccountId int64 `json:"accountId,string"`
+	Count     int64 `json:"count"`
+}
+
+// TransactionUnreconciledCountResponse represents the response of unreconciled transaction counts
+type TransactionUnreconciledCountResponse struct {
+	Items []*TransactionUnreconciledCountItem `json:"items"`
 }
 
 // TransactionStatisticResponse represents transaction statistic response

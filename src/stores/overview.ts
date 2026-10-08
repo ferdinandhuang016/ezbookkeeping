@@ -5,7 +5,7 @@ import { useSettingsStore } from './setting.ts';
 import { useUserStore } from './user.ts';
 import { useAccountsStore } from './account.ts';
 import { useTransactionCategoriesStore } from './transactionCategory.ts';
-import { type TransactionTotalAmount, useTransactionsStore } from './transaction.ts';
+import { type TransactionTotalAmount, type TransactionDailyTotalAmounts, useTransactionsStore } from './transaction.ts';
 import { useExchangeRatesStore } from './exchangeRates.ts';
 
 import { itemAndIndex, entries, keys } from '@/core/base.ts';
@@ -15,10 +15,13 @@ import { KeywordMatchMode } from '@/core/text.ts';
 import { TransactionType } from '@/core/transaction.ts';
 import type { OverviewRecentTransactionsQuery } from '@/core/overview_layout.ts';
 
+import { KnownErrorCode } from '@/consts/api.ts';
+
 import type {
     TransactionAmountsRequestType,
     TransactionAmountsRequestParams,
     TransactionInfoPageWrapperResponse,
+    TransactionUnreconciledCountItem,
     TransactionAmountsResponse,
     TransactionOverviewData,
     TransactionStatisticResponse,
@@ -147,6 +150,9 @@ export const useOverviewStore = defineStore('overview', () => {
 
     const transactionOverviewData = ref<TransactionAmountsResponse>({});
     const transactionOverviewStateInvalid = ref<boolean>(true);
+    const transactionUnreconciledCounts = ref<TransactionUnreconciledCountItem[]>([]);
+    const transactionUnreconciledCountsStateInvalid = ref<boolean>(true);
+    const transactionUnreconciledCountsAccountIds = ref<string[]>([]);
     const transactionCategoryStatisticsData = ref<Record<number, TransactionStatisticResponse>>({});
     const transactionCategoryStatisticsStateInvalid = ref<Record<number, boolean>>({});
     const transactionAssetTrendsData = ref<TransactionStatisticAssetTrendsResponseItem[]>([]);
@@ -154,7 +160,8 @@ export const useOverviewStore = defineStore('overview', () => {
     const recentTransactions = ref<Record<string, TransactionInfoResponse[]>>({});
     const recentTransactionsStateInvalid = ref<Record<string, boolean>>({});
     const currentMonthTransactions = ref<TransactionInfoResponse[]>([]);
-    const currentMonthTransactionDailyTotalAmounts = ref<Record<string, TransactionTotalAmount>>({});
+    const currentMonthTransactionInflowOutflowDailyTotalAmounts = ref<Record<string, TransactionTotalAmount>>({});
+    const currentMonthTransactionIncomeExpenseDailyTotalAmounts = ref<Record<string, TransactionTotalAmount>>({});
     const currentMonthTransactionsStateInvalid = ref<boolean>(true);
     const transactionDailyAmountsData = ref<TransactionDailyAmountsResponseItem[]>([]);
     const transactionDailyAmountsStateInvalid = ref<boolean>(true);
@@ -288,6 +295,7 @@ export const useOverviewStore = defineStore('overview', () => {
 
     function updateTransactionOverviewInvalidState(invalidState: boolean): void {
         transactionOverviewStateInvalid.value = invalidState;
+        transactionUnreconciledCountsStateInvalid.value = invalidState;
 
         for (const dateType of keys(transactionCategoryStatisticsData.value)) {
             transactionCategoryStatisticsStateInvalid.value[parseInt(dateType)] = invalidState;
@@ -308,6 +316,9 @@ export const useOverviewStore = defineStore('overview', () => {
         transactionOverviewOptions.value.loadedMonths = 1;
         transactionOverviewData.value = {};
         transactionOverviewStateInvalid.value = true;
+        transactionUnreconciledCounts.value = [];
+        transactionUnreconciledCountsStateInvalid.value = true;
+        transactionUnreconciledCountsAccountIds.value = [];
         transactionCategoryStatisticsData.value = {};
         transactionCategoryStatisticsStateInvalid.value = {};
         transactionAssetTrendsData.value = [];
@@ -315,7 +326,8 @@ export const useOverviewStore = defineStore('overview', () => {
         recentTransactions.value = {};
         recentTransactionsStateInvalid.value = {};
         currentMonthTransactions.value = [];
-        currentMonthTransactionDailyTotalAmounts.value = {};
+        currentMonthTransactionInflowOutflowDailyTotalAmounts.value = {};
+        currentMonthTransactionIncomeExpenseDailyTotalAmounts.value = {};
         currentMonthTransactionsStateInvalid.value = true;
         transactionDailyAmountsData.value = [];
         transactionDailyAmountsStateInvalid.value = true;
@@ -357,9 +369,10 @@ export const useOverviewStore = defineStore('overview', () => {
 
         const excludeAccountIds: string[] = objectFieldWithValueToArrayItem(settingsStore.appSettings.overviewAccountFilterInHomePage, true);
         const excludeCategoryIds: string[] = objectFieldWithValueToArrayItem(settingsStore.appSettings.overviewTransactionCategoryFilterInHomePage, true);
+        const tagFilter: string = settingsStore.appSettings.overviewTransactionTagFilterInHomePage;
 
         return new Promise((resolve, reject) => {
-            services.getTransactionAmounts(requestParams, excludeAccountIds, excludeCategoryIds).then(response => {
+            services.getTransactionAmounts(requestParams, excludeAccountIds, excludeCategoryIds, tagFilter).then(response => {
                 const data = response.data;
 
                 if (!data || !data.success || !data.result) {
@@ -398,6 +411,58 @@ export const useOverviewStore = defineStore('overview', () => {
         });
     }
 
+    function loadTransactionUnreconciledCounts({ force, accountIds }: { force: boolean, accountIds: string[] }): Promise<TransactionUnreconciledCountItem[]> {
+        const requestedAccountIds = [...accountIds].sort();
+        const accountIdsChanged = !isEquals(transactionUnreconciledCountsAccountIds.value, requestedAccountIds);
+
+        if (!accountIdsChanged && !force && !transactionUnreconciledCountsStateInvalid.value) {
+            return Promise.resolve(transactionUnreconciledCounts.value);
+        }
+
+        return new Promise((resolve, reject) => {
+            services.getUnreconciledTransactionCounts({
+                accountIds: requestedAccountIds
+            }).then(response => {
+                const data = response.data;
+
+                if (!data || !data.success || !data.result || !data.result.items) {
+                    reject({ message: 'Unable to retrieve unreconciled transaction counts' });
+                    return;
+                }
+
+                if (transactionUnreconciledCountsStateInvalid.value) {
+                    transactionUnreconciledCountsStateInvalid.value = false;
+                }
+
+                transactionUnreconciledCountsAccountIds.value = requestedAccountIds;
+
+                if (!accountIdsChanged && force && data.result && isEquals(transactionUnreconciledCounts.value, data.result.items)) {
+                    reject({ message: 'Data is up to date', isUpToDate: true });
+                    return;
+                }
+
+                transactionUnreconciledCounts.value = data.result.items;
+
+                resolve(data.result.items);
+            }).catch(error => {
+                logger.error('failed to retrieve unreconciled transaction counts', error);
+
+                if (error.response && error.response.data && error.response.data.errorCode === KnownErrorCode.UserLastReconciledTimeNotEnabled) {
+                    transactionUnreconciledCounts.value = [];
+                    transactionUnreconciledCountsAccountIds.value = requestedAccountIds;
+                    transactionUnreconciledCountsStateInvalid.value = false;
+                    resolve([]);
+                } else if (error.response && error.response.data && error.response.data.errorMessage) {
+                    reject({ error: error.response.data });
+                } else if (!error.processed) {
+                    reject({ message: 'Unable to retrieve unreconciled transaction counts' });
+                } else {
+                    reject(error);
+                }
+            });
+        });
+    }
+
     function loadTransactionCategoryStatistics({ force, dateType }: { force: boolean, dateType: number }): Promise<TransactionStatisticResponse> {
         if (transactionDataRange.value.today.startTime !== getTodayFirstUnixTime()) {
             updateTransactionDateRange();
@@ -425,7 +490,7 @@ export const useOverviewStore = defineStore('overview', () => {
             services.getTransactionStatistics({
                 startTime: requestDateRange.startTime,
                 endTime: requestDateRange.endTime,
-                tagFilter: '',
+                tagFilter: settingsStore.appSettings.overviewTransactionTagFilterInHomePage,
                 keyword: '',
                 matchMode: KeywordMatchMode.Default.type,
                 useTransactionTimezone: settingsStore.appSettings.timezoneUsedForStatisticsInHomePage === TimezoneTypeForStatistics.TransactionTimezone.type
@@ -655,7 +720,8 @@ export const useOverviewStore = defineStore('overview', () => {
                 endTime: endTime,
                 useTransactionTimezone: settingsStore.appSettings.timezoneUsedForStatisticsInHomePage === TimezoneTypeForStatistics.TransactionTimezone.type,
                 excludeAccountIds: excludeAccountIds,
-                excludeCategoryIds: excludeCategoryIds
+                excludeCategoryIds: excludeCategoryIds,
+                tagFilter: settingsStore.appSettings.overviewTransactionTagFilterInHomePage
             }).then(response => {
                 const data = response.data;
 
@@ -690,16 +756,20 @@ export const useOverviewStore = defineStore('overview', () => {
         });
     }
 
-    function loadCurrentMonthTransactions({ force }: { force: boolean }): Promise<Record<string, TransactionTotalAmount>> {
+    function loadCurrentMonthTransactions({ force }: { force: boolean }): Promise<TransactionDailyTotalAmounts> {
         if (transactionDataRange.value.today.startTime !== getTodayFirstUnixTime()) {
             updateTransactionDateRange();
             currentMonthTransactions.value = [];
-            currentMonthTransactionDailyTotalAmounts.value = {};
+            currentMonthTransactionInflowOutflowDailyTotalAmounts.value = {};
+            currentMonthTransactionIncomeExpenseDailyTotalAmounts.value = {};
             currentMonthTransactionsStateInvalid.value = true;
         }
 
         if (!force && !currentMonthTransactionsStateInvalid.value) {
-            return Promise.resolve(currentMonthTransactionDailyTotalAmounts.value);
+            return Promise.resolve({
+                inflowOutflowDailyTotalAmounts: currentMonthTransactionInflowOutflowDailyTotalAmounts.value,
+                incomeExpenseDailyTotalAmounts: currentMonthTransactionIncomeExpenseDailyTotalAmounts.value
+            });
         }
 
         return new Promise((resolve, reject) => {
@@ -725,7 +795,7 @@ export const useOverviewStore = defineStore('overview', () => {
                     type: 0,
                     categoryIds: categoryIds,
                     accountIds: accountIds,
-                    tagFilter: '',
+                    tagFilter: settingsStore.appSettings.overviewTransactionTagFilterInHomePage,
                     amountFilter: '',
                     keyword: '',
                     matchMode: KeywordMatchMode.Default.type,
@@ -749,9 +819,12 @@ export const useOverviewStore = defineStore('overview', () => {
                     }
 
                     currentMonthTransactions.value = data.result.items;
-                    currentMonthTransactionDailyTotalAmounts.value = transactionsStore.getCurrentMonthTransactionDailyTotalAmounts(currentMonthTransactions.value, accountIds);
 
-                    resolve(currentMonthTransactionDailyTotalAmounts.value);
+                    const dailyTotalAmounts = transactionsStore.getCurrentMonthTransactionDailyTotalAmounts(currentMonthTransactions.value, accountIds);
+                    currentMonthTransactionInflowOutflowDailyTotalAmounts.value = dailyTotalAmounts.inflowOutflowDailyTotalAmounts;
+                    currentMonthTransactionIncomeExpenseDailyTotalAmounts.value = dailyTotalAmounts.incomeExpenseDailyTotalAmounts;
+
+                    resolve(dailyTotalAmounts);
                 }).catch(error => {
                     logger.error('failed to retrieve transaction list', error);
 
@@ -806,6 +879,10 @@ export const useOverviewStore = defineStore('overview', () => {
             querys.push('accountIds=' + getFinalAccountIdsByFilteredAccountIds(accountsStore.allAccountsMap, settingsStore.appSettings.overviewAccountFilterInHomePage));
         }
 
+        if (settingsStore.appSettings.overviewTransactionTagFilterInHomePage) {
+            querys.push('tagFilter=' + encodeURIComponent(settingsStore.appSettings.overviewTransactionTagFilterInHomePage));
+        }
+
         return querys.join('&');
     }
 
@@ -815,10 +892,12 @@ export const useOverviewStore = defineStore('overview', () => {
         transactionOverviewOptions,
         transactionOverviewData,
         transactionOverviewStateInvalid,
+        transactionUnreconciledCounts,
         transactionCategoryStatisticsData,
         transactionAssetTrendsData,
         recentTransactions,
-        currentMonthTransactionDailyTotalAmounts,
+        currentMonthTransactionInflowOutflowDailyTotalAmounts,
+        currentMonthTransactionIncomeExpenseDailyTotalAmounts,
         currentMonthTransactionsStateInvalid,
         transactionDailyAmountsData,
         // computed states,
@@ -827,6 +906,7 @@ export const useOverviewStore = defineStore('overview', () => {
         updateTransactionOverviewInvalidState,
         resetTransactionOverview,
         loadTransactionOverview,
+        loadTransactionUnreconciledCounts,
         loadTransactionCategoryStatistics,
         loadTransactionAssetTrends,
         loadRecentTransactions,

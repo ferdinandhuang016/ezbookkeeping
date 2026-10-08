@@ -44,6 +44,7 @@ type TransactionTemplate struct {
 	ScheduledStartTime         *int64                           `xorm:"INDEX(IDX_transaction_template_deleted_type_freqtype_scheduled_time)"`
 	ScheduledEndTime           *int64                           `xorm:"INDEX(IDX_transaction_template_deleted_type_freqtype_scheduled_time)"`
 	ScheduledAt                int16                            `xorm:"INDEX(IDX_transaction_template_deleted_type_freqtype_scheduled_time)"`
+	ScheduledTimezoneName      string                           `xorm:"VARCHAR(100)"`
 	ScheduledTimezoneUtcOffset int16
 	TagIds                     string `xorm:"VARCHAR(255) NOT NULL"`
 	Amount                     int64  `xorm:"NOT NULL"`
@@ -87,6 +88,7 @@ type TransactionTemplateCreateRequest struct {
 	ScheduledFrequency         *string                           `json:"scheduledFrequency" binding:"omitempty"`
 	ScheduledStartDate         *string                           `json:"scheduledStartDate" binding:"omitempty"`
 	ScheduledEndDate           *string                           `json:"scheduledEndDate" binding:"omitempty"`
+	ScheduledTimezoneName      *string                           `json:"timeZone" binding:"omitempty,min=3,max=100"`
 	ScheduledTimezoneUtcOffset *int16                            `json:"utcOffset" binding:"omitempty,min=-720,max=840"`
 	ClientSessionId            string                            `json:"clientSessionId"`
 }
@@ -115,6 +117,7 @@ type TransactionTemplateModifyRequest struct {
 	ScheduledFrequency         *string                           `json:"scheduledFrequency" binding:"omitempty"`
 	ScheduledStartDate         *string                           `json:"scheduledStartDate" binding:"omitempty"`
 	ScheduledEndDate           *string                           `json:"scheduledEndDate" binding:"omitempty"`
+	ScheduledTimezoneName      *string                           `json:"timeZone" binding:"omitempty,min=3,max=100"`
 	ScheduledTimezoneUtcOffset *int16                            `json:"utcOffset" binding:"omitempty,min=-720,max=840"`
 }
 
@@ -149,6 +152,7 @@ type TransactionTemplateInfoResponse struct {
 	ScheduledStartDate     *string                           `json:"scheduledStartDate" binding:"omitempty"`
 	ScheduledEndDate       *string                           `json:"scheduledEndDate" binding:"omitempty"`
 	ScheduledAt            *int16                            `json:"scheduledAt,omitempty"`
+	ScheduledTimezoneName  string                            `json:"timeZone,omitempty"`
 	DisplayOrder           int32                             `json:"displayOrder"`
 	Hidden                 bool                              `json:"hidden"`
 }
@@ -186,16 +190,23 @@ func (t *TransactionTemplate) ToTransactionTemplateInfoResponse(serverUtcOffset 
 		response.ScheduledFrequencyType = &t.ScheduledFrequencyType
 		response.ScheduledFrequency = &t.ScheduledFrequency
 		response.ScheduledAt = &t.ScheduledAt
+		response.ScheduledTimezoneName = t.ScheduledTimezoneName
 
-		templateTimeZone := time.FixedZone("Template Timezone", int(t.ScheduledTimezoneUtcOffset)*60)
+		templateTimezone := time.FixedZone("Template Timezone", int(t.ScheduledTimezoneUtcOffset)*60)
+
+		if len(t.ScheduledTimezoneName) > 0 {
+			if location, err := time.LoadLocation(t.ScheduledTimezoneName); err == nil {
+				templateTimezone = location
+			}
+		}
 
 		if t.ScheduledStartTime != nil {
-			startDate := utils.FormatUnixTimeToLongDate(*t.ScheduledStartTime, templateTimeZone)
+			startDate := utils.FormatUnixTimeToLongDate(*t.ScheduledStartTime, templateTimezone)
 			response.ScheduledStartDate = &startDate
 		}
 
 		if t.ScheduledEndTime != nil {
-			endDate := utils.FormatUnixTimeToLongDate(*t.ScheduledEndTime, templateTimeZone)
+			endDate := utils.FormatUnixTimeToLongDate(*t.ScheduledEndTime, templateTimezone)
 			response.ScheduledEndDate = &endDate
 		}
 	}

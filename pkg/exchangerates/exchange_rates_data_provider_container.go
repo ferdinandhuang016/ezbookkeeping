@@ -1,6 +1,7 @@
 package exchangerates
 
 import (
+	"crypto/tls"
 	"time"
 
 	"github.com/mayswind/ezbookkeeping/pkg/core"
@@ -36,6 +37,9 @@ func InitializeExchangeRatesDataSource(config *settings.Config) error {
 	if config.ExchangeRatesDataSource == settings.CentralBankOfArgentinaDataSource {
 		Container.current = newCommonHttpExchangeRatesDataProvider(config, &CentralBankOfArgentinaDataSource{})
 		return nil
+	} else if config.ExchangeRatesDataSource == settings.NationalBankOfBelarusDataSource {
+		Container.current = newCommonHttpExchangeRatesDataProvider(config, &NationalBankOfBelarusDataSource{})
+		return nil
 	} else if config.ExchangeRatesDataSource == settings.BankOfCanadaDataSource {
 		Container.current = newCommonHttpExchangeRatesDataProvider(config, &BankOfCanadaDataSource{})
 		return nil
@@ -57,8 +61,14 @@ func InitializeExchangeRatesDataSource(config *settings.Config) error {
 	} else if config.ExchangeRatesDataSource == settings.BankOfIsraelDataSource {
 		Container.current = newCommonHttpExchangeRatesDataProvider(config, &BankOfIsraelDataSource{})
 		return nil
+	} else if config.ExchangeRatesDataSource == settings.BankOfItalyDataSource {
+		Container.current = newCommonHttpExchangeRatesDataProvider(config, &BankOfItalyDataSource{})
+		return nil
 	} else if config.ExchangeRatesDataSource == settings.NationalBankOfKazakhstanDataSource {
 		Container.current = newCommonHttpExchangeRatesDataProvider(config, &NationalBankOfKazakhstanDataSource{})
+		return nil
+	} else if config.ExchangeRatesDataSource == settings.CentralBankOfMalaysiaDataSource {
+		Container.current = newCommonHttpExchangeRatesDataProvider(config, &CentralBankOfMalaysiaDataSource{}, tls.TLS_RSA_WITH_AES_128_GCM_SHA256)
 		return nil
 	} else if config.ExchangeRatesDataSource == settings.CentralBankOfMyanmarDataSource {
 		Container.current = newCommonHttpExchangeRatesDataProvider(config, &CentralBankOfMyanmarDataSource{})

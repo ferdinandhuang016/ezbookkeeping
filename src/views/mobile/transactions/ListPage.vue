@@ -72,12 +72,13 @@
         <f7-block class="transaction-calendar-container" :class="{ 'margin-vertical': showSearchbar, 'margin-vertical-half': !showSearchbar }"
                   v-if="pageType === TransactionListPageType.Calendar.type">
             <transaction-calendar show-amount show-income-amount show-expense-amount show-alternate-date
+                                  dates-have-any-transaction-clickable
                                   calendar-class="justify-content-center" week-day-name-type="short"
                                   :readonly="loading" :is-dark-mode="isDarkMode"
                                   :default-currency="false"
                                   :min-date="transactionCalendarMinDate"
                                   :max-date="transactionCalendarMaxDate"
-                                  :dailyTotalAmounts="currentMonthTransactionData?.dailyTotalAmounts"
+                                  :daily-total-amounts="getDailyTotalAmounts(currentMonthTransactionData)"
                                   v-model="currentCalendarDate"></transaction-calendar>
         </f7-block>
 
@@ -194,12 +195,12 @@
                                     <small>
                                         <span>{{ getDisplayLongYearMonth(transactionMonthList) }}</span>
                                     </small>
-                                    <small class="transaction-amount-statistics" v-if="showTotalAmountInTransactionListPage && transactionMonthList.totalAmount">
+                                    <small class="transaction-amount-statistics" v-if="showTotalAmountInTransactionListPage && hasMonthTotalAmount(transactionMonthList)">
                                         <span class="text-income">
-                                            {{ getDisplayMonthTotalAmount(transactionMonthList.totalAmount.income, selectedAccountDefaultCurrency, '+', transactionMonthList.totalAmount.incompleteIncome) }}
+                                            {{ getDisplayMonthTotalAmount(transactionMonthList, '+')?.income }}
                                         </span>
                                         <span class="text-expense">
-                                            {{ getDisplayMonthTotalAmount(transactionMonthList.totalAmount.expense, selectedAccountDefaultCurrency, '-', transactionMonthList.totalAmount.incompleteExpense) }}
+                                            {{ getDisplayMonthTotalAmount(transactionMonthList, '-')?.expense }}
                                         </span>
                                     </small>
                                     <f7-icon class="combination-list-chevron-icon" :f7="transactionMonthList.opened ? 'chevron_up' : 'chevron_down'"></f7-icon>
@@ -772,11 +773,13 @@ const {
     hasVisibleTagsInTagGroup,
     isSameAsDefaultTimezoneOffsetMinutes,
     canAddTransaction,
+    hasMonthTotalAmount,
+    getDailyTotalAmounts,
+    getDisplayMonthTotalAmount,
     getDisplayTime,
     getDisplayLongYearMonth,
     getDisplayTimezone,
     getDisplayAmount,
-    getDisplayMonthTotalAmount,
     getTransactionTypeName,
     getTransactionPictureUrl
 } = useTransactionListPageBase();
@@ -829,13 +832,22 @@ const transactions = computed<TransactionMonthList[]>(() => {
                 yearDashMonth: currentMonthTransactionData.value.yearDashMonth,
                 opened: true,
                 items: transactions,
-                totalAmount: {
+                inflowOutflowTotalAmount: {
+                    transactionCount: transactions.length,
                     income: BIG_DECIMAL_ZERO,
                     expense: BIG_DECIMAL_ZERO,
                     incompleteIncome: false,
                     incompleteExpense: false
                 },
-                dailyTotalAmounts: {}
+                inflowOutflowDailyTotalAmounts: {},
+                incomeExpenseTotalAmount: {
+                    transactionCount: transactions.length,
+                    income: BIG_DECIMAL_ZERO,
+                    expense: BIG_DECIMAL_ZERO,
+                    incompleteIncome: false,
+                    incompleteExpense: false
+                },
+                incomeExpenseDailyTotalAmounts: {}
             };
 
             return [dailyTransactionList];

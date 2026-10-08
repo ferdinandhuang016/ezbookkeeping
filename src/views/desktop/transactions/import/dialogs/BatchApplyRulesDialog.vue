@@ -59,7 +59,8 @@
                                     <v-icon :icon="mdiFunctionVariant" size="20" />
                                     <span class="rule-name text-body-large ms-2" v-if="editingRule !== element">{{ getRuleName(element, index) }}</span>
                                     <div class="rule-name-edit ms-2" v-if="editingRule === element">
-                                        <v-text-field autofocus type="text" density="compact" variant="underlined"
+                                        <v-text-field autofocus type="text" autocomplete="off"
+                                                      density="compact" variant="underlined"
                                                       :disabled="loading" :placeholder="getDefaultRuleName(index)"
                                                       v-text-field-auto-width="{ minWidth: 20, maxWidth: 300, auxSpanId: `rule-name-aux-span-${index + 1}-${element.id}` }"
                                                       v-model="editingRuleName" @keyup.esc="cancelUpdateRuleName"
@@ -140,7 +141,8 @@
                                                       :placeholder="tt('None')"
                                                       v-else-if="isEmptyTextConditionOperator(element.conditionOperator)" />
 
-                                        <v-text-field class="flex-1-1" min-width="240" density="compact" :disabled="loading || !!editingRule"
+                                        <v-text-field class="flex-1-1" min-width="240" autocomplete="off" density="compact"
+                                                      :disabled="loading || !!editingRule"
                                                       :placeholder="tt('None')" :model-value="element.conditionValue"
                                                       @update:model-value="updateStringConditionValue(element, $event)" v-else />
                                     </div>
@@ -149,10 +151,17 @@
                                     <div class="d-flex overflow-x-auto align-center gap-2">
 
                                         <v-select class="flex-0-0" min-width="220" density="compact" item-title="name" item-value="value"
-                                                  :disabled="loading || !!editingRule" :items="getActions(element)" :model-value="element.actionType"
+                                                  :disabled="loading || !!editingRule" :items="allActions" :model-value="element.actionType"
                                                   @update:model-value="updateActionType(element, $event)">
                                             <template #selection>
                                                 <span>{{ tt(ImportTransactionReplaceRuleAction.valueOf(element.actionType)?.name || '') }}</span>
+                                            </template>
+                                            <template #item="{ props, internalItem }">
+                                                <v-list-item :disabled="isActionDisabledForRule(internalItem.raw.value, element)" v-bind="props">
+                                                    <template #title>
+                                                        <div class="text-truncate">{{ internalItem.raw.name }}</div>
+                                                    </template>
+                                                </v-list-item>
                                             </template>
                                         </v-select>
 
@@ -249,7 +258,7 @@ import { useAccountsStore } from '@/stores/account.ts';
 import { useTransactionCategoriesStore } from '@/stores/transactionCategory.ts';
 import { useTransactionTagsStore } from '@/stores/transactionTag.ts';
 
-import type { NameValue, NameNumeralValue, TypeAndDisplayName } from '@/core/base.ts';
+import type { GenericNameValue, NameValue, NameNumeralValue, TypeAndDisplayName } from '@/core/base.ts';
 import type { LocalizedTimezoneInfo } from '@/core/timezone.ts';
 import { KnownFileType } from '@/core/file.ts';
 import { CategoryType } from '@/core/category.ts';
@@ -342,6 +351,19 @@ const allCategories = computed<Record<number, TransactionCategory[]>>(() => tran
 const allTimezones = computed<LocalizedTimezoneInfo[]>(() => getAllTimezones(getCurrentUnixTime(), false));
 
 const allConditionFields = computed<NameValue[]>(() => getAllImportTransactionReplaceRuleConditionFields());
+const allActions = computed<GenericNameValue<ImportTransactionReplaceRuleActionType>[]>(() => {
+    const result = [];
+
+    for (const action of ImportTransactionReplaceRuleAction.values()) {
+        result.push({
+            name: tt(action.name),
+            value: action.value
+        })
+    }
+
+    return result;
+});
+
 const transactionTypes = computed<TypeAndDisplayName[]>(() => [
     { displayName: tt('Income'), type: TransactionType.Income },
     { displayName: tt('Expense'), type: TransactionType.Expense },
@@ -414,34 +436,18 @@ function getConditionOperators(rule: ImportTransactionReplaceRule): NameValue[] 
     }));
 }
 
-function isActionDisabledForRule(action: ImportTransactionReplaceRuleAction, rule: ImportTransactionReplaceRule): boolean {
-    if (action.value === ImportTransactionReplaceRuleActionType.SetExpenseCategory) {
+function isActionDisabledForRule(type: ImportTransactionReplaceRuleActionType, rule: ImportTransactionReplaceRule): boolean {
+    if (type === ImportTransactionReplaceRuleActionType.SetExpenseCategory) {
         return rule.conditionField === ImportTransactionReplaceRuleConditionFieldType.IncomeCategory || rule.conditionField === ImportTransactionReplaceRuleConditionFieldType.TransferCategory;
-    } else if (action.value === ImportTransactionReplaceRuleActionType.SetIncomeCategory) {
+    } else if (type === ImportTransactionReplaceRuleActionType.SetIncomeCategory) {
         return rule.conditionField === ImportTransactionReplaceRuleConditionFieldType.ExpenseCategory || rule.conditionField === ImportTransactionReplaceRuleConditionFieldType.TransferCategory;
-    } else if (action.value === ImportTransactionReplaceRuleActionType.SetTransferCategory) {
+    } else if (type === ImportTransactionReplaceRuleActionType.SetTransferCategory) {
         return rule.conditionField === ImportTransactionReplaceRuleConditionFieldType.ExpenseCategory || rule.conditionField === ImportTransactionReplaceRuleConditionFieldType.IncomeCategory;
-    } else if (action.value === ImportTransactionReplaceRuleActionType.ReplaceTag || action.value === ImportTransactionReplaceRuleActionType.DeleteTag) {
+    } else if (type === ImportTransactionReplaceRuleActionType.ReplaceTag || type === ImportTransactionReplaceRuleActionType.DeleteTag) {
         return rule.conditionField !== ImportTransactionReplaceRuleConditionFieldType.Tag;
     }
 
     return false;
-}
-
-function getActions(rule: ImportTransactionReplaceRule): { name: string; value: string; props: { disabled: boolean } }[] {
-    const result = [];
-
-    for (const action of ImportTransactionReplaceRuleAction.values()) {
-        result.push({
-            name: tt(action.name),
-            value: action.value,
-            props: {
-                disabled: isActionDisabledForRule(action, rule)
-            }
-        })
-    }
-
-    return result;
 }
 
 function getDefaultActionTypeForConditionField(field: ImportTransactionReplaceRuleConditionFieldType): ImportTransactionReplaceRuleActionType {
@@ -643,7 +649,7 @@ function updateConditionField(rule: ImportTransactionReplaceRule, field: ImportT
 
     const currentAction = ImportTransactionReplaceRuleAction.valueOf(rule.actionType);
 
-    if (!currentAction || isActionDisabledForRule(currentAction, rule)) {
+    if (!currentAction || isActionDisabledForRule(currentAction.value, rule)) {
         updateActionType(rule, getDefaultActionTypeForConditionField(field));
     }
 }

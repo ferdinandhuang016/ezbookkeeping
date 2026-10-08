@@ -819,124 +819,14 @@ func (s *TransactionService) CreateScheduledTransactions(c core.Context, current
 
 	for i := 0; i < len(allTemplates); i++ {
 		template := allTemplates[i]
+		transaction, tagIds := s.createTransactionByScheduledTransactionTemplate(c, template, startTimeInUTC, todayFirstUnixTimeInUTC)
 
-		if template.ScheduledFrequencyType == models.TRANSACTION_SCHEDULE_FREQUENCY_TYPE_DISABLED {
+		if transaction == nil {
 			skipCount++
-			log.Warnf(c, "[transactions.CreateScheduledTransactions] transaction template \"id:%d\" disabled scheduled transaction frequency", template.TemplateId)
 			continue
-		}
-
-		if (template.ScheduledFrequencyType != models.TRANSACTION_SCHEDULE_FREQUENCY_TYPE_WEEKLY &&
-			template.ScheduledFrequencyType != models.TRANSACTION_SCHEDULE_FREQUENCY_TYPE_MONTHLY &&
-			template.ScheduledFrequencyType != models.TRANSACTION_SCHEDULE_FREQUENCY_TYPE_DAILY &&
-			template.ScheduledFrequencyType != models.TRANSACTION_SCHEDULE_FREQUENCY_TYPE_YEARLY &&
-			template.ScheduledFrequencyType != models.TRANSACTION_SCHEDULE_FREQUENCY_TYPE_EVERY_N_DAYS) ||
-			template.ScheduledFrequency == "" {
-			skipCount++
-			log.Warnf(c, "[transactions.CreateScheduledTransactions] transaction template \"id:%d\" has invalid scheduled transaction frequency", template.TemplateId)
-			continue
-		}
-
-		frequencyValues, err := utils.StringArrayToInt64Array(strings.Split(template.ScheduledFrequency, ","))
-
-		if err != nil {
-			skipCount++
-			log.Warnf(c, "[transactions.CreateScheduledTransactions] transaction template \"id:%d\" has invalid scheduled transaction frequency, because %s", template.TemplateId, err.Error())
-			continue
-		}
-
-		templateTimeZone := time.FixedZone("Template Timezone", int(template.ScheduledTimezoneUtcOffset)*60)
-		transactionUnixTime := todayFirstUnixTimeInUTC + int64(template.ScheduledAt)*60
-		transactionTime := time.Unix(transactionUnixTime, 0).In(templateTimeZone)
-
-		if template.ScheduledFrequencyType == models.TRANSACTION_SCHEDULE_FREQUENCY_TYPE_MONTHLY {
-			maxDayInMonth := utils.GetMaxDayOfMonth(transactionTime.Year(), transactionTime.Month())
-
-			for i := 0; i < len(frequencyValues); i++ {
-				if frequencyValues[i] < 0 {
-					frequencyValues[i] = int64(maxDayInMonth) + frequencyValues[i] + 1
-				}
-			}
-		}
-
-		frequencyValueSet := utils.ToSet(frequencyValues)
-
-		if template.ScheduledFrequencyType == models.TRANSACTION_SCHEDULE_FREQUENCY_TYPE_WEEKLY && !frequencyValueSet[int64(transactionTime.Weekday())] {
-			skipCount++
-			log.Infof(c, "[transactions.CreateScheduledTransactions] transaction template \"id:%d\" does not need to create transaction, today is %s", template.TemplateId, startTimeInUTC.Weekday())
-			continue
-		} else if template.ScheduledFrequencyType == models.TRANSACTION_SCHEDULE_FREQUENCY_TYPE_MONTHLY && !frequencyValueSet[int64(transactionTime.Day())] {
-			skipCount++
-			log.Infof(c, "[transactions.CreateScheduledTransactions] transaction template \"id:%d\" does not need to create transaction, today is %d of month", template.TemplateId, startTimeInUTC.Day())
-			continue
-		} else if template.ScheduledFrequencyType == models.TRANSACTION_SCHEDULE_FREQUENCY_TYPE_YEARLY && !frequencyValueSet[int64(transactionTime.Month())*100+int64(transactionTime.Day())] {
-			skipCount++
-			log.Infof(c, "[transactions.CreateScheduledTransactions] transaction template \"id:%d\" does not need to create transaction, today is %d-%d of year", template.TemplateId, startTimeInUTC.Month(), startTimeInUTC.Day())
-			continue
-		} else if template.ScheduledFrequencyType == models.TRANSACTION_SCHEDULE_FREQUENCY_TYPE_EVERY_N_DAYS {
-			if template.ScheduledStartTime == nil || len(frequencyValues) != 1 || frequencyValues[0] <= 0 {
-				skipCount++
-				log.Warnf(c, "[transactions.CreateScheduledTransactions] transaction template \"id:%d\" has invalid scheduled transaction frequency for every N days", template.TemplateId)
-				continue
-			}
-
-			n := frequencyValues[0]
-			startDate := time.Unix(*template.ScheduledStartTime, 0).In(templateTimeZone)
-			startDateOnly := time.Date(startDate.Year(), startDate.Month(), startDate.Day(), 0, 0, 0, 0, templateTimeZone)
-			transactionDateOnly := time.Date(transactionTime.Year(), transactionTime.Month(), transactionTime.Day(), 0, 0, 0, 0, templateTimeZone)
-			daysDiff := int(transactionDateOnly.Sub(startDateOnly).Hours() / 24)
-
-			if daysDiff < 0 || int64(daysDiff)%n != 0 {
-				skipCount++
-				log.Infof(c, "[transactions.CreateScheduledTransactions] transaction template \"id:%d\" does not need to create transaction, days diff is %d with interval %d", template.TemplateId, daysDiff, n)
-				continue
-			}
-		}
-
-		if template.ScheduledStartTime != nil && *template.ScheduledStartTime > transactionUnixTime {
-			skipCount++
-			log.Infof(c, "[transactions.CreateScheduledTransactions] transaction template \"id:%d\" does not need to create transaction, now is earlier than the start time %d", template.TemplateId, *template.ScheduledStartTime)
-			continue
-		}
-
-		if template.ScheduledEndTime != nil && *template.ScheduledEndTime < transactionUnixTime {
-			skipCount++
-			log.Infof(c, "[transactions.CreateScheduledTransactions] transaction template \"id:%d\" does not need to create transaction, now is later than the end time %d", template.TemplateId, *template.ScheduledEndTime)
-			continue
-		}
-
-		var transactionDbType models.TransactionDbType
-
-		if template.Type == models.TRANSACTION_TYPE_EXPENSE {
-			transactionDbType = models.TRANSACTION_DB_TYPE_EXPENSE
-		} else if template.Type == models.TRANSACTION_TYPE_INCOME {
-			transactionDbType = models.TRANSACTION_DB_TYPE_INCOME
-		} else if template.Type == models.TRANSACTION_TYPE_TRANSFER {
-			transactionDbType = models.TRANSACTION_DB_TYPE_TRANSFER_OUT
-		} else {
-			skipCount++
-			log.Warnf(c, "[transactions.CreateScheduledTransactions] transaction template \"id:%d\" has invalid transaction type", template.TemplateId)
-			continue
-		}
-
-		transaction := &models.Transaction{
-			Uid:               template.Uid,
-			Type:              transactionDbType,
-			CategoryId:        template.CategoryId,
-			TransactionTime:   utils.GetMinTransactionTimeFromUnixTime(transactionTime.Unix()),
-			TimezoneUtcOffset: template.ScheduledTimezoneUtcOffset,
-			AccountId:         template.AccountId,
-			Amount:            template.Amount,
-			ServiceCharge:     template.ServiceCharge,
-			HideAmount:        template.HideAmount,
-			Comment:           template.Comment,
-			CreatedIp:         c.ClientIP(),
-			ScheduledCreated:  true,
 		}
 
 		if template.Type == models.TRANSACTION_TYPE_TRANSFER {
-			transaction.RelatedAccountId = template.RelatedAccountId
-			transaction.RelatedAccountAmount = template.RelatedAccountAmount
 			source, sourceErr := Accounts.GetAccountByAccountId(c, template.Uid, template.AccountId)
 			destination, destinationErr := Accounts.GetAccountByAccountId(c, template.Uid, template.RelatedAccountId)
 			if sourceErr != nil || destinationErr != nil {
@@ -947,6 +837,7 @@ func (s *TransactionService) CreateScheduledTransactions(c core.Context, current
 			if source.Currency == destination.Currency {
 				transaction.RelatedAccountAmount = template.Amount - template.ServiceCharge
 			} else {
+				transactionTime := time.Unix(utils.GetUnixTimeFromTransactionTime(transaction.TransactionTime), 0).In(time.FixedZone("Transaction Timezone", int(transaction.TimezoneUtcOffset)*60))
 				amount, conversionErr := s.convertScheduledTransferAmount(c, template.Uid, transactionTime.Format("2006-01-02"), template.Amount-template.ServiceCharge, source.Currency, destination.Currency)
 				if conversionErr != nil {
 					failedCount++
@@ -957,8 +848,7 @@ func (s *TransactionService) CreateScheduledTransactions(c core.Context, current
 			}
 		}
 
-		tagIds := template.GetTagIds()
-		err = s.CreateTransaction(c, transaction, tagIds, nil)
+		err := s.CreateTransaction(c, transaction, tagIds, nil)
 
 		if err == nil {
 			successCount++
@@ -2391,7 +2281,7 @@ func (s *TransactionService) GetRelatedTransferTransaction(originalTransaction *
 }
 
 // GetAccountsTotalIncomeAndExpense returns the every accounts total income and expense amount by specific date range
-func (s *TransactionService) GetAccountsTotalIncomeAndExpense(c core.Context, uid int64, startUnixTime int64, endUnixTime int64, excludeAccountIds []int64, excludeCategoryIds []int64, clientTimezone *time.Location, useTransactionTimezone bool) (map[int64]*big.Int, map[int64]*big.Int, error) {
+func (s *TransactionService) GetAccountsTotalIncomeAndExpense(c core.Context, uid int64, startUnixTime int64, endUnixTime int64, excludeAccountIds []int64, excludeCategoryIds []int64, tagFilters []*models.TransactionTagFilter, clientTimezone *time.Location, useTransactionTimezone bool) (map[int64]*big.Int, map[int64]*big.Int, error) {
 	if uid <= 0 {
 		return nil, nil, errs.ErrUserIdInvalid
 	}
@@ -2399,7 +2289,7 @@ func (s *TransactionService) GetAccountsTotalIncomeAndExpense(c core.Context, ui
 	startLocalDateTime := utils.FormatUnixTimeToNumericLocalDateTime(startUnixTime, clientTimezone)
 	endLocalDateTime := utils.FormatUnixTimeToNumericLocalDateTime(endUnixTime, clientTimezone)
 
-	allTransactions, err := s.getAllTransactionsInSpecifiedDateRange(c, uid, startUnixTime, endUnixTime, excludeAccountIds, excludeCategoryIds, clientTimezone)
+	allTransactions, err := s.getAllTransactionsInSpecifiedDateRange(c, uid, startUnixTime, endUnixTime, excludeAccountIds, excludeCategoryIds, tagFilters, clientTimezone)
 
 	if err != nil {
 		return nil, nil, err
@@ -2444,7 +2334,7 @@ func (s *TransactionService) GetAccountsTotalIncomeAndExpense(c core.Context, ui
 }
 
 // GetAccountsDailyIncomeAndExpense returns daily income and expense amounts grouped by account
-func (s *TransactionService) GetAccountsDailyIncomeAndExpense(c core.Context, uid int64, startUnixTime int64, endUnixTime int64, excludeAccountIds []int64, excludeCategoryIds []int64, clientTimezone *time.Location, useTransactionTimezone bool) (map[int32]map[int64]*big.Int, map[int32]map[int64]*big.Int, error) {
+func (s *TransactionService) GetAccountsDailyIncomeAndExpense(c core.Context, uid int64, startUnixTime int64, endUnixTime int64, excludeAccountIds []int64, excludeCategoryIds []int64, tagFilters []*models.TransactionTagFilter, clientTimezone *time.Location, useTransactionTimezone bool) (map[int32]map[int64]*big.Int, map[int32]map[int64]*big.Int, error) {
 	if uid <= 0 {
 		return nil, nil, errs.ErrUserIdInvalid
 	}
@@ -2452,7 +2342,7 @@ func (s *TransactionService) GetAccountsDailyIncomeAndExpense(c core.Context, ui
 	startLocalDateTime := utils.FormatUnixTimeToNumericLocalDateTime(startUnixTime, clientTimezone)
 	endLocalDateTime := utils.FormatUnixTimeToNumericLocalDateTime(endUnixTime, clientTimezone)
 
-	allTransactions, err := s.getAllTransactionsInSpecifiedDateRange(c, uid, startUnixTime, endUnixTime, excludeAccountIds, excludeCategoryIds, clientTimezone)
+	allTransactions, err := s.getAllTransactionsInSpecifiedDateRange(c, uid, startUnixTime, endUnixTime, excludeAccountIds, excludeCategoryIds, tagFilters, clientTimezone)
 
 	if err != nil {
 		return nil, nil, err
@@ -2629,6 +2519,32 @@ func (s *TransactionService) GetAccountsAndCategoriesTotalInflowAndOutflow(c cor
 	}
 
 	return transactionTotalAmounts, nil
+}
+
+// GetUnreconciledTransactionCounts returns transaction counts after each account's last reconciled time
+func (s *TransactionService) GetUnreconciledTransactionCounts(c core.Context, uid int64, accountLastReconciledTimes map[int64]int64) ([]*models.TransactionUnreconciledCountItem, error) {
+	if uid <= 0 {
+		return nil, errs.ErrUserIdInvalid
+	}
+
+	accountConditions := make([]builder.Cond, 0, len(accountLastReconciledTimes))
+
+	for accountId, lastReconciledTime := range accountLastReconciledTimes {
+		accountConditions = append(accountConditions, builder.And(
+			builder.Eq{"account_id": accountId},
+			builder.Gt{"transaction_time": utils.GetMaxTransactionTimeFromUnixTime(lastReconciledTime)},
+		))
+	}
+
+	counts := make([]*models.TransactionUnreconciledCountItem, 0)
+
+	if len(accountConditions) < 1 {
+		return counts, nil
+	}
+
+	err := s.UserDataDB(uid).NewSession(c).Table(&models.Transaction{}).Select("account_id, SUM(1) AS count").Where(builder.And(builder.Eq{"uid": uid, "deleted": false}, builder.Or(accountConditions...))).GroupBy("account_id").Having("SUM(1) > 0").OrderBy("account_id asc").Find(&counts)
+
+	return counts, err
 }
 
 // GetAccountsAndCategoriesMonthlyInflowAndOutflow returns the every accounts monthly inflows and outflows amount by specific date range
@@ -3103,7 +3019,7 @@ func (s *TransactionService) updateAccountBalance(sess *xorm.Session, account *m
 	return updatedRows, err
 }
 
-func (s *TransactionService) getAllTransactionsInSpecifiedDateRange(c core.Context, uid int64, startUnixTime int64, endUnixTime int64, excludeAccountIds []int64, excludeCategoryIds []int64, clientTimezone *time.Location) ([]*models.Transaction, error) {
+func (s *TransactionService) getAllTransactionsInSpecifiedDateRange(c core.Context, uid int64, startUnixTime int64, endUnixTime int64, excludeAccountIds []int64, excludeCategoryIds []int64, tagFilters []*models.TransactionTagFilter, clientTimezone *time.Location) ([]*models.Transaction, error) {
 	startUnixTime = utils.GetMinUnixTimeWithSameLocalDateTime(startUnixTime, utils.GetTimezoneOffsetMinutes(startUnixTime, clientTimezone))
 	endUnixTime = utils.GetMaxUnixTimeWithSameLocalDateTime(endUnixTime, utils.GetTimezoneOffsetMinutes(endUnixTime, clientTimezone))
 
@@ -3165,7 +3081,10 @@ func (s *TransactionService) getAllTransactionsInSpecifiedDateRange(c core.Conte
 		finalConditionParams = append(finalConditionParams, minTransactionTime)
 		finalConditionParams = append(finalConditionParams, maxTransactionTime)
 
-		err := s.UserDataDB(uid).NewSession(c).Select("type, account_id, transaction_time, timezone_utc_offset, amount").Where(condition, finalConditionParams...).Limit(pageCountForLoadTransactionAmounts, 0).OrderBy("transaction_time desc").Find(&transactions)
+		sess := s.UserDataDB(uid).NewSession(c).Select("type, account_id, transaction_time, timezone_utc_offset, amount").Where(condition, finalConditionParams...)
+		sess = s.appendFilterTagIdsConditionToQuery(sess, uid, maxTransactionTime, minTransactionTime, tagFilters, false)
+
+		err := sess.Limit(pageCountForLoadTransactionAmounts, 0).OrderBy("transaction_time desc").Find(&transactions)
 
 		if err != nil {
 			return nil, err
@@ -3405,35 +3324,132 @@ func (s *TransactionService) appendFilterPicturesConditionToQuery(sess *xorm.Ses
 	return sess
 }
 
-func (s *TransactionService) isAccountIdValid(transaction *models.Transaction) error {
-	if transaction.ServiceCharge < 0 || (transaction.Type == models.TRANSACTION_DB_TYPE_TRANSFER_OUT && (transaction.Amount > models.MaximumTransactionAmount || transaction.ServiceCharge > transaction.Amount)) {
-		return errs.ErrAmountInvalid
-	}
-	if transaction.Type != models.TRANSACTION_DB_TYPE_TRANSFER_OUT && transaction.Type != models.TRANSACTION_DB_TYPE_TRANSFER_IN && transaction.ServiceCharge != 0 {
-		return errs.ErrAmountInvalid
-	}
-	if transaction.Type == models.TRANSACTION_DB_TYPE_MODIFY_BALANCE {
-		if transaction.RelatedAccountId != 0 && transaction.RelatedAccountId != transaction.AccountId {
-			return errs.ErrTransactionDestinationAccountCannotBeSet
-		}
-	} else if transaction.Type == models.TRANSACTION_DB_TYPE_INCOME ||
-		transaction.Type == models.TRANSACTION_DB_TYPE_EXPENSE {
-		if transaction.RelatedAccountId != 0 {
-			return errs.ErrTransactionDestinationAccountCannotBeSet
-		} else if transaction.RelatedAccountAmount != 0 {
-			return errs.ErrTransactionDestinationAmountCannotBeSet
-		}
-	} else if transaction.Type == models.TRANSACTION_DB_TYPE_TRANSFER_OUT {
-		if transaction.AccountId == transaction.RelatedAccountId {
-			return errs.ErrTransactionSourceAndDestinationIdCannotBeEqual
-		}
-	} else if transaction.Type == models.TRANSACTION_DB_TYPE_TRANSFER_IN {
-		return errs.ErrTransactionTypeInvalid
-	} else {
-		return errs.ErrTransactionTypeInvalid
+func (s *TransactionService) createTransactionByScheduledTransactionTemplate(c core.Context, template *models.TransactionTemplate, startTimeInUTC time.Time, todayFirstUnixTimeInUTC int64) (*models.Transaction, []int64) {
+	if template.ScheduledFrequencyType == models.TRANSACTION_SCHEDULE_FREQUENCY_TYPE_DISABLED {
+		log.Infof(c, "[transactions.CreateScheduledTransactions] transaction template \"id:%d\" disabled scheduled transaction frequency", template.TemplateId)
+		return nil, nil
 	}
 
-	return nil
+	if (template.ScheduledFrequencyType != models.TRANSACTION_SCHEDULE_FREQUENCY_TYPE_WEEKLY &&
+		template.ScheduledFrequencyType != models.TRANSACTION_SCHEDULE_FREQUENCY_TYPE_MONTHLY &&
+		template.ScheduledFrequencyType != models.TRANSACTION_SCHEDULE_FREQUENCY_TYPE_DAILY &&
+		template.ScheduledFrequencyType != models.TRANSACTION_SCHEDULE_FREQUENCY_TYPE_YEARLY &&
+		template.ScheduledFrequencyType != models.TRANSACTION_SCHEDULE_FREQUENCY_TYPE_EVERY_N_DAYS) ||
+		template.ScheduledFrequency == "" {
+		log.Warnf(c, "[transactions.CreateScheduledTransactions] transaction template \"id:%d\" has invalid scheduled transaction frequency", template.TemplateId)
+		return nil, nil
+	}
+
+	frequencyValues, err := utils.StringArrayToInt64Array(strings.Split(template.ScheduledFrequency, ","))
+
+	if err != nil {
+		log.Warnf(c, "[transactions.CreateScheduledTransactions] transaction template \"id:%d\" has invalid scheduled transaction frequency, because %s", template.TemplateId, err.Error())
+		return nil, nil
+	}
+
+	templateTimezone := time.FixedZone("Template Timezone", int(template.ScheduledTimezoneUtcOffset)*60)
+
+	if len(template.ScheduledTimezoneName) > 0 {
+		location, err := time.LoadLocation(template.ScheduledTimezoneName)
+
+		if err != nil {
+			log.Warnf(c, "[transactions.CreateScheduledTransactions] transaction template \"id:%d\" cannot load timezone \"%s\", because %s", template.TemplateId, template.ScheduledTimezoneName, err.Error())
+		} else {
+			templateTimezone = location
+		}
+	}
+
+	transactionTime := utils.GetScheduledTransactionFinalTime(todayFirstUnixTimeInUTC, template.ScheduledAt, template.CreatedUnixTime, templateTimezone)
+
+	if transactionTime == nil {
+		log.Warnf(c, "[transactions.CreateScheduledTransactions] transaction template \"id:%d\" does not need to create transaction, the scheduled local date does not exist", template.TemplateId)
+		return nil, nil
+	}
+
+	transactionTimezoneUtcOffset := utils.GetTimezoneOffsetMinutes(transactionTime.Unix(), templateTimezone)
+
+	if template.ScheduledFrequencyType == models.TRANSACTION_SCHEDULE_FREQUENCY_TYPE_MONTHLY {
+		maxDayInMonth := utils.GetMaxDayOfMonth(transactionTime.Year(), transactionTime.Month())
+
+		for i := 0; i < len(frequencyValues); i++ {
+			if frequencyValues[i] < 0 {
+				frequencyValues[i] = int64(maxDayInMonth) + frequencyValues[i] + 1
+			}
+		}
+	}
+
+	frequencyValueSet := utils.ToSet(frequencyValues)
+
+	if template.ScheduledFrequencyType == models.TRANSACTION_SCHEDULE_FREQUENCY_TYPE_WEEKLY && !frequencyValueSet[int64(transactionTime.Weekday())] {
+		log.Infof(c, "[transactions.CreateScheduledTransactions] transaction template \"id:%d\" does not need to create transaction, today is %s", template.TemplateId, startTimeInUTC.Weekday())
+		return nil, nil
+	} else if template.ScheduledFrequencyType == models.TRANSACTION_SCHEDULE_FREQUENCY_TYPE_MONTHLY && !frequencyValueSet[int64(transactionTime.Day())] {
+		log.Infof(c, "[transactions.CreateScheduledTransactions] transaction template \"id:%d\" does not need to create transaction, today is %d of month", template.TemplateId, startTimeInUTC.Day())
+		return nil, nil
+	} else if template.ScheduledFrequencyType == models.TRANSACTION_SCHEDULE_FREQUENCY_TYPE_YEARLY && !frequencyValueSet[int64(transactionTime.Month())*100+int64(transactionTime.Day())] {
+		log.Infof(c, "[transactions.CreateScheduledTransactions] transaction template \"id:%d\" does not need to create transaction, today is %d-%d of year", template.TemplateId, startTimeInUTC.Month(), startTimeInUTC.Day())
+		return nil, nil
+	} else if template.ScheduledFrequencyType == models.TRANSACTION_SCHEDULE_FREQUENCY_TYPE_EVERY_N_DAYS {
+		if template.ScheduledStartTime == nil || len(frequencyValues) != 1 || frequencyValues[0] <= 0 {
+			log.Warnf(c, "[transactions.CreateScheduledTransactions] transaction template \"id:%d\" has invalid scheduled transaction frequency for every N days", template.TemplateId)
+			return nil, nil
+		}
+
+		n := frequencyValues[0]
+		startDate := time.Unix(*template.ScheduledStartTime, 0).In(templateTimezone)
+		daysDiff := utils.GetDaysBetweenDates(startDate, *transactionTime)
+
+		if daysDiff < 0 || int64(daysDiff)%n != 0 {
+			log.Infof(c, "[transactions.CreateScheduledTransactions] transaction template \"id:%d\" does not need to create transaction, days diff is %d with interval %d", template.TemplateId, daysDiff, n)
+			return nil, nil
+		}
+	}
+
+	if template.ScheduledStartTime != nil && *template.ScheduledStartTime > transactionTime.Unix() {
+		log.Infof(c, "[transactions.CreateScheduledTransactions] transaction template \"id:%d\" does not need to create transaction, now is earlier than the start time %d", template.TemplateId, *template.ScheduledStartTime)
+		return nil, nil
+	}
+
+	if template.ScheduledEndTime != nil && *template.ScheduledEndTime < transactionTime.Unix() {
+		log.Infof(c, "[transactions.CreateScheduledTransactions] transaction template \"id:%d\" does not need to create transaction, now is later than the end time %d", template.TemplateId, *template.ScheduledEndTime)
+		return nil, nil
+	}
+
+	var transactionDbType models.TransactionDbType
+
+	if template.Type == models.TRANSACTION_TYPE_EXPENSE {
+		transactionDbType = models.TRANSACTION_DB_TYPE_EXPENSE
+	} else if template.Type == models.TRANSACTION_TYPE_INCOME {
+		transactionDbType = models.TRANSACTION_DB_TYPE_INCOME
+	} else if template.Type == models.TRANSACTION_TYPE_TRANSFER {
+		transactionDbType = models.TRANSACTION_DB_TYPE_TRANSFER_OUT
+	} else {
+		log.Warnf(c, "[transactions.CreateScheduledTransactions] transaction template \"id:%d\" has invalid transaction type", template.TemplateId)
+		return nil, nil
+	}
+
+	transaction := &models.Transaction{
+		Uid:               template.Uid,
+		Type:              transactionDbType,
+		CategoryId:        template.CategoryId,
+		TransactionTime:   utils.GetMinTransactionTimeFromUnixTime(transactionTime.Unix()),
+		TimezoneUtcOffset: transactionTimezoneUtcOffset,
+		AccountId:         template.AccountId,
+		Amount:            template.Amount,
+		ServiceCharge:     template.ServiceCharge,
+		HideAmount:        template.HideAmount,
+		Comment:           template.Comment,
+		CreatedIp:         c.ClientIP(),
+		ScheduledCreated:  true,
+	}
+
+	if template.Type == models.TRANSACTION_TYPE_TRANSFER {
+		transaction.RelatedAccountId = template.RelatedAccountId
+		transaction.RelatedAccountAmount = template.RelatedAccountAmount
+	}
+
+	tagIds := template.GetTagIds()
+	return transaction, tagIds
 }
 
 func (s *TransactionService) getAccountModels(sess *xorm.Session, transaction *models.Transaction) (sourceAccount *models.Account, destinationAccount *models.Account, err error) {
@@ -3575,6 +3591,37 @@ func (s *TransactionService) getRelatedUpdateColumns(updateCols []string) []stri
 	}
 
 	return relatedUpdateCols
+}
+
+func (s *TransactionService) isAccountIdValid(transaction *models.Transaction) error {
+	if transaction.ServiceCharge < 0 || (transaction.Type == models.TRANSACTION_DB_TYPE_TRANSFER_OUT && (transaction.Amount > models.MaximumTransactionAmount || transaction.ServiceCharge > transaction.Amount)) {
+		return errs.ErrAmountInvalid
+	}
+	if transaction.Type != models.TRANSACTION_DB_TYPE_TRANSFER_OUT && transaction.Type != models.TRANSACTION_DB_TYPE_TRANSFER_IN && transaction.ServiceCharge != 0 {
+		return errs.ErrAmountInvalid
+	}
+	if transaction.Type == models.TRANSACTION_DB_TYPE_MODIFY_BALANCE {
+		if transaction.RelatedAccountId != 0 && transaction.RelatedAccountId != transaction.AccountId {
+			return errs.ErrTransactionDestinationAccountCannotBeSet
+		}
+	} else if transaction.Type == models.TRANSACTION_DB_TYPE_INCOME ||
+		transaction.Type == models.TRANSACTION_DB_TYPE_EXPENSE {
+		if transaction.RelatedAccountId != 0 {
+			return errs.ErrTransactionDestinationAccountCannotBeSet
+		} else if transaction.RelatedAccountAmount != 0 {
+			return errs.ErrTransactionDestinationAmountCannotBeSet
+		}
+	} else if transaction.Type == models.TRANSACTION_DB_TYPE_TRANSFER_OUT {
+		if transaction.AccountId == transaction.RelatedAccountId {
+			return errs.ErrTransactionSourceAndDestinationIdCannotBeEqual
+		}
+	} else if transaction.Type == models.TRANSACTION_DB_TYPE_TRANSFER_IN {
+		return errs.ErrTransactionTypeInvalid
+	} else {
+		return errs.ErrTransactionTypeInvalid
+	}
+
+	return nil
 }
 
 func (s *TransactionService) isCategoryValid(sess *xorm.Session, transaction *models.Transaction) error {
